@@ -1,21 +1,24 @@
 import React from 'react';
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
-import MiniDrawer from './components/Sidebar';
+import DashboardLayout from './components/DashboardLayout';
 import PageNotFound from './pages/PageNotFound';
+import ThemeConfig from './theme';
 
 function App() {
   return (
-    <Router>
-      <Switch>
-        <Route exact path="/">
-          <MiniDrawer />
-        </Route>
-        <Route>
-          {/* matches any other route: page for 404 error */}
-          <PageNotFound />
-        </Route>
-      </Switch>
-    </Router>
+    <ThemeConfig>
+      <Router>
+        <Switch>
+          <Route exact path="/">
+            <DashboardLayout />
+          </Route>
+          <Route>
+            {/* matches any other route: page for 404 error */}
+            <PageNotFound />
+          </Route>
+        </Switch>
+      </Router>
+    </ThemeConfig>
   );
 }
 
