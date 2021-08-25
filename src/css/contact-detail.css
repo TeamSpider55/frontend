@@ -1,0 +1,68 @@
+@import "./index.css";
+
+.contact-detail {
+  display: block;
+  position: absolute;
+  height: fit-content;
+  top: 30%;
+  right: 50%;
+  left: 20%;
+  border-radius: 5px;
+  box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+  /* filter: drop-shadow(0 0 0.75rem crimson); */
+}
+
+.contact-img-wrapper {
+  display: inline-block;
+  height: 144px;
+  width: 144px;
+  margin-left: 48px;
+}
+
+.contact-img-wrapper img {
+  height: 100%;
+  width: 100%;
+  border-radius: 5px;
+}
+
+.name-info-wrapper {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.name-info-wrapper #contact-name {
+  margin: 0 32px;
+  font-weight: bolder;
+}
+
+.name-info-wrapper #contact-info {
+  margin: 0 32px;
+}
+
+.detail-wrapper {
+  display: block;
+  margin-left: 48px;
+  /* float: right; */
+}
+
+.detail-wrapper #detail-email {
+}
+
+.edit-icon-wrapper {
+  height: 32px;
+  margin: 8px;
+}
+
+.edit-icon {
+  cursor: pointer;
+  outline: none;
+  float: right;
+  clear: right;
+}
+
+.done-icon {
+  cursor: pointer;
+  outline: none;
+  float: right;
+  clear: right;
+}

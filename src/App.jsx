@@ -1,16 +1,21 @@
 import React from 'react';
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import PageNotFound from './pages/PageNotFound';
+import ContactDetail from './components/contact-detail';
 
 function App() {
   return (
     <Router>
       <Switch>
+        <Route path="/contact-detail">
+          <ContactDetail />
+        </Route>
         <Route exact path="/" />
         <Route>
           {/* matches any other route: page for 404 error */}
           <PageNotFound />
         </Route>
+
       </Switch>
     </Router>
   );
