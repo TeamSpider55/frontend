@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import '../css/contact-detail.css';
 import EditIcon from '@material-ui/icons/Edit';
 import DoneIcon from '@material-ui/icons/Done';
+import ClearIcon from '@material-ui/icons/Clear';
 
 function ContactDetail() {
   const [editModeOn, setEditModeOn] = useState(false);
@@ -14,6 +15,7 @@ function ContactDetail() {
         <div className="edit-icon-wrapper">
           {!editModeOn && <EditIcon className="edit-icon" onClick={toggleEditMode} onKeyDown={null} role="button" tabIndex="0" />}
           {editModeOn && <DoneIcon className="done-icon" onClick={toggleEditMode} onKeyDown={null} role="button" tabIndex="0" />}
+          {editModeOn && <ClearIcon className="clear-icon" onClick={toggleEditMode} onKeyDown={null} role="button" tabIndex="0" />}
         </div>
         <div className="contact-img-wrapper">
           <img

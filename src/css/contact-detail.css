@@ -58,11 +58,23 @@
   outline: none;
   float: right;
   clear: right;
+  margin-left: 8px;
+  margin-right: 8px;
 }
 
 .done-icon {
+  display: inline-flex;
   cursor: pointer;
   outline: none;
   float: right;
-  clear: right;
+  margin-left: 8px;
+  margin-right: 8px;
+}
+
+.clear-icon {
+  cursor: pointer;
+  outline: none;
+  float: right;
+  margin-left: 8px;
+  margin-right: 8px;
 }
