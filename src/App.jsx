@@ -1,18 +1,47 @@
 import React from 'react';
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
+import DashboardLayout from './layouts/DashboardLayout';
+import Contacts from './pages/Contacts';
 import PageNotFound from './pages/PageNotFound';
+import ThemeConfig from './theme';
 
 function App() {
   return (
-    <Router>
-      <Switch>
-        <Route exact path="/" />
-        <Route>
-          {/* matches any other route: page for 404 error */}
-          <PageNotFound />
-        </Route>
-      </Switch>
-    </Router>
+    <ThemeConfig>
+      <Router>
+        <Switch>
+          <Route exact path="/">
+            <DashboardLayout>
+              <PageNotFound />
+            </DashboardLayout>
+          </Route>
+          <Route path="/dashboard">
+            <DashboardLayout>
+              <PageNotFound />
+            </DashboardLayout>
+          </Route>
+          <Route path="/calendar">
+            <DashboardLayout>
+              <PageNotFound />
+            </DashboardLayout>
+          </Route>
+          <Route path="/contacts">
+            <DashboardLayout>
+              <Contacts />
+            </DashboardLayout>
+          </Route>
+          <Route path="/memos">
+            <DashboardLayout>
+              <PageNotFound />
+            </DashboardLayout>
+          </Route>
+          <Route>
+            {/* matches any other route: page for 404 error */}
+            <PageNotFound />
+          </Route>
+        </Switch>
+      </Router>
+    </ThemeConfig>
   );
 }
 
