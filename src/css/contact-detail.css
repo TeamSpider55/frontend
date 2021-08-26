@@ -7,9 +7,9 @@
   top: 30%;
   right: 50%;
   left: 20%;
+  margin-bottom: 32px;
   border-radius: 5px;
-  box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
-  /* filter: drop-shadow(0 0 0.75rem crimson); */
+  box-shadow: 0 2px 3px rgb(0 0 0 / 0.2);
 }
 
 .contact-img-wrapper {
@@ -22,7 +22,7 @@
 .contact-img-wrapper img {
   height: 100%;
   width: 100%;
-  border-radius: 5px;
+  border-radius: 10px;
 }
 
 .name-info-wrapper {
@@ -39,18 +39,48 @@
   margin: 0 32px;
 }
 
-.detail-wrapper {
-  display: block;
+.detail-label-wrapper {
+  display: inline-block;
   margin-left: 48px;
-  /* float: right; */
 }
 
-.detail-wrapper #detail-email {
+.detail-label-wrapper h4 {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  float: right;
+  clear: both;
+}
+
+.detail-wrapper {
+  display: inline-block;
+  left: auto;
+  right: 0;
+  margin-right: 32px;
+  margin-left: 16px;
+  vertical-align: top;
+}
+
+.detail-wrapper input,
+textarea {
+  font-family: "Cairo";
+  font-size: 1em;
+  font-weight: lighter;
+  border: none;
+  padding: 0;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  float: left;
+  resize: none;
+}
+
+.detail-wrapper input:focus,
+textarea:focus {
+  outline: none;
 }
 
 .edit-icon-wrapper {
   height: 32px;
-  margin: 8px;
+  margin-top: 8px;
 }
 
 .edit-icon {

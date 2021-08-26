@@ -31,12 +31,61 @@ function ContactDetail() {
             Available for hire
           </h6>
         </div>
-        <div className="detail-wrapper">
-          <h4 id="detail-email">Email</h4>
-          <h4 id="detail-phone">Phone Number</h4>
-          <h4 id="detail-location">Location</h4>
-          <h4 id="detail-description">Description</h4>
+        <div className="detail-label-wrapper">
+          <h4 id="detail-label-email">Email</h4>
+          <h4 id="detail-label-phone">Phone Number</h4>
+          <h4 id="detail-label-location">Address 1</h4>
+          <h4 id="detail-label-location">Address 2</h4>
+          <h4 id="detail-label-location">Address 3</h4>
+          <h4 id="detail-label-description">Description</h4>
         </div>
+        <div className="detail-wrapper">
+          <div>
+            <input
+              type="email"
+              name="email"
+              id="detail-email"
+              defaultValue="Example@123.com"
+              readOnly={!editModeOn}
+            />
+          </div>
+          <div>
+            <input
+              type="tel"
+              name="phone"
+              id="detail-phone"
+              maxLength={12}
+              defaultValue="+61123456789"
+              readOnly={!editModeOn}
+            />
+          </div>
+          <div>
+            <input
+              type="text"
+              name="address1"
+              id="detail-address1"
+              readOnly={!editModeOn}
+            />
+          </div>
+          <div>
+            <input
+              type="text"
+              name="address2"
+              id="detail-address2"
+              readOnly={!editModeOn}
+            />
+          </div>
+          <div>
+            <input
+              type="text"
+              name="address3"
+              id="detail-address3"
+              readOnly={!editModeOn}
+            />
+          </div>
+          <textarea className="detail-description-wrapper" rows="5" />
+        </div>
+
       </div>
     </>
   );
