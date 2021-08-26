@@ -28,7 +28,7 @@ function App() {
           </Route>
           <Route path="/contacts">
             <DashboardLayout>
-               <ContactDetail />
+              <ContactDetail />
             </DashboardLayout>
           </Route>
           <Route path="/memos">
