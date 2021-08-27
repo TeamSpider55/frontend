@@ -1,9 +1,8 @@
 import React from 'react';
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import DashboardLayout from './layouts/DashboardLayout';
-import Contacts from './pages/Contacts';
+import ContactDetail from './pages/ContactDetail';
 import PageNotFound from './pages/PageNotFound';
-import ContactDetail from './components/contact-detail';
 import ThemeConfig from './theme';
 
 function App() {
