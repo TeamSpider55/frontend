@@ -147,9 +147,9 @@ const ContactDetail = () => {
         <div className={classes.detailLabelWrapper}>
           <div id="detail-label-email">Email</div>
           <div id="detail-label-phone">Phone Number</div>
+          <div id="detail-label-location">Occupation</div>
           <div id="detail-label-location">Address 1</div>
           <div id="detail-label-location">Address 2</div>
-          <div id="detail-label-location">Address 3</div>
           <div id="detail-label-description">Description</div>
         </div>
         <div className={classes.detailWrapper}>
@@ -173,6 +173,13 @@ const ContactDetail = () => {
           <div>
             <input
               type="text"
+              name="occupation"
+              readOnly={!editModeOn}
+            />
+          </div>
+          <div>
+            <input
+              type="text"
               name="address1"
               readOnly={!editModeOn}
             />
@@ -181,13 +188,6 @@ const ContactDetail = () => {
             <input
               type="text"
               name="address2"
-              readOnly={!editModeOn}
-            />
-          </div>
-          <div>
-            <input
-              type="text"
-              name="address3"
               readOnly={!editModeOn}
             />
           </div>
