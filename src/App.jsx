@@ -1,7 +1,8 @@
 import React from 'react';
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import DashboardLayout from './layouts/DashboardLayout';
-import Contacts from './pages/Contacts';
+import ContactDetail from './pages/ContactDetail';
+import ContactList from './pages/ContactList';
 import PageNotFound from './pages/PageNotFound';
 import ThemeConfig from './theme';
 
@@ -25,9 +26,14 @@ function App() {
               <PageNotFound />
             </DashboardLayout>
           </Route>
-          <Route path="/contacts">
+          <Route exact path="/contacts">
             <DashboardLayout>
-              <Contacts />
+              <ContactList />
+            </DashboardLayout>
+          </Route>
+          <Route exact path="/contacts/1">
+            <DashboardLayout>
+              <ContactDetail />
             </DashboardLayout>
           </Route>
           <Route path="/memos">

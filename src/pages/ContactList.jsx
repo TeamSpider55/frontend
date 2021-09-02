@@ -154,28 +154,30 @@ const ContactList = () => {
                         selected={isItemSelected}
                         aria-checked={isItemSelected}
                       >
-                        <TableCell padding="checkbox">
-                          <Checkbox
-                            checked={isItemSelected}
-                            onChange={(event) => handleClick(event, name)}
-                          />
-                        </TableCell>
-                        <TableCell component="th" scope="row" padding="none">
-                          <Box display="flex">
-                            <Avatar alt={name} src={avatarUrl} />
-                            <Typography variant="subtitle2" noWrap>
-                              {name}
-                            </Typography>
-                          </Box>
-                        </TableCell>
-                        <TableCell align="left">{company}</TableCell>
-                        <TableCell align="left">{role}</TableCell>
-                        <TableCell align="left">
-                          {isVerified ? 'Yes' : 'No'}
-                        </TableCell>
-                        <TableCell align="left">Label</TableCell>
+                        <RouterLink to="/contacts/1">
+                          <TableCell padding="checkbox">
+                            <Checkbox
+                              checked={isItemSelected}
+                              onChange={(event) => handleClick(event, name)}
+                            />
+                          </TableCell>
+                          <TableCell component="th" scope="row" padding="none">
+                            <Box display="flex">
+                              <Avatar alt={name} src={avatarUrl} />
+                              <Typography variant="subtitle2" noWrap>
+                                {name}
+                              </Typography>
+                            </Box>
+                          </TableCell>
+                          <TableCell align="left">{company}</TableCell>
+                          <TableCell align="left">{role}</TableCell>
+                          <TableCell align="left">
+                            {isVerified ? 'Yes' : 'No'}
+                          </TableCell>
+                          <TableCell align="left">Label</TableCell>
 
-                        <TableCell align="right">DIV</TableCell>
+                          <TableCell align="right">DIV</TableCell>
+                        </RouterLink>
                       </TableRow>
                     );
                   })}
