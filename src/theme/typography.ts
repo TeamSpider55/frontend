@@ -61,6 +61,12 @@ const typography = {
     fontSize: pixelsToRem(17),
     ...responsiveFontSizes({ sm: 18, md: 18, lg: 18 }),
   },
+  div: {
+    fontWeight: 700,
+    lineHeight: 80 / 64,
+    fontSize: pixelsToRem(40),
+    ...responsiveFontSizes({ sm: 52, md: 58, lg: 64 }),
+  },
   subtitle1: {
     fontWeight: 600,
     lineHeight: 1.5,
@@ -76,8 +82,8 @@ const typography = {
     fontSize: pixelsToRem(16),
   },
   body2: {
-    lineHeight: 22 / 14,
-    fontSize: pixelsToRem(14),
+    lineHeight: 'unset',
+    fontSize: pixelsToRem(16),
   },
   caption: {
     lineHeight: 1.5,
@@ -95,6 +101,12 @@ const typography = {
     lineHeight: 24 / 14,
     fontSize: pixelsToRem(14),
     textTransform: 'capitalize',
+  },
+  input: {
+    fontWeight: 700,
+    lineHeight: 80 / 64,
+    fontSize: pixelsToRem(40),
+    ...responsiveFontSizes({ sm: 52, md: 58, lg: 64 }),
   },
 };
 
