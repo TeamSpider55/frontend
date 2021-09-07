@@ -28,7 +28,7 @@
         "@typescript-eslint/no-use-before-define": ["error"],
         "react/jsx-filename-extension": [1, { "extensions": [".jsx", ".tsx"] }],
         "no-unused-vars": "warn",
-        "linebreak-style": ["error", "windows"],
+        "linebreak-style": "off",
         "import/extensions": "off",
         "arrow-body-style": "off"
     },
