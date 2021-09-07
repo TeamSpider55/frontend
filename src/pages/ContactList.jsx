@@ -19,52 +19,15 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Page from '../components/Page';
 import ContactService from '../services/ContactService';
 
-// const USERLIST = [...Array(24)].map(() => ({
-//   id: 'asdasd12312',
-//   avatarUrl: 'www.google.com',
-//   name: 'Name',
-//   company: 'Company',
-//   isVerified: true,
-//   status: 'active',
-//   role: 'Full Stack Developer',
-// }));
-
 const useStyles = makeStyles((theme) => ({
   root: {
     marginTop: theme.spacing(6),
   },
 }));
 
-const TABLE_HEAD = [
-  { id: 'name', label: 'Name', alignRight: false },
-  { id: 'company', label: 'Company', alignRight: false },
-  { id: 'role', label: 'Role', alignRight: false },
-  { id: 'isVerified', label: 'Verified', alignRight: false },
-  { id: 'status', label: 'Status', alignRight: false },
-  { id: '' },
-];
-
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function getComparator(order, orderBy) {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
 const ContactList = () => {
   const [page, setPage] = useState(0);
-  const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
-  const [orderBy, setOrderBy] = useState('name');
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const [contacts, setContacts] = useState(null);
@@ -76,12 +39,6 @@ const ContactList = () => {
   const theme = useTheme();
   const classes = useStyles(theme);
   const history = useHistory();
-
-  const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(property);
-  };
 
   const handleClick = (event, name) => {
     const selectedIndex = selected.indexOf(name);
@@ -151,13 +108,8 @@ const ContactList = () => {
                         const
                           {
                             contactId,
-                            nickName,
                             givenName,
-                            middleName,
                             familyName,
-                            email,
-                            phone,
-                            address,
                           } = row;
                         const name = `${givenName} ${familyName}`;
                         const isItemSelected = selected.indexOf(name) !== -1;
