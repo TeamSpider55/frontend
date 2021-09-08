@@ -22,16 +22,6 @@ import MoreMenu from '../components/contacts/MoreMenu';
 import SearchBar from '../components/contacts/SearchBar';
 import TableHeader from '../components/contacts/TableHeader';
 
-// const USERLIST = [...Array(24)].map(() => ({
-//   id: 'asdasd12312',
-//   avatarUrl: 'www.google.com',
-//   name: 'Name',
-//   company: 'Company',
-//   isVerified: true,
-//   status: 'active',
-//   role: 'Full Stack Developer',
-// }));
-
 const useStyles = makeStyles((theme) => ({
   root: {
     marginTop: theme.spacing(6),
@@ -47,8 +37,8 @@ const TABLE_HEAD = [
 
 const ContactList = () => {
   const [page, setPage] = useState(0);
-  const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
+  const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('givenName');
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
