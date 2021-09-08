@@ -3,8 +3,22 @@ import EditIcon from '@material-ui/icons/Edit';
 import DoneIcon from '@material-ui/icons/Done';
 import ClearIcon from '@material-ui/icons/Clear';
 import { makeStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles(() => ({
+  contactsButtonWrapper: {
+    display: 'block',
+    marginTop: '5%',
+  },
+  contactsButton: {
+    fontSize: '36px',
+  },
+  arrowLeftIcon: {
+    cursor: 'pointer',
+    fontSize: '36px',
+  },
   contactDetail: {
     display: 'block',
     height: 'fit-content',
@@ -12,7 +26,7 @@ const useStyles = makeStyles(() => ({
     top: '30%',
     right: '50%',
     left: '20%',
-    marginTop: '15%',
+    marginTop: '5%',
     marginBottom: '32px',
     borderRadius: '5px',
     boxShadow: '0 2px 3px rgb(0 0 0 / 0.2)',
@@ -116,17 +130,53 @@ const useStyles = makeStyles(() => ({
 const ContactDetail = () => {
   const classes = useStyles();
   const [editModeOn, setEditModeOn] = useState(false);
+  const [phone, setPhone] = useState('');
+  const [occupation, setOccupation] = useState('');
+  const [address1, setAddress1] = useState('');
+  const [address2, setAddress2] = useState('');
+  const [description, setDescription] = useState('');
 
   const toggleEditMode = () => {
-    setEditModeOn(!editModeOn);
+    setPhone(document.getElementById('phone').value);
+    setOccupation(document.getElementById('occupation').value);
+    setAddress1(document.getElementById('address1').value);
+    setAddress2(document.getElementById('address2').value);
+    setDescription(document.getElementById('description').value);
+    setEditModeOn(true);
   };
+  const editModeCancel = () => {
+    document.getElementById('phone').value = phone;
+    document.getElementById('occupation').value = occupation;
+    document.getElementById('address1').value = address1;
+    document.getElementById('address2').value = address2;
+    document.getElementById('description').value = description;
+
+    setEditModeOn(false);
+  };
+  const editModeConfirm = () => {
+    setPhone(document.getElementById('phone').value);
+    setOccupation(document.getElementById('occupation').value);
+    setAddress1(document.getElementById('address1').value);
+    setAddress2(document.getElementById('address2').value);
+    setDescription(document.getElementById('description').value);
+    setEditModeOn(false);
+  };
+
   return (
     <>
+      <div className={classes.contactsButtonWrapper}>
+        <Link to="/contacts">
+          <Button className={classes.contactsButton}>
+            <ArrowLeftIcon className={classes.arrowLeftIcon} />
+            Contacts
+          </Button>
+        </Link>
+      </div>
       <div className={classes.contactDetail}>
         <div className={classes.editIconWrapper}>
           {!editModeOn && <EditIcon className={classes.editIcon} onClick={toggleEditMode} onKeyDown={null} role="button" tabIndex="0" />}
-          {editModeOn && <ClearIcon className={classes.clearIcon} onClick={toggleEditMode} onKeyDown={null} role="button" tabIndex="0" />}
-          {editModeOn && <DoneIcon className={classes.doneIcon} onClick={toggleEditMode} onKeyDown={null} role="button" tabIndex="0" />}
+          {editModeOn && <ClearIcon className={classes.clearIcon} onClick={editModeCancel} onKeyDown={null} role="button" tabIndex="0" />}
+          {editModeOn && <DoneIcon className={classes.doneIcon} onClick={editModeConfirm} onKeyDown={null} role="button" tabIndex="0" />}
         </div>
         <div className={classes.imgNameWrapper}>
           <div className={classes.contactImgWrapper}>
@@ -165,6 +215,7 @@ const ContactDetail = () => {
             <input
               type="tel"
               name="phone"
+              id="phone"
               maxLength={12}
               defaultValue="+61123456789"
               readOnly={!editModeOn}
@@ -174,6 +225,7 @@ const ContactDetail = () => {
             <input
               type="text"
               name="occupation"
+              id="occupation"
               readOnly={!editModeOn}
             />
           </div>
@@ -181,6 +233,7 @@ const ContactDetail = () => {
             <input
               type="text"
               name="address1"
+              id="address1"
               readOnly={!editModeOn}
             />
           </div>
@@ -188,10 +241,11 @@ const ContactDetail = () => {
             <input
               type="text"
               name="address2"
+              id="address2"
               readOnly={!editModeOn}
             />
           </div>
-          <textarea rows="5" readOnly={!editModeOn} />
+          <textarea id="description" rows="5" readOnly={!editModeOn} />
         </div>
 
       </div>
