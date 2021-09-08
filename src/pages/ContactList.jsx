@@ -18,6 +18,9 @@ import {
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Page from '../components/Page';
 import ContactService from '../services/ContactService';
+import MoreMenu from '../components/contacts/MoreMenu';
+import SearchBar from '../components/contacts/SearchBar';
+import TableHeader from '../components/contacts/TableHeader';
 
 // const USERLIST = [...Array(24)].map(() => ({
 //   id: 'asdasd12312',
@@ -37,37 +40,20 @@ const useStyles = makeStyles((theme) => ({
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
-  { id: 'company', label: 'Company', alignRight: false },
-  { id: 'role', label: 'Role', alignRight: false },
-  { id: 'isVerified', label: 'Verified', alignRight: false },
-  { id: 'status', label: 'Status', alignRight: false },
-  { id: '' },
+  // { id: 'company', label: 'Company', alignRight: false },
+  // { id: 'role', label: 'Role', alignRight: false },
+  // { id: '' },
 ];
-
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function getComparator(order, orderBy) {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
 
 const ContactList = () => {
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
-  const [orderBy, setOrderBy] = useState('name');
+  const [orderBy, setOrderBy] = useState('givenName');
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const [contacts, setContacts] = useState(null);
+  const [filterName, setFilterName] = useState('');
 
   useEffect(async () => {
     setContacts(await ContactService.getContacts());
@@ -81,6 +67,15 @@ const ContactList = () => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
+  };
+
+  const handleSelectAllClick = (event) => {
+    if (event.target.checked) {
+      const newSelecteds = contacts.map((n) => n.name);
+      setSelected(newSelecteds);
+      return;
+    }
+    setSelected([]);
   };
 
   const handleClick = (event, name) => {
@@ -103,6 +98,10 @@ const ContactList = () => {
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
+  };
+
+  const handleFilterByName = (event) => {
+    setFilterName(event.target.value);
   };
 
   const handleChangeRowsPerPage = (event) => {
@@ -133,6 +132,11 @@ const ContactList = () => {
         </Box>
 
         <Card>
+          <SearchBar
+            numSelected={selected.length}
+            filterName={filterName}
+            onFilterName={handleFilterByName}
+          />
           {filteredContacts === null ? (
             <Typography variant="subtitle2" noWrap>
               Loading
@@ -141,6 +145,15 @@ const ContactList = () => {
             <Box>
               <TableContainer sx={{ minWidth: 800 }}>
                 <Table>
+                  <TableHeader
+                    order={order}
+                    orderBy={orderBy}
+                    headLabel={TABLE_HEAD}
+                    rowCount={filteredContacts.length}
+                    numSelected={selected.length}
+                    onRequestSort={handleRequestSort}
+                    onSelectAllClick={handleSelectAllClick}
+                  />
                   <TableBody>
                     {filteredContacts
                       .slice(
@@ -151,13 +164,8 @@ const ContactList = () => {
                         const
                           {
                             contactId,
-                            nickName,
                             givenName,
-                            middleName,
                             familyName,
-                            email,
-                            phone,
-                            address,
                           } = row;
                         const name = `${givenName} ${familyName}`;
                         const isItemSelected = selected.indexOf(name) !== -1;
@@ -199,9 +207,7 @@ const ContactList = () => {
                               <TableCell align="left">17 August 2021</TableCell>
                             </Box>
                             <TableCell align="right">
-                              <Button>
-                                Edit
-                              </Button>
+                              <MoreMenu />
                             </TableCell>
                           </TableRow>
                         );
