@@ -4,6 +4,7 @@ import DashboardLayout from './layouts/DashboardLayout';
 import ContactDetail from './pages/ContactDetail';
 import ContactList from './pages/ContactList';
 import PageNotFound from './pages/PageNotFound';
+import Register from './pages/Register';
 import ThemeConfig from './theme';
 
 function App() {
@@ -20,6 +21,9 @@ function App() {
             <DashboardLayout>
               <PageNotFound />
             </DashboardLayout>
+          </Route>
+          <Route path="/register">
+            <Register />
           </Route>
           <Route path="/calendar">
             <DashboardLayout>
