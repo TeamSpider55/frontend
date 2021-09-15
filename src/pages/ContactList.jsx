@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link as RouterLink, useHistory } from 'react-router-dom';
 import {
   Card,
   Table,
@@ -17,16 +17,10 @@ import {
 } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Page from '../components/Page';
-
-const USERLIST = [...Array(24)].map(() => ({
-  id: 'asdasd12312',
-  avatarUrl: 'www.google.com',
-  name: 'Name',
-  company: 'Company',
-  isVerified: true,
-  status: 'active',
-  role: 'Full Stack Developer',
-}));
+import ContactService from '../services/ContactService';
+import MoreMenu from '../components/contacts/MoreMenu';
+import SearchBar from '../components/contacts/SearchBar';
+import TableHeader from '../components/contacts/TableHeader';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,43 +28,45 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// const TABLE_HEAD = [
-//   { id: 'name', label: 'Name', alignRight: false },
-//   { id: 'company', label: 'Company', alignRight: false },
-//   { id: 'role', label: 'Role', alignRight: false },
-//   { id: 'isVerified', label: 'Verified', alignRight: false },
-//   { id: 'status', label: 'Status', alignRight: false },
-//   { id: '' },
-// ];
-
-// function descendingComparator(a, b, orderBy) {
-//   if (b[orderBy] < a[orderBy]) {
-//     return -1;
-//   }
-//   if (b[orderBy] > a[orderBy]) {
-//     return 1;
-//   }
-//   return 0;
-// }
+const TABLE_HEAD = [
+  { id: 'name', label: 'Name', alignRight: false },
+  // { id: 'company', label: 'Company', alignRight: false },
+  // { id: 'role', label: 'Role', alignRight: false },
+  // { id: '' },
+];
 
 const ContactList = () => {
   const [page, setPage] = useState(0);
-  // const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
-  // const [orderBy, setOrderBy] = useState('name');
+  const [order, setOrder] = useState('asc');
+  const [orderBy, setOrderBy] = useState('givenName');
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const [contacts, setContacts] = useState(null);
+  const [filterName, setFilterName] = useState('');
+
+  useEffect(async () => {
+    setContacts(await ContactService.getContacts());
+  }, []);
 
   const theme = useTheme();
   const classes = useStyles(theme);
+  const history = useHistory();
 
-  // const handleSelectAllClick = (event) => {
-  //   if (event.target.checked) {
-  //     const newSelecteds = USERLIST.map((n) => n.name);
-  //     setSelected(newSelecteds);
-  //     return;
-  //   }
-  //   setSelected([]);
-  // };
+  const handleRequestSort = (event, property) => {
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(property);
+  };
+
+  const handleSelectAllClick = (event) => {
+    if (event.target.checked) {
+      const newSelecteds = contacts.map((n) => n.name);
+      setSelected(newSelecteds);
+      return;
+    }
+    setSelected([]);
+  };
 
   const handleClick = (event, name) => {
     const selectedIndex = selected.indexOf(name);
@@ -94,16 +90,19 @@ const ContactList = () => {
     setPage(newPage);
   };
 
+  const handleFilterByName = (event) => {
+    setFilterName(event.target.value);
+  };
+
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - USERLIST.length) : 0;
+  const emptyRows = page > 0
+    ? Math.max(0, (1 + page) * rowsPerPage - contacts.length) : 0;
 
-  const filteredUsers = USERLIST;
-
-  const isUserNotFound = filteredUsers.length === 0;
+  const filteredContacts = contacts;
 
   return (
     <Page title="Contacts - OneThread">
@@ -111,91 +110,126 @@ const ContactList = () => {
         <Typography variant="h2" className={classes.pageTitle}>
           Contacts
         </Typography>
-        <Button variant="contained" component={RouterLink} to="#">
-          New User
-        </Button>
+        <Box textAlign="right" paddingY={2}>
+          <Button
+            variant="contained"
+            color="primary"
+            component={RouterLink}
+            to="#"
+          >
+            New User
+          </Button>
+        </Box>
 
         <Card>
-          <TableContainer sx={{ minWidth: 800 }}>
-            <Table>
-              <TableBody>
-                {filteredUsers
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row) => {
-                    const {
-                      id,
-                      name,
-                      role,
-                      company,
-                      avatarUrl,
-                      isVerified,
-                    } = row;
-                    const isItemSelected = selected.indexOf(name) !== -1;
-
-                    return (
-                      <TableRow
-                        hover
-                        key={id}
-                        tabIndex={-1}
-                        role="checkbox"
-                        selected={isItemSelected}
-                        aria-checked={isItemSelected}
-                      >
-                        <RouterLink to="/contacts/1">
-                          <TableCell padding="checkbox">
-                            <Checkbox
-                              checked={isItemSelected}
-                              onChange={(event) => handleClick(event, name)}
-                            />
-                          </TableCell>
-                          <TableCell component="th" scope="row" padding="none">
-                            <Box display="flex">
-                              <Avatar alt={name} src={avatarUrl} />
-                              <Typography variant="subtitle2" noWrap>
-                                {name}
-                              </Typography>
-                            </Box>
-                          </TableCell>
-                          <TableCell align="left">{company}</TableCell>
-                          <TableCell align="left">{role}</TableCell>
-                          <TableCell align="left">
-                            {isVerified ? 'Yes' : 'No'}
-                          </TableCell>
-                          <TableCell align="left">Label</TableCell>
-
-                          <TableCell align="right">DIV</TableCell>
-                        </RouterLink>
-                      </TableRow>
-                    );
-                  })}
-                {emptyRows > 0 && (
-                  <TableRow style={{ height: 53 * emptyRows }}>
-                    <TableCell colSpan={6} />
-                  </TableRow>
-                )}
-              </TableBody>
-              {isUserNotFound && (
-                <TableBody>
-                  <TableRow>
-                    <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                      {/* <SearchNotFound searchQuery={filterName} /> */}
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              )}
-            </Table>
-          </TableContainer>
-          {/* </Scrollbar> */}
-
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={USERLIST.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
+          <SearchBar
+            numSelected={selected.length}
+            filterName={filterName}
+            onFilterName={handleFilterByName}
           />
+          {filteredContacts === null ? (
+            <Typography variant="subtitle2" noWrap>
+              Loading
+            </Typography>
+          ) : (
+            <Box>
+              <TableContainer sx={{ minWidth: 800 }}>
+                <Table>
+                  <TableHeader
+                    order={order}
+                    orderBy={orderBy}
+                    headLabel={TABLE_HEAD}
+                    rowCount={filteredContacts.length}
+                    numSelected={selected.length}
+                    onRequestSort={handleRequestSort}
+                    onSelectAllClick={handleSelectAllClick}
+                  />
+                  <TableBody>
+                    {filteredContacts
+                      .slice(
+                        page * rowsPerPage,
+                        page * rowsPerPage + rowsPerPage,
+                      )
+                      .map((row) => {
+                        const
+                          {
+                            contactId,
+                            givenName,
+                            familyName,
+                          } = row;
+                        const name = `${givenName} ${familyName}`;
+                        const isItemSelected = selected.indexOf(name) !== -1;
+
+                        return (
+                          <TableRow
+                            hover
+                            key={contactId}
+                            tabIndex={-1}
+                            role="checkbox"
+                            selected={isItemSelected}
+                            aria-checked={isItemSelected}
+                          >
+                            <TableCell padding="checkbox">
+                              <Checkbox
+                                checked={isItemSelected}
+                                onChange={(event) => handleClick(event, name)}
+                              />
+                            </TableCell>
+                            <Box onClick={() => history.push('/contacts/1')}>
+                              <TableCell
+                                component="th"
+                                scope="row"
+                              >
+                                <Box display="flex" alignItems="center">
+                                  <Avatar alt={name} src="#FIXME: URL" />
+                                  <Box
+                                    component={Typography}
+                                    variant="subtitle2"
+                                    noWrap
+                                    paddingLeft={2}
+                                  >
+                                    {name}
+                                  </Box>
+                                </Box>
+                              </TableCell>
+                              <TableCell align="left">Apple</TableCell>
+                              <TableCell align="left">Software Engineer</TableCell>
+                              <TableCell align="left">17 August 2021</TableCell>
+                            </Box>
+                            <TableCell align="right">
+                              <MoreMenu />
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    {emptyRows > 0 && (
+                      <TableRow style={{ height: 53 * emptyRows }}>
+                        <TableCell colSpan={6} />
+                      </TableRow>
+                    )}
+                  </TableBody>
+                  {filteredContacts.length === 0 && (
+                    <TableBody>
+                      <TableRow>
+                        <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                          {/* <SearchNotFound searchQuery={filterName} /> */}
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  )}
+                </Table>
+              </TableContainer>
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                component="div"
+                count={filteredContacts.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </Box>
+          )}
         </Card>
       </Container>
     </Page>
