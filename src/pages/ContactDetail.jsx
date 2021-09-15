@@ -20,9 +20,9 @@ const useStyles = makeStyles(() => ({
     fontSize: '36px',
   },
   contactDetail: {
-    display: 'block',
-    height: 'fit-content',
-    width: 'fit-content',
+    display: 'inline-block',
+    height: '75%',
+    width: '45%',
     top: '30%',
     right: '50%',
     left: '20%',
@@ -123,6 +123,26 @@ const useStyles = makeStyles(() => ({
     outline: 'none',
     marginLeft: '8px',
     marginRight: '8px',
+  },
+  contactTimeline: {
+    display: 'inline-block',
+    verticalAlign: 'top',
+    height: '75%',
+    width: '45%',
+    top: '30%',
+    right: '50%',
+    left: '20%',
+    marginTop: '5%',
+    marginLeft: '5%',
+    marginBottom: '32px',
+    borderRadius: '5px',
+    boxShadow: '0 2px 3px rgb(0 0 0 / 0.2)',
+    backgroundColor: 'white',
+  },
+  timelineTitle: {
+    margin: '32px 48px',
+    fontWeight: 'bolder',
+    fontSize: '40px',
   },
 
 }));
@@ -247,7 +267,14 @@ const ContactDetail = () => {
           </div>
           <textarea id="description" rows="5" readOnly={!editModeOn} />
         </div>
+      </div>
 
+      <div className={classes.contactTimeline}>
+        <div>
+          <div className={classes.timelineTitle}>
+            Timeline
+          </div>
+        </div>
       </div>
     </>
   );
