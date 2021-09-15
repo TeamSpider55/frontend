@@ -3,6 +3,7 @@ import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import DashboardLayout from './layouts/DashboardLayout';
 import ContactDetail from './pages/ContactDetail';
 import ContactList from './pages/ContactList';
+import Login from './pages/Login';
 import PageNotFound from './pages/PageNotFound';
 import ThemeConfig from './theme';
 
@@ -25,6 +26,9 @@ function App() {
             <DashboardLayout>
               <PageNotFound />
             </DashboardLayout>
+          </Route>
+          <Route path="/login">
+            <Login />
           </Route>
           <Route exact path="/contacts">
             <DashboardLayout>
