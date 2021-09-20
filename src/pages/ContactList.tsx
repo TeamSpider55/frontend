@@ -23,6 +23,7 @@ import SearchBar from '../components/contacts/SearchBar';
 import TableHeader from '../components/contacts/TableHeader';
 import SearchNotFound from '../components/contacts/SearchNotFound';
 import getComparator from '../util/comparator';
+import { Contact } from '../dto/Contact';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,60 +38,67 @@ const TABLE_HEAD = [
   { id: 'dateAdded', label: 'Date Added', alignRight: false },
 ];
 
-const applySortFilter = (array, comparator, query) => {
+const applySortFilter = (array: any, comparator: any, query: string) => {
   // ensure that equivalent items keep there original order, i.e. stable
-  const stabilizedArray = array.map((el, index) => [el, index]);
-  stabilizedArray.sort((a, b) => {
+  const stabilizedArray = array.map((el: any, index: number) => [el, index]);
+  stabilizedArray.sort((a: any, b: any) => {
     const order = comparator(a[0], b[0]);
     if (order !== 0) return order;
     return a[1] - b[1];
   });
   if (query) {
-    return array.filter((contact) => {
+    return array.filter((contact: Contact) => {
       const fullName = `${contact.givenName} ${contact.familyName}`
         .toLowerCase();
       return fullName.indexOf(query.toLowerCase()) !== -1;
     });
   }
-  return stabilizedArray.map((el) => el[0]);
+  return stabilizedArray.map((el: [any, number]) => el[0]);
 };
 
 const ContactList = () => {
   const [page, setPage] = useState(0);
-  const [selected, setSelected] = useState([]);
-  const [order, setOrder] = useState('asc');
+  const [selected, setSelected] = useState<string[]>([]);
+  const [order, setOrder] = useState<'asc'|'desc'>('asc');
   const [orderBy, setOrderBy] = useState('givenName');
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const [contacts, setContacts] = useState(null);
+  const [contacts, setContacts] = useState<Contact[] | null>(null);
   const [filterName, setFilterName] = useState('');
 
-  useEffect(async () => {
+  const fetchContacts = async () => {
     setContacts(await ContactService.getContacts());
+  };
+
+  useEffect(() => {
+    fetchContacts();
   }, []);
 
   const theme = useTheme();
   const classes = useStyles(theme);
   const history = useHistory();
 
-  const deleteContact = (id) => {
+  const deleteContact = (id: string) => {
+    if (contacts === null) return;
     const newContacts = contacts.filter((c) => c.contactId !== id);
     setContacts(newContacts);
   };
 
-  const deleteContacts = (ids) => {
-    const newContacts = contacts.filter((c) => !ids.includes(c.contactId));
+  const deleteContacts = (ids: string[]) => {
+    if (contacts === null) return;
+    const newContacts = contacts?.filter((c) => !ids.includes(c.contactId));
     setContacts(newContacts);
     setSelected([]);
   };
 
-  const handleRequestSort = (event, property) => {
+  const handleRequestSort = (event: any, property: string) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
 
   const handleSelectAllClick = () => {
+    if (contacts === null) return;
     if (selected.length === 0) {
       // select all
       const newSelecteds = contacts.map((n) => n.contactId);
@@ -100,9 +108,9 @@ const ContactList = () => {
     setSelected([]);
   };
 
-  const handleClick = (event, contactId) => {
+  const handleClick = (event: any, contactId: string) => {
     const selectedIndex = selected.indexOf(contactId);
-    let newSelected = [];
+    let newSelected: string[] = [];
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, contactId);
     } else if (selectedIndex === 0) {
@@ -118,26 +126,24 @@ const ContactList = () => {
     setSelected(newSelected);
   };
 
-  const onChangePage = (event, newPage) => {
+  const onChangePage = (event: any, newPage: number) => {
     setPage(newPage);
   };
 
-  const onFilterByName = (event) => {
+  const onFilterByName = (event: any) => {
     setFilterName(event.target.value);
   };
 
-  const onChangeRowsPerPage = (event) => {
+  const onChangeRowsPerPage = (event: any) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
 
-  const goToContact = (id) => {
+  const goToContact = (id: string) => {
     history.push(`/contacts/${id}`);
   };
 
-  const emptyRows = page > 0
-    ? Math.max(0, (1 + page) * rowsPerPage - contacts.length) : 0;
-
+  let emptyRows = null;
   let filteredContacts = null;
   if (contacts !== null) {
     filteredContacts = applySortFilter(
@@ -145,6 +151,8 @@ const ContactList = () => {
       getComparator(order, orderBy),
       filterName,
     );
+    emptyRows = page > 0
+      ? Math.max(0, (1 + page) * rowsPerPage - contacts.length) : 0;
   }
 
   return (
@@ -163,7 +171,6 @@ const ContactList = () => {
             Add New Contact
           </Button>
         </Box>
-
         <Card>
           <SearchBar
             selected={selected}
@@ -177,7 +184,7 @@ const ContactList = () => {
             </Typography>
           ) : (
             <Box>
-              <TableContainer sx={{ minWidth: 800 }}>
+              <TableContainer>
                 <Table>
                   <TableHeader
                     order={order}
@@ -194,7 +201,7 @@ const ContactList = () => {
                         page * rowsPerPage,
                         page * rowsPerPage + rowsPerPage,
                       )
-                      .map((row) => {
+                      .map((row: Contact) => {
                         const
                           {
                             contactId,
@@ -222,27 +229,30 @@ const ContactList = () => {
                             <TableCell
                               component="th"
                               scope="row"
-                              onClick={() => goToContact(1)}
+                              onClick={() => goToContact('1')}
                             >
                               <Box display="flex" alignItems="center">
                                 <Avatar alt={name} src="#FIXME: URL" />
                                 <Box
                                   component={Typography}
-                                  variant="subtitle2"
-                                  noWrap
                                   paddingLeft={2}
                                 >
-                                  {name}
+                                  <Typography
+                                    variant="subtitle2"
+                                    noWrap
+                                  >
+                                    {name}
+                                  </Typography>
                                 </Box>
                               </Box>
                             </TableCell>
-                            <TableCell onClick={() => goToContact(1)}>
+                            <TableCell onClick={() => goToContact('1')}>
                               Apple
                             </TableCell>
-                            <TableCell onClick={() => goToContact(1)}>
+                            <TableCell onClick={() => goToContact('1')}>
                               Software Engineer
                             </TableCell>
-                            <TableCell onClick={() => goToContact(1)}>
+                            <TableCell onClick={() => goToContact('1')}>
                               17 August 2021
                             </TableCell>
                             <TableCell align="right">
@@ -254,16 +264,16 @@ const ContactList = () => {
                           </TableRow>
                         );
                       })}
-                    {emptyRows > 0 && (
+                    {emptyRows ? emptyRows > 0 && (
                       <TableRow style={{ height: 53 * emptyRows }}>
                         <TableCell colSpan={6} />
                       </TableRow>
-                    )}
+                    ) : null}
                   </TableBody>
                   {filteredContacts.length === 0 && (
                     <TableBody>
                       <TableRow>
-                        <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                        <TableCell align="center" colSpan={6}>
                           <SearchNotFound searchQuery={filterName} />
                         </TableCell>
                       </TableRow>
