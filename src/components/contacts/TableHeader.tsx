@@ -54,9 +54,6 @@ const TableHeader = ({
               onClick={createSortHandler(headCell.id)}
             >
               {headCell.label}
-              {orderBy === headCell.id ? (
-                <Box />
-              ) : null}
             </TableSortLabel>
           </TableCell>
         ))}

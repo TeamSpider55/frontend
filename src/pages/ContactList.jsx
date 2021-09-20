@@ -21,6 +21,8 @@ import ContactService from '../services/ContactService';
 import MoreMenu from '../components/contacts/MoreMenu';
 import SearchBar from '../components/contacts/SearchBar';
 import TableHeader from '../components/contacts/TableHeader';
+import SearchNotFound from '../components/contacts/SearchNotFound';
+import getComparator from '../util/comparator';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,11 +31,29 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Name', alignRight: false },
+  { id: 'givenName', label: 'Name', alignRight: false },
   { id: 'organisation', label: 'Organisation', alignRight: false },
   { id: 'role', label: 'Role', alignRight: false },
   { id: 'dateAdded', label: 'Date Added', alignRight: false },
 ];
+
+const applySortFilter = (array, comparator, query) => {
+  // ensure that equivalent items keep there original order, i.e. stable
+  const stabilizedArray = array.map((el, index) => [el, index]);
+  stabilizedArray.sort((a, b) => {
+    const order = comparator(a[0], b[0]);
+    if (order !== 0) return order;
+    return a[1] - b[1];
+  });
+  if (query) {
+    return array.filter((contact) => {
+      const fullName = `${contact.givenName} ${contact.familyName}`
+        .toLowerCase();
+      return fullName.indexOf(query.toLowerCase()) !== -1;
+    });
+  }
+  return stabilizedArray.map((el) => el[0]);
+};
 
 const ContactList = () => {
   const [page, setPage] = useState(0);
@@ -98,15 +118,15 @@ const ContactList = () => {
     setSelected(newSelected);
   };
 
-  const handleChangePage = (event, newPage) => {
+  const onChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
-  const handleFilterByName = (event) => {
+  const onFilterByName = (event) => {
     setFilterName(event.target.value);
   };
 
-  const handleChangeRowsPerPage = (event) => {
+  const onChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
@@ -118,12 +138,19 @@ const ContactList = () => {
   const emptyRows = page > 0
     ? Math.max(0, (1 + page) * rowsPerPage - contacts.length) : 0;
 
-  const filteredContacts = contacts;
+  let filteredContacts = null;
+  if (contacts !== null) {
+    filteredContacts = applySortFilter(
+      contacts,
+      getComparator(order, orderBy),
+      filterName,
+    );
+  }
 
   return (
     <Page title="Contacts - OneThread">
       <Container className={classes.root}>
-        <Typography variant="h2" className={classes.pageTitle}>
+        <Typography variant="h2">
           Contacts
         </Typography>
         <Box textAlign="right" paddingY={2}>
@@ -141,7 +168,7 @@ const ContactList = () => {
           <SearchBar
             selected={selected}
             filterName={filterName}
-            onFilterName={handleFilterByName}
+            onFilterName={onFilterByName}
             deleteContacts={deleteContacts}
           />
           {filteredContacts === null ? (
@@ -237,7 +264,7 @@ const ContactList = () => {
                     <TableBody>
                       <TableRow>
                         <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                          {/* <SearchNotFound searchQuery={filterName} /> */}
+                          <SearchNotFound searchQuery={filterName} />
                         </TableCell>
                       </TableRow>
                     </TableBody>
@@ -250,8 +277,8 @@ const ContactList = () => {
                 count={filteredContacts.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
+                onPageChange={onChangePage}
+                onRowsPerPageChange={onChangeRowsPerPage}
               />
             </Box>
           )}
