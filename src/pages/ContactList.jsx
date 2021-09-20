@@ -53,6 +53,17 @@ const ContactList = () => {
   const classes = useStyles(theme);
   const history = useHistory();
 
+  const deleteContact = (id) => {
+    const newContacts = contacts.filter((c) => c.contactId !== id);
+    setContacts(newContacts);
+  };
+
+  const deleteContacts = (ids) => {
+    const newContacts = contacts.filter((c) => !ids.includes(c.contactId));
+    setContacts(newContacts);
+    setSelected([]);
+  };
+
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -122,15 +133,16 @@ const ContactList = () => {
             component={RouterLink}
             to="#"
           >
-            New User
+            Add New Contact
           </Button>
         </Box>
 
         <Card>
           <SearchBar
-            numSelected={selected.length}
+            selected={selected}
             filterName={filterName}
             onFilterName={handleFilterByName}
+            deleteContacts={deleteContacts}
           />
           {filteredContacts === null ? (
             <Typography variant="subtitle2" noWrap>
@@ -207,7 +219,10 @@ const ContactList = () => {
                               17 August 2021
                             </TableCell>
                             <TableCell align="right">
-                              <MoreMenu />
+                              <MoreMenu
+                                contactId={contactId}
+                                deleteContact={deleteContact}
+                              />
                             </TableCell>
                           </TableRow>
                         );

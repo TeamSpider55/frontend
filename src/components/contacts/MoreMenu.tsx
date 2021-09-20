@@ -11,7 +11,12 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 
-const MoreMenu = () => {
+interface Props {
+  contactId: string;
+  deleteContact(id: string): void;
+}
+
+const MoreMenu = ({ contactId, deleteContact }: Props) => {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -23,6 +28,8 @@ const MoreMenu = () => {
 
       <Menu
         open={isOpen}
+        // this raises a warning when , because Material UI uses a
+        // deprecated method. Does not seem to affect usage.
         anchorEl={ref.current}
         onClose={() => setIsOpen(false)}
         PaperProps={
@@ -40,6 +47,7 @@ const MoreMenu = () => {
           <ListItemText
             primary="Delete"
             primaryTypographyProps={{ variant: 'body2' }}
+            onClick={() => deleteContact(contactId)}
           />
         </MenuItem>
 

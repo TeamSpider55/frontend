@@ -25,13 +25,23 @@ const SearchStyle = styled(OutlinedInput)(({ theme }) => ({
 }));
 
 interface Props {
-  numSelected: number;
+  selected: string[];
   filterName: string;
-  onFilterName: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> | undefined;
+  onFilterName: React.ChangeEventHandler<HTMLInputElement |
+    HTMLTextAreaElement> | undefined;
+  deleteContacts(ids: string[]): void;
 }
 
-export default function UserListToolbar({ numSelected, filterName, onFilterName }: Props) {
+const SearchBar = (
+  {
+    selected,
+    filterName,
+    onFilterName,
+    deleteContacts,
+  }: Props,
+) => {
   const theme = useTheme();
+
   return (
     <Box
       component={Toolbar}
@@ -40,9 +50,9 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName 
       justifyContent="space-between"
       padding={theme.spacing(0, 1, 0, 3)}
     >
-      {numSelected > 0 ? (
+      {selected.length > 0 ? (
         <Typography component="div" variant="subtitle1">
-          {`${numSelected} selected`}
+          {`${selected.length} selected`}
         </Typography>
       ) : (
         <SearchStyle
@@ -57,13 +67,17 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName 
         />
       )}
 
-      {numSelected > 0 ? (
+      {selected.length > 0 ? (
         <Tooltip title="Delete">
-          <IconButton>
+          <IconButton
+            onClick={() => deleteContacts(selected)}
+          >
             <DeleteIcon />
           </IconButton>
         </Tooltip>
       ) : null}
     </Box>
   );
-}
+};
+
+export default SearchBar;
