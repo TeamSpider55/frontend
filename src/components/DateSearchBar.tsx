@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTheme, styled } from '@material-ui/core/styles';
+import { useTheme, styled } from '@mui/material/styles';
 import {
   Box,
   Toolbar,
@@ -8,9 +8,12 @@ import {
   Typography,
   OutlinedInput,
   TextField,
-} from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
-import SearchIcon from '@material-ui/icons/Search';
+} from '@mui/material';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import DatePicker from '@mui/lab/DatePicker';
+import DeleteIcon from '@mui/icons-material/Delete';
+import SearchIcon from '@mui/icons-material/Search';
 
 const SearchStyle = styled(OutlinedInput)(({ theme }) => ({
   width: 240,
@@ -56,17 +59,39 @@ const DatePickerBar = (
           {`${selected.length} selected`}
         </Typography>
       ) : (
-        null
+        <Box display="flex" justifyContent="space-evenly">
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DatePicker
+              label="From"
+              value={value}
+              onChange={(newValue) => {
+                setValue(newValue);
+              }}
+              renderInput={(params) => <TextField {...params} />}
+            />
+            <DatePicker
+              label="To "
+              value={value}
+              onChange={(newValue) => {
+                setValue(newValue);
+              }}
+              renderInput={(params) => <TextField {...params} />}
+            />
+          </LocalizationProvider>
+        </Box>
       )}
 
       {selected.length > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton
-            onClick={() => deleteMany(selected)}
-          >
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
+        // FIXME: label this button Cancel event and change the icon
+        <Box>
+          <Tooltip title="Delete">
+            <IconButton
+              onClick={() => deleteMany(selected)}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        </Box>
       ) : null}
     </Box>
   );

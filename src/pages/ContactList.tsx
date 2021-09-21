@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { styled, useTheme, Theme } from '@mui/material/styles';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
 import {
   Card,
@@ -14,8 +15,7 @@ import {
   TableContainer,
   TablePagination,
   Box,
-} from '@material-ui/core';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+} from '@mui/material';
 import Page from '../components/Page';
 import ContactService from '../services/ContactService';
 import MoreMenu from '../components/MoreMenu';
@@ -25,10 +25,14 @@ import SearchNotFound from '../components/SearchNotFound';
 import getComparator from '../util/comparator';
 import { Contact } from '../dto/Contact';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    marginTop: theme.spacing(6),
+const StyledContainer = styled(Container)((
+  {
+    theme,
+  }: {
+    theme: Theme
   },
+) => ({
+  marginTop: theme.spacing(6),
 }));
 
 const TABLE_HEAD = [
@@ -75,7 +79,7 @@ const ContactList = () => {
   }, []);
 
   const theme = useTheme();
-  const classes = useStyles(theme);
+
   const history = useHistory();
 
   const deleteContact = (id: string) => {
@@ -157,7 +161,7 @@ const ContactList = () => {
 
   return (
     <Page title="Contacts - OneThread">
-      <Container className={classes.root}>
+      <StyledContainer theme={theme}>
         <Typography variant="h2">
           Contacts
         </Typography>
@@ -236,13 +240,10 @@ const ContactList = () => {
                                 <Box
                                   component={Typography}
                                   paddingLeft={2}
+                                  fontWeight="bold"
+                                  noWrap
                                 >
-                                  <Typography
-                                    variant="subtitle2"
-                                    noWrap
-                                  >
-                                    {name}
-                                  </Typography>
+                                  {name}
                                 </Box>
                               </Box>
                             </TableCell>
@@ -293,7 +294,7 @@ const ContactList = () => {
             </Box>
           )}
         </Card>
-      </Container>
+      </StyledContainer>
     </Page>
   );
 };

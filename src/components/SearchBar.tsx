@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTheme, styled } from '@material-ui/core/styles';
+import { useTheme, styled } from '@mui/material/styles';
 import {
   Box,
   Toolbar,
@@ -8,9 +8,9 @@ import {
   Typography,
   OutlinedInput,
   InputAdornment,
-} from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
-import SearchIcon from '@material-ui/icons/Search';
+} from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import SearchIcon from '@mui/icons-material/Search';
 
 const SearchStyle = styled(OutlinedInput)(({ theme }) => ({
   width: 240,

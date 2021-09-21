@@ -1,43 +1,64 @@
 import React from 'react';
+import { styled, Theme, useTheme } from '@mui/material/styles';
 import { Link } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import DashboardIcon from '@material-ui/icons/Dashboard';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-import ContactsIcon from '@material-ui/icons/Contacts';
-import NoteIcon from '@material-ui/icons/Note';
+import Drawer from '@mui/material/Drawer';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import ContactsIcon from '@mui/icons-material/Contacts';
+import NoteIcon from '@mui/icons-material/Note';
 import Logo from '../components/Logo';
 
+const PREFIX = 'DashboardLayout';
 const DRAWER_WIDTH = 240;
 
-const useStyles = makeStyles((theme) => ({
-  root: {
+const classes = {
+  root: `${PREFIX}-root`,
+  appBar: `${PREFIX}-appBar`,
+  drawer: `${PREFIX}-drawer`,
+  drawerPaper: `${PREFIX}-drawerPaper`,
+  drawerContainer: `${PREFIX}-drawerContainer`,
+  content: `${PREFIX}-content`,
+};
+
+const Root = styled('div')((
+  {
+    theme,
+  }: {
+    theme: Theme,
+  },
+) => ({
+  [`&.${classes.root}`]: {
     display: 'flex',
     minHeight: '100vh',
     backgroundColor: theme.palette.grey[200],
   },
-  appBar: {
+
+  [`& .${classes.appBar}`]: {
     zIndex: theme.zIndex.drawer + 1,
     backgroundColor: '#383736',
   },
-  drawer: {
+
+  [`& .${classes.drawer}`]: {
     width: DRAWER_WIDTH,
     flexShrink: 0,
   },
-  drawerPaper: {
+
+  [`& .${classes.drawerPaper}`]: {
     width: DRAWER_WIDTH,
   },
-  drawerContainer: {
+
+  [`& .${classes.drawerContainer}`]: {
     paddingTop: theme.spacing(8),
     overflow: 'auto',
   },
-  content: {
+
+  [`& .${classes.content}`]: {
     flexGrow: 1,
     padding: theme.spacing(5),
   },
@@ -88,10 +109,10 @@ interface Props {
 }
 
 const DashboardLayout = ({ children }: Props) => {
-  const classes = useStyles();
+  const theme = useTheme();
 
   return (
-    <div className={classes.root}>
+    <Root theme={theme} className={classes.root}>
       <AppBar position="fixed" className={classes.appBar}>
         <Toolbar>
           <Logo />
@@ -111,7 +132,7 @@ const DashboardLayout = ({ children }: Props) => {
       <main className={classes.content}>
         { children }
       </main>
-    </div>
+    </Root>
   );
 };
 

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { styled, useTheme, Theme } from '@mui/material/styles';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
 import {
   Card,
@@ -13,8 +14,7 @@ import {
   TableContainer,
   TablePagination,
   Box,
-} from '@material-ui/core';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+} from '@mui/material';
 import Page from '../components/Page';
 import EventService from '../services/EventService';
 import MoreMenu from '../components/MoreMenu';
@@ -23,6 +23,16 @@ import TableHeader from '../components/events/TableHeader';
 import SearchNotFound from '../components/SearchNotFound';
 import getComparator from '../util/comparator';
 import { Event } from '../dto/Event';
+
+const StyledContainer = styled(Container)((
+  {
+    theme,
+  }: {
+    theme: Theme
+  },
+) => ({
+  marginTop: theme.spacing(6),
+}));
 
 const DATE_FORMAT = new Intl.DateTimeFormat(
   'en-AU',
@@ -40,12 +50,6 @@ const TIME_FORMAT = new Intl.DateTimeFormat(
     minute: '2-digit',
   },
 );
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    marginTop: theme.spacing(6),
-  },
-}));
 
 const TABLE_HEAD = [
   { id: 'title', label: 'Title', alignRight: false },
@@ -88,7 +92,7 @@ const EventList = () => {
   }, []);
 
   const theme = useTheme();
-  const classes = useStyles(theme);
+
   const history = useHistory();
 
   const deleteEvent = (id: string) => {
@@ -170,7 +174,7 @@ const EventList = () => {
 
   return (
     <Page title="Schedule - OneThread">
-      <Container className={classes.root}>
+      <StyledContainer theme={theme}>
         <Typography variant="h2">
           Schedule
         </Typography>
@@ -249,13 +253,10 @@ const EventList = () => {
                                 <Box
                                   component={Typography}
                                   paddingLeft={2}
+                                  fontWeight="bold"
+                                  noWrap
                                 >
-                                  <Typography
-                                    variant="subtitle2"
-                                    noWrap
-                                  >
-                                    {title}
-                                  </Typography>
+                                  {title}
                                 </Box>
                               </Box>
                             </TableCell>
@@ -310,7 +311,7 @@ const EventList = () => {
             </Box>
           )}
         </Card>
-      </Container>
+      </StyledContainer>
     </Page>
   );
 };
