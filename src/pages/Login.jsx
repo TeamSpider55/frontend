@@ -67,16 +67,14 @@ const Login = () => {
             label="Email Address"
             variant="outlined"
             type="email"
-            InputLabelProps={{ required: false }}
-            required
+            // FIXME: required field
           />
           <TextField
             className={classes.formRow}
             label="Password"
             variant="outlined"
             type="password"
-            InputLabelProps={{ required: false }}
-            required
+            // FIXME: required field
           />
           <Button
             className={classes.formButton}
