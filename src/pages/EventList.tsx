@@ -3,7 +3,6 @@ import { Link as RouterLink, useHistory } from 'react-router-dom';
 import {
   Card,
   Table,
-  Avatar,
   Button,
   Checkbox,
   TableRow,
@@ -19,11 +18,28 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Page from '../components/Page';
 import EventService from '../services/EventService';
 import MoreMenu from '../components/MoreMenu';
-import SearchBar from '../components/SearchBar';
-import TableHeader from '../components/contacts/TableHeader';
+import DateSearchBar from '../components/DateSearchBar';
+import TableHeader from '../components/events/TableHeader';
 import SearchNotFound from '../components/SearchNotFound';
 import getComparator from '../util/comparator';
 import { Event } from '../dto/Event';
+
+const DATE_FORMAT = new Intl.DateTimeFormat(
+  'en-AU',
+  {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  },
+);
+
+const TIME_FORMAT = new Intl.DateTimeFormat(
+  'en-AU',
+  {
+    hour: '2-digit',
+    minute: '2-digit',
+  },
+);
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -169,7 +185,7 @@ const EventList = () => {
           </Button>
         </Box>
         <Card>
-          <SearchBar
+          <DateSearchBar
             selected={selected}
             filter={filterName}
             onFilter={onFilterByName}
@@ -244,10 +260,17 @@ const EventList = () => {
                               </Box>
                             </TableCell>
                             <TableCell onClick={() => goToEvent('1')}>
-                              Apple
+                              <Box>
+                                {DATE_FORMAT.format(start)}
+                              </Box>
+                              <Box>
+                                {TIME_FORMAT.format(start)}
+                                {' - '}
+                                {TIME_FORMAT.format(end)}
+                              </Box>
                             </TableCell>
                             <TableCell onClick={() => goToEvent('1')}>
-                              Software Engineer
+                              {contacts.length}
                             </TableCell>
                             <TableCell align="right">
                               <MoreMenu
