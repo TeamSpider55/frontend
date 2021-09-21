@@ -2,6 +2,7 @@ import React from 'react';
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import DashboardLayout from './layouts/DashboardLayout';
 import ContactDetail from './pages/ContactDetail';
+import ForgotPassword from './pages/ForgotPassword';
 import PageNotFound from './pages/PageNotFound';
 import ThemeConfig from './theme';
 
@@ -29,6 +30,9 @@ function App() {
             <DashboardLayout>
               <ContactDetail />
             </DashboardLayout>
+          </Route>
+          <Route path="/forgot-password">
+            <ForgotPassword />
           </Route>
           <Route path="/memos">
             <DashboardLayout>
