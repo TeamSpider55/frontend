@@ -3,6 +3,7 @@ import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import DashboardLayout from './layouts/DashboardLayout';
 import ContactDetail from './pages/ContactDetail';
 import PageNotFound from './pages/PageNotFound';
+import ResetPassword from './pages/ResetPassword';
 import ThemeConfig from './theme';
 
 function App() {
@@ -34,6 +35,9 @@ function App() {
             <DashboardLayout>
               <PageNotFound />
             </DashboardLayout>
+          </Route>
+          <Route path="/reset-password">
+            <ResetPassword />
           </Route>
           <Route>
             {/* matches any other route: page for 404 error */}
