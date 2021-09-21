@@ -17,13 +17,13 @@ import {
 } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Page from '../components/Page';
-import ContactService from '../services/ContactService';
+import EventService from '../services/EventService';
 import MoreMenu from '../components/MoreMenu';
 import SearchBar from '../components/SearchBar';
 import TableHeader from '../components/contacts/TableHeader';
 import SearchNotFound from '../components/SearchNotFound';
 import getComparator from '../util/comparator';
-import { Contact } from '../dto/Contact';
+import { Event } from '../dto/Event';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,10 +32,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const TABLE_HEAD = [
-  { id: 'givenName', label: 'Name', alignRight: false },
-  { id: 'organisation', label: 'Organisation', alignRight: false },
-  { id: 'role', label: 'Role', alignRight: false },
-  { id: 'dateAdded', label: 'Date Added', alignRight: false },
+  { id: 'title', label: 'Title', alignRight: false },
+  { id: 'time', label: 'Time', alignRight: false },
+  { id: 'contacts', label: 'Participants', alignRight: false },
 ];
 
 const applySortFilter = (array: any, comparator: any, query: string) => {
@@ -47,47 +46,45 @@ const applySortFilter = (array: any, comparator: any, query: string) => {
     return a[1] - b[1];
   });
   if (query) {
-    return array.filter((contact: Contact) => {
-      const fullName = `${contact.givenName} ${contact.familyName}`
-        .toLowerCase();
-      return fullName.indexOf(query.toLowerCase()) !== -1;
+    return array.filter((event: Event) => {
+      return event.title.indexOf(query.toLowerCase()) !== -1;
     });
   }
   return stabilizedArray.map((el: [any, number]) => el[0]);
 };
 
-const ContactList = () => {
+const EventList = () => {
   const [page, setPage] = useState(0);
   const [selected, setSelected] = useState<string[]>([]);
   const [order, setOrder] = useState<'asc'|'desc'>('asc');
-  const [orderBy, setOrderBy] = useState('givenName');
+  const [orderBy, setOrderBy] = useState('title');
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const [contacts, setContacts] = useState<Contact[] | null>(null);
+  const [events, setEvents] = useState<Event[] | null>(null);
   const [filterName, setFilterName] = useState('');
 
-  const fetchContacts = async () => {
-    setContacts(await ContactService.getContacts());
+  const fetchEvents = async () => {
+    setEvents(await EventService.getEvents());
   };
 
   useEffect(() => {
-    fetchContacts();
+    fetchEvents();
   }, []);
 
   const theme = useTheme();
   const classes = useStyles(theme);
   const history = useHistory();
 
-  const deleteContact = (id: string) => {
-    if (contacts === null) return;
-    const newContacts = contacts.filter((c) => c.contactId !== id);
-    setContacts(newContacts);
+  const deleteEvent = (id: string) => {
+    if (events === null) return;
+    const newEvents = events.filter((e) => e.eventId !== id);
+    setEvents(newEvents);
   };
 
-  const deleteContacts = (ids: string[]) => {
-    if (contacts === null) return;
-    const newContacts = contacts?.filter((c) => !ids.includes(c.contactId));
-    setContacts(newContacts);
+  const deleteEvents = (ids: string[]) => {
+    if (events === null) return;
+    const newEvents = events?.filter((e) => !ids.includes(e.eventId));
+    setEvents(newEvents);
     setSelected([]);
   };
 
@@ -98,10 +95,10 @@ const ContactList = () => {
   };
 
   const handleSelectAllClick = () => {
-    if (contacts === null) return;
+    if (events === null) return;
     if (selected.length === 0) {
       // select all
-      const newSelecteds = contacts.map((n) => n.contactId);
+      const newSelecteds = events.map((n) => n.eventId);
       setSelected(newSelecteds);
       return;
     }
@@ -139,27 +136,27 @@ const ContactList = () => {
     setPage(0);
   };
 
-  const goToContact = (id: string) => {
-    history.push(`/contacts/${id}`);
+  const goToEvent = (id: string) => {
+    history.push(`/event/${id}`);
   };
 
   let emptyRows = null;
-  let filteredContacts = null;
-  if (contacts !== null) {
-    filteredContacts = applySortFilter(
-      contacts,
+  let filteredEvents = null;
+  if (events !== null) {
+    filteredEvents = applySortFilter(
+      events,
       getComparator(order, orderBy),
       filterName,
     );
     emptyRows = page > 0
-      ? Math.max(0, (1 + page) * rowsPerPage - contacts.length) : 0;
+      ? Math.max(0, (1 + page) * rowsPerPage - events.length) : 0;
   }
 
   return (
-    <Page title="Contacts - OneThread">
+    <Page title="Schedule - OneThread">
       <Container className={classes.root}>
         <Typography variant="h2">
-          Contacts
+          Schedule
         </Typography>
         <Box textAlign="right" paddingY={2}>
           <Button
@@ -168,7 +165,7 @@ const ContactList = () => {
             component={RouterLink}
             to="#"
           >
-            Add New Contact
+            Add New Event
           </Button>
         </Box>
         <Card>
@@ -176,9 +173,9 @@ const ContactList = () => {
             selected={selected}
             filter={filterName}
             onFilter={onFilterByName}
-            deleteMany={deleteContacts}
+            deleteMany={deleteEvents}
           />
-          {filteredContacts === null ? (
+          {filteredEvents === null ? (
             <Typography variant="subtitle2" noWrap>
               Loading
             </Typography>
@@ -190,31 +187,32 @@ const ContactList = () => {
                     order={order}
                     orderBy={orderBy}
                     headLabel={TABLE_HEAD}
-                    rowCount={filteredContacts.length}
+                    rowCount={filteredEvents.length}
                     numSelected={selected.length}
                     onRequestSort={handleRequestSort}
                     onSelectAllClick={handleSelectAllClick}
                   />
                   <TableBody>
-                    {filteredContacts
+                    {filteredEvents
                       .slice(
                         page * rowsPerPage,
                         page * rowsPerPage + rowsPerPage,
                       )
-                      .map((row: Contact) => {
+                      .map((row: Event) => {
                         const
                           {
-                            contactId,
-                            givenName,
-                            familyName,
+                            eventId,
+                            title,
+                            start,
+                            end,
+                            contacts,
                           } = row;
-                        const name = `${givenName} ${familyName}`;
-                        const isItemSelected = selected.indexOf(contactId) !== -1;
+                        const isItemSelected = selected.indexOf(eventId) !== -1;
 
                         return (
                           <TableRow
                             hover
-                            key={contactId}
+                            key={eventId}
                             tabIndex={-1}
                             role="checkbox"
                             selected={isItemSelected}
@@ -223,16 +221,15 @@ const ContactList = () => {
                             <TableCell padding="checkbox">
                               <Checkbox
                                 checked={isItemSelected}
-                                onChange={(event) => handleClick(event, contactId)}
+                                onChange={(event) => handleClick(event, eventId)}
                               />
                             </TableCell>
                             <TableCell
                               component="th"
                               scope="row"
-                              onClick={() => goToContact('1')}
+                              onClick={() => goToEvent('1')}
                             >
                               <Box display="flex" alignItems="center">
-                                <Avatar alt={name} src="#FIXME: URL" />
                                 <Box
                                   component={Typography}
                                   paddingLeft={2}
@@ -241,24 +238,21 @@ const ContactList = () => {
                                     variant="subtitle2"
                                     noWrap
                                   >
-                                    {name}
+                                    {title}
                                   </Typography>
                                 </Box>
                               </Box>
                             </TableCell>
-                            <TableCell onClick={() => goToContact('1')}>
+                            <TableCell onClick={() => goToEvent('1')}>
                               Apple
                             </TableCell>
-                            <TableCell onClick={() => goToContact('1')}>
+                            <TableCell onClick={() => goToEvent('1')}>
                               Software Engineer
-                            </TableCell>
-                            <TableCell onClick={() => goToContact('1')}>
-                              17 August 2021
                             </TableCell>
                             <TableCell align="right">
                               <MoreMenu
-                                id={contactId}
-                                deleteOne={deleteContact}
+                                id={eventId}
+                                deleteOne={deleteEvent}
                               />
                             </TableCell>
                           </TableRow>
@@ -270,7 +264,7 @@ const ContactList = () => {
                       </TableRow>
                     ) : null}
                   </TableBody>
-                  {filteredContacts.length === 0 && (
+                  {filteredEvents.length === 0 && (
                     <TableBody>
                       <TableRow>
                         <TableCell align="center" colSpan={6}>
@@ -284,7 +278,7 @@ const ContactList = () => {
               <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={filteredContacts.length}
+                count={filteredEvents.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={onChangePage}
@@ -298,4 +292,4 @@ const ContactList = () => {
   );
 };
 
-export default ContactList;
+export default EventList;

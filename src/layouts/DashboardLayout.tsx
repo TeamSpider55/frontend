@@ -50,9 +50,9 @@ const sidebarItems = [
     to: '/dashboard',
   },
   {
-    text: 'Calendar',
+    text: 'Schedule',
     icon: <CalendarTodayIcon />,
-    to: '/calendar',
+    to: '/events',
   },
   {
     text: 'Contacts',
