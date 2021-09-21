@@ -38,9 +38,8 @@ function App() {
             </DashboardLayout>
           </Route>
           <Route path="/account">
-            <HeaderBarLayout>
-              <Account />
-            </HeaderBarLayout>
+            <HeaderBarLayout />
+            <Account />
           </Route>
           <Route>
             {/* matches any other route: page for 404 error */}

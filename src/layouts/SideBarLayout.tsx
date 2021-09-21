@@ -76,7 +76,7 @@ const SideBarLayout = () => {
   const classes = useStyles();
 
   return (
-    <div className={classes.root}>
+    <>
       <Drawer
         className={classes.drawer}
         variant="permanent"
@@ -88,7 +88,7 @@ const SideBarLayout = () => {
           <SidebarContent />
         </div>
       </Drawer>
-    </div>
+    </>
   );
 };
 

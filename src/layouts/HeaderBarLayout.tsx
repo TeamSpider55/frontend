@@ -20,13 +20,13 @@ const HeaderBarLayout = () => {
   const classes = useStyles();
 
   return (
-    <div className={classes.root}>
+    <>
       <AppBar position="fixed" className={classes.appBar}>
         <Toolbar>
           <Logo />
         </Toolbar>
       </AppBar>
-    </div>
+    </>
   );
 };
 
