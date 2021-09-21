@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import EditIcon from '@material-ui/icons/Edit';
 import DoneIcon from '@material-ui/icons/Done';
 import ClearIcon from '@material-ui/icons/Clear';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
 import { Link } from 'react-router-dom';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   contactsButtonWrapper: {
     display: 'block',
     marginTop: '5%',
@@ -20,9 +20,9 @@ const useStyles = makeStyles(() => ({
     fontSize: '36px',
   },
   contactDetail: {
-    display: 'block',
-    height: 'fit-content',
-    width: 'fit-content',
+    display: 'inline-block',
+    height: '75%',
+    width: '45%',
     top: '30%',
     right: '50%',
     left: '20%',
@@ -30,7 +30,7 @@ const useStyles = makeStyles(() => ({
     marginBottom: '32px',
     borderRadius: '5px',
     boxShadow: '0 2px 3px rgb(0 0 0 / 0.2)',
-    backgroundColor: 'white',
+    backgroundColor: theme.palette.background.default,
   },
   imgNameWrapper: {
     display: 'flex',
@@ -124,11 +124,33 @@ const useStyles = makeStyles(() => ({
     marginLeft: '8px',
     marginRight: '8px',
   },
+  contactTimeline: {
+    display: 'inline-block',
+    verticalAlign: 'top',
+    height: '75%',
+    width: '45%',
+    top: '30%',
+    right: '50%',
+    left: '20%',
+    marginTop: '5%',
+    marginLeft: '5%',
+    marginBottom: '32px',
+    borderRadius: '5px',
+    boxShadow: '0 2px 3px rgb(0 0 0 / 0.2)',
+    backgroundColor: theme.palette.background.default,
+  },
+  timelineTitle: {
+    margin: '32px 48px',
+    fontWeight: 'bolder',
+    fontSize: '40px',
+    color: theme.palette.primary.dark,
+  },
 
 }));
 
 const ContactDetail = () => {
-  const classes = useStyles();
+  const theme = useTheme();
+  const classes = useStyles(theme);
   const [editModeOn, setEditModeOn] = useState(false);
   const [phone, setPhone] = useState('');
   const [occupation, setOccupation] = useState('');
@@ -181,7 +203,7 @@ const ContactDetail = () => {
         <div className={classes.imgNameWrapper}>
           <div className={classes.contactImgWrapper}>
             <img
-              src="https://images.unsplash.com/photo-1584673392125-f91e13c6a3cb?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80"
+              src=""
               alt="Unknown"
             />
           </div>
@@ -247,7 +269,14 @@ const ContactDetail = () => {
           </div>
           <textarea id="description" rows="5" readOnly={!editModeOn} />
         </div>
+      </div>
 
+      <div className={classes.contactTimeline}>
+        <div>
+          <div className={classes.timelineTitle}>
+            Timeline
+          </div>
+        </div>
       </div>
     </>
   );
