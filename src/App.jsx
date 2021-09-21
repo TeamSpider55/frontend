@@ -1,6 +1,8 @@
 import React from 'react';
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import DashboardLayout from './layouts/DashboardLayout';
+import HeaderBarLayout from './layouts/HeaderBarLayout';
+import Account from './pages/Account';
 import ContactDetail from './pages/ContactDetail';
 import PageNotFound from './pages/PageNotFound';
 import ThemeConfig from './theme';
@@ -34,6 +36,11 @@ function App() {
             <DashboardLayout>
               <PageNotFound />
             </DashboardLayout>
+          </Route>
+          <Route path="/account">
+            <HeaderBarLayout>
+              <Account />
+            </HeaderBarLayout>
           </Route>
           <Route>
             {/* matches any other route: page for 404 error */}
