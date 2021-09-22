@@ -1,3 +1,6 @@
+// TODO: add organisation, role, date added, imageURL, once backend
+// accomodates
+
 export interface Contact {
   contactId: string;
   nickName: string;
