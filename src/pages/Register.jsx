@@ -1,0 +1,122 @@
+import React from 'react';
+import {
+  Button, Box, TextField, Link,
+} from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
+import { makeStyles } from '@mui/styles';
+import { useTheme } from '@mui/material/styles';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import Logo from '../components/Logo';
+import SpiderIcon from '../assets/spider1.png';
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    minHeight: '100vh',
+    backgroundColor: theme.palette.background.neutral,
+  },
+  signInLink: {
+    textAlign: 'right',
+    padding: theme.spacing(2),
+  },
+  formContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  form: {
+    display: 'flex',
+    flexDirection: 'column',
+    minWidth: '30%',
+  },
+  formRow: {
+    marginTop: '0.5rem',
+    marginBottom: '0.5rem',
+    backgroundColor: theme.palette.grey[0],
+  },
+  textField: {
+    backgroundColor: theme.palette.grey[0],
+  },
+  splitRow: {
+    marginTop: '0.5rem',
+    marginBottom: '0.5rem',
+    display: 'flex',
+  },
+  formButton: {
+    marginTop: '0.5rem',
+    marginBottom: '0.5rem',
+  },
+}));
+
+const Register = () => {
+  const theme = useTheme();
+  const classes = useStyles(theme);
+
+  return (
+    <Box className={classes.root}>
+      <Box className={classes.signInLink}>
+        Already have an account?
+        {' '}
+        <Link component={RouterLink} to="/login">
+          <Box display="inline" fontWeight={theme.typography.fontWeightBold}>
+            Sign in
+          </Box>
+        </Link>
+      </Box>
+      <Box className={classes.formContainer}>
+        <Box className={classes.form}>
+          <Box textAlign="center" paddingBottom={theme.spacing(1)}>
+            <img src={SpiderIcon} alt="spider" width="100" height="100" />
+            <Logo />
+          </Box>
+          <TextField
+            className={classes.formRow}
+            label="Username"
+            variant="outlined"
+          />
+          <TextField
+            className={classes.formRow}
+            label="Email Address"
+            variant="outlined"
+            type="email"
+          />
+          <Box className={classes.splitRow}>
+            <Box marginRight="0.5rem">
+              <TextField
+                className={classes.textField}
+                label="Given Name"
+                variant="outlined"
+              />
+            </Box>
+            <TextField
+              className={classes.textField}
+              label="Family Name"
+              variant="outlined"
+            />
+          </Box>
+          <TextField
+            className={classes.formRow}
+            label="Password"
+            variant="outlined"
+            type="password"
+          />
+          <TextField
+            className={classes.formRow}
+            label="Confirm Password"
+            variant="outlined"
+            type="password"
+          />
+          <Button
+            className={classes.formButton}
+            variant="contained"
+            color="primary"
+          >
+            <ExitToAppIcon />
+            Register
+          </Button>
+        </Box>
+      </Box>
+    </Box>
+  );
+};
+
+export default Register;

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import EditIcon from '@mui/icons-material/Edit';
 import DoneIcon from '@mui/icons-material/Done';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -26,7 +26,7 @@ const classes = {
   clearIcon: `${PREFIX}-clearIcon`,
 };
 
-const Root = styled('div')(() => ({
+const Root = styled('div')(({ theme }) => ({
   [`& .${classes.contactsButtonWrapper}`]: {
     display: 'block',
     marginTop: '5%',
@@ -52,7 +52,7 @@ const Root = styled('div')(() => ({
     marginBottom: '32px',
     borderRadius: '5px',
     boxShadow: '0 2px 3px rgb(0 0 0 / 0.2)',
-    backgroundColor: 'white',
+    backgroundColor: theme.palette.background.default,
   },
 
   [`& .${classes.imgNameWrapper}`]: {
@@ -192,8 +192,10 @@ const ContactDetail = () => {
     setEditModeOn(false);
   };
 
+  const theme = useTheme();
+
   return (
-    <Root>
+    <Root theme={theme}>
       <div className={classes.contactsButtonWrapper}>
         <Link to="/contacts">
           <Button className={classes.contactsButton}>
@@ -211,7 +213,7 @@ const ContactDetail = () => {
         <div className={classes.imgNameWrapper}>
           <div className={classes.contactImgWrapper}>
             <img
-              src="https://images.unsplash.com/photo-1584673392125-f91e13c6a3cb?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80"
+              src=""
               alt="Unknown"
             />
           </div>
@@ -277,7 +279,14 @@ const ContactDetail = () => {
           </div>
           <textarea id="description" rows="5" readOnly={!editModeOn} />
         </div>
+      </div>
 
+      <div className={classes.contactTimeline}>
+        <div>
+          <div className={classes.timelineTitle}>
+            Timeline
+          </div>
+        </div>
       </div>
     </Root>
   );
