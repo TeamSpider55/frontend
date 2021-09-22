@@ -16,45 +16,11 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'row',
   },
-  contactImgWrapper: {
-    display: 'block',
-    height: '144px',
-    width: '144px',
-    marginLeft: theme.spacing(6),
-    '& img': {
-      height: '100%',
-      width: '100%',
-      borderRadius: '10px',
-    },
-  },
-  detailLabelWrapper: {
-    display: 'inline-block',
-    marginLeft: theme.spacing(-6),
-    marginRight: theme.spacing(1),
-    textAlign: 'right',
-    width: 'fit-content',
-    '& div': {
-      marginTop: theme.spacing(1.25),
-      marginBottom: theme.spacing(1.25),
-      fontWeight: 'bold',
-    },
-  },
-  detailWrapper: {
-    display: 'inline-block',
-    left: 'auto',
-    right: '0',
-    marginLeft: theme.spacing(2),
-    verticalAlign: 'top',
-    '& input': {
-      margin: theme.spacing(0.75),
-      padding: theme.spacing(0),
-    },
-  },
   changePasswordLink: {
     textAlign: 'right',
-    paddingTop: theme.spacing(1),
+    paddingTop: theme.spacing(0),
     paddingRight: theme.spacing(0),
-    paddingBottom: theme.spacing(3),
+    paddingBottom: theme.spacing(2),
   },
   formContainer: {
     display: 'flex',
@@ -63,24 +29,37 @@ const useStyles = makeStyles((theme) => ({
   },
   form: {
     display: 'flex',
-    flexDirection: 'row',
+    flexDirection: 'column',
+    marginBottom: theme.spacing(6),
   },
   textField: {
+    display: 'inline-block',
     backgroundColor: theme.palette.grey[0],
-    marginTop: theme.spacing(1.45),
     borderRadius: '5px',
-    width: '100%',
+    left: 'auto',
+    right: 0,
+    '& input': {
+      // margin: theme.spacing(1),
+      padding: theme.spacing(0),
+    },
   },
-  buttonContainer: {
+  splitRow: {
     display: 'flex',
-    flexDirection: 'column',
-    minWidth: '20%',
-    marginBottom: theme.spacing(6),
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
   },
   formButton: {
     marginTop: theme.spacing(1.25),
     marginBottom: theme.spacing(1.25),
-    width: '100%',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    width: '90%',
+  },
+  formLabel: {
+    textAlign: 'right',
+    fontWeight: theme.typography.fontWeightBold,
+    marginLeft: 'auto',
+    marginRight: theme.spacing(3),
   },
 }));
 
@@ -97,86 +76,78 @@ const Account = () => {
         </Box>
         <Box className={classes.formContainer}>
           <Box className={classes.form}>
-            <Box className={classes.detailLabelWrapper}>
-              <Box>Email</Box>
-              <Box>Phone Number</Box>
-              <Box>Location</Box>
-              <Box>Given Name</Box>
-              <Box>Middle Name</Box>
-              <Box>Family Name</Box>
-              <Box>Nickname</Box>
-              <Box>Password</Box>
-            </Box>
-            <Box className={classes.detailWrapper}>
-              <Box>
-                <TextField
-                  className={classes.textField}
-                  variant="standard"
-                  defaultValue="Exmaple1"
-                  style={{ 'background-color': theme.palette.grey[200] }}
-                  inputProps={
-                    {
-                      readOnly: true,
-                    }
+            <Box className={classes.splitRow}>
+              <Box className={classes.formLabel}>Email</Box>
+              <TextField
+                className={classes.textField}
+                variant="standard"
+                defaultValue="Exmaple1"
+                style={{ 'background-color': theme.palette.grey[200] }}
+                inputProps={
+                  {
+                    readOnly: true,
                   }
-                />
-              </Box>
-              <Box>
-                <TextField
-                  className={classes.textField}
-                  variant="outlined"
-                />
-              </Box>
-              <Box>
-                <TextField
-                  className={classes.textField}
-                  variant="outlined"
-                />
-              </Box>
-              <Box>
-                <TextField
-                  className={classes.textField}
-                  variant="outlined"
-                />
-              </Box>
-              <Box>
-                <TextField
-                  className={classes.textField}
-                  variant="outlined"
-                />
-              </Box>
-              <Box>
-                <TextField
-                  className={classes.textField}
-                  variant="outlined"
-                />
-              </Box>
-              <Box>
-                <TextField
-                  className={classes.textField}
-                  variant="outlined"
-                />
-              </Box>
-              <Box>
-                <TextField
-                  className={classes.textField}
-                  variant="outlined"
-                />
-              </Box>
-              <Box className={classes.changePasswordLink}>
-                {' '}
-                <Link component={RouterLink} to="/forgot-password">
-                  <Box display="inline" style={{ 'text-decoration': 'underline' }} fontWeight={theme.typography.fontWeightRegular} fontSize={theme.typography.caption.fontSize} color={theme.palette.common.black}>
-                    Change password
-                  </Box>
-                </Link>
-              </Box>
+                }
+              />
             </Box>
-          </Box>
-        </Box>
-        <Box className={classes.formContainer}>
-          <Box className={classes.buttonContainer}>
-
+            <Box className={classes.splitRow}>
+              <Box className={classes.formLabel}>Phone Number</Box>
+              <TextField
+                className={classes.textField}
+                variant="outlined"
+                inputProps={{ maxLength: 12 }}
+              />
+            </Box>
+            <Box className={classes.splitRow}>
+              <Box className={classes.formLabel}>Location</Box>
+              <TextField
+                className={classes.textField}
+                variant="outlined"
+              />
+            </Box>
+            <Box className={classes.splitRow}>
+              <Box className={classes.formLabel}>Given Name</Box>
+              <TextField
+                className={classes.textField}
+                variant="outlined"
+              />
+            </Box>
+            <Box className={classes.splitRow}>
+              <Box className={classes.formLabel}>Middle Name</Box>
+              <TextField
+                className={classes.textField}
+                variant="outlined"
+              />
+            </Box>
+            <Box className={classes.splitRow}>
+              <Box className={classes.formLabel}>Family Name</Box>
+              <TextField
+                className={classes.textField}
+                variant="outlined"
+              />
+            </Box>
+            <Box className={classes.splitRow}>
+              <Box className={classes.formLabel}>Nickname</Box>
+              <TextField
+                className={classes.textField}
+                variant="outlined"
+              />
+            </Box>
+            <Box className={classes.splitRow}>
+              <Box className={classes.formLabel}>Password</Box>
+              <TextField
+                className={classes.textField}
+                variant="outlined"
+              />
+            </Box>
+            <Box className={classes.changePasswordLink}>
+              {' '}
+              <Link component={RouterLink} to="/forgot-password">
+                <Box display="inline" style={{ 'text-decoration': 'underline' }} fontWeight={theme.typography.fontWeightRegular} fontSize={theme.typography.caption.fontSize} color={theme.palette.common.black}>
+                  Change password
+                </Box>
+              </Link>
+            </Box>
             <Button
               className={classes.formButton}
               variant="contained"
