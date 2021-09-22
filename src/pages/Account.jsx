@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.grey[200],
   },
   imgNameWrapper: {
-    marginTop: '128px',
+    marginTop: theme.spacing(16),
     display: 'flex',
     flexDirection: 'row',
   },
@@ -20,32 +20,22 @@ const useStyles = makeStyles((theme) => ({
     display: 'block',
     height: '144px',
     width: '144px',
-    marginLeft: '48px',
+    marginLeft: theme.spacing(6),
     '& img': {
       height: '100%',
       width: '100%',
       borderRadius: '10px',
     },
   },
-  contactName: {
-    margin: '0 32px',
-    fontWeight: 'bolder',
-    fontSize: '32px',
-  },
-  contactInfo: {
-    margin: '0 32px',
-    fontSize: '16px',
-  },
   detailLabelWrapper: {
     display: 'inline-block',
-    marginLeft: '-48px',
-    marginTop: '24px',
-    marginRight: '8px',
+    marginLeft: theme.spacing(-6),
+    marginRight: theme.spacing(1),
     textAlign: 'right',
     width: 'fit-content',
     '& div': {
-      marginTop: '0.5em',
-      marginBottom: '0.5em',
+      marginTop: theme.spacing(1.25),
+      marginBottom: theme.spacing(1.25),
       fontWeight: 'bold',
     },
   },
@@ -53,22 +43,17 @@ const useStyles = makeStyles((theme) => ({
     display: 'inline-block',
     left: 'auto',
     right: '0',
-    marginTop: '24px',
-    marginLeft: '16px',
+    marginLeft: theme.spacing(2),
     verticalAlign: 'top',
     '& input': {
-      fontFamily: 'Cairo',
-      fontWeight: 'lighter',
-      padding: '0',
-      marginTop: '0.25em',
-      marginBottom: '0.25em',
-      resize: 'none',
+      margin: theme.spacing(0.75),
+      padding: theme.spacing(0),
     },
   },
   changePasswordLink: {
     textAlign: 'right',
     paddingTop: theme.spacing(1),
-    paddingRight: '0px',
+    paddingRight: theme.spacing(0),
     paddingBottom: theme.spacing(3),
   },
   formContainer: {
@@ -80,14 +65,9 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'row',
   },
-  formRow: {
-    marginTop: '0.5rem',
-    marginBottom: '0.5rem',
-    backgroundColor: theme.palette.grey[0],
-  },
   textField: {
     backgroundColor: theme.palette.grey[0],
-    marginTop: '0.68em',
+    marginTop: theme.spacing(1.45),
     borderRadius: '5px',
     width: '100%',
   },
@@ -95,10 +75,11 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     minWidth: '20%',
+    marginBottom: theme.spacing(6),
   },
   formButton: {
-    marginTop: '0.5rem',
-    marginBottom: '0.5rem',
+    marginTop: theme.spacing(1.25),
+    marginBottom: theme.spacing(1.25),
     width: '100%',
   },
 }));
@@ -117,20 +98,22 @@ const Account = () => {
         <Box className={classes.formContainer}>
           <Box className={classes.form}>
             <Box className={classes.detailLabelWrapper}>
-              <div>Email</div>
-              <div>Phone Number</div>
-              <div>Location</div>
-              <div>Given Name</div>
-              <div>Middle Name</div>
-              <div>Family Name</div>
-              <div>Nickname</div>
-              <div>Password</div>
+              <Box>Email</Box>
+              <Box>Phone Number</Box>
+              <Box>Location</Box>
+              <Box>Given Name</Box>
+              <Box>Middle Name</Box>
+              <Box>Family Name</Box>
+              <Box>Nickname</Box>
+              <Box>Password</Box>
             </Box>
             <Box className={classes.detailWrapper}>
               <Box>
                 <TextField
                   className={classes.textField}
-                  variant="outlined"
+                  variant="standard"
+                  defaultValue="Exmaple1"
+                  style={{ 'background-color': theme.palette.grey[200] }}
                   inputProps={
                     {
                       readOnly: true,
