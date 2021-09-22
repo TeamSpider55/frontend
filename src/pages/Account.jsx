@@ -36,15 +36,10 @@ const useStyles = makeStyles((theme) => ({
     display: 'inline-block',
     backgroundColor: theme.palette.grey[0],
     borderRadius: '5px',
-    left: 'auto',
-    right: 0,
-    '& input': {
-      // margin: theme.spacing(1),
-      padding: theme.spacing(0),
-    },
   },
   splitRow: {
     display: 'flex',
+    alignItems: 'center',
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1),
   },
@@ -80,9 +75,11 @@ const Account = () => {
               <Box className={classes.formLabel}>Email</Box>
               <TextField
                 className={classes.textField}
-                variant="standard"
-                defaultValue="Exmaple1"
+                variant="outlined"
+                defaultValue="example@gmail.com"
+                size="small"
                 style={{ 'background-color': theme.palette.grey[200] }}
+                disabled
                 inputProps={
                   {
                     readOnly: true,
@@ -95,6 +92,7 @@ const Account = () => {
               <TextField
                 className={classes.textField}
                 variant="outlined"
+                size="small"
                 inputProps={{ maxLength: 12 }}
               />
             </Box>
@@ -103,6 +101,7 @@ const Account = () => {
               <TextField
                 className={classes.textField}
                 variant="outlined"
+                size="small"
               />
             </Box>
             <Box className={classes.splitRow}>
@@ -110,6 +109,7 @@ const Account = () => {
               <TextField
                 className={classes.textField}
                 variant="outlined"
+                size="small"
               />
             </Box>
             <Box className={classes.splitRow}>
@@ -117,6 +117,7 @@ const Account = () => {
               <TextField
                 className={classes.textField}
                 variant="outlined"
+                size="small"
               />
             </Box>
             <Box className={classes.splitRow}>
@@ -124,6 +125,7 @@ const Account = () => {
               <TextField
                 className={classes.textField}
                 variant="outlined"
+                size="small"
               />
             </Box>
             <Box className={classes.splitRow}>
@@ -131,6 +133,7 @@ const Account = () => {
               <TextField
                 className={classes.textField}
                 variant="outlined"
+                size="small"
               />
             </Box>
             <Box className={classes.splitRow}>
@@ -138,12 +141,19 @@ const Account = () => {
               <TextField
                 className={classes.textField}
                 variant="outlined"
+                size="small"
               />
             </Box>
             <Box className={classes.changePasswordLink}>
               {' '}
               <Link component={RouterLink} to="/forgot-password">
-                <Box display="inline" style={{ 'text-decoration': 'underline' }} fontWeight={theme.typography.fontWeightRegular} fontSize={theme.typography.caption.fontSize} color={theme.palette.common.black}>
+                <Box
+                  display="inline"
+                  style={{ 'text-decoration': 'underline' }}
+                  fontWeight={theme.typography.fontWeightRegular}
+                  fontSize={theme.typography.caption.fontSize}
+                  color={theme.palette.common.black}
+                >
                   Change password
                 </Box>
               </Link>
