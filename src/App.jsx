@@ -4,6 +4,7 @@ import DashboardLayout from './layouts/DashboardLayout';
 import HeaderBarLayout from './layouts/HeaderBarLayout';
 import Account from './pages/Account';
 import ContactDetail from './pages/ContactDetail';
+import ContactList from './pages/ContactList';
 import PageNotFound from './pages/PageNotFound';
 import ThemeConfig from './theme';
 
@@ -27,7 +28,12 @@ function App() {
               <PageNotFound />
             </DashboardLayout>
           </Route>
-          <Route path="/contacts">
+          <Route exact path="/contacts">
+            <DashboardLayout>
+              <ContactList />
+            </DashboardLayout>
+          </Route>
+          <Route exact path="/contacts/1">
             <DashboardLayout>
               <ContactDetail />
             </DashboardLayout>
