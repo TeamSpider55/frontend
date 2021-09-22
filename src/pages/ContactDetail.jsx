@@ -239,7 +239,6 @@ const ContactDetail = () => {
             <input
               type="email"
               name="email"
-              defaultValue="Example@123.com"
               readOnly={!editModeOn}
             />
           </div>
@@ -249,7 +248,6 @@ const ContactDetail = () => {
               name="phone"
               id="phone"
               maxLength={12}
-              defaultValue="+61123456789"
               readOnly={!editModeOn}
             />
           </div>
