@@ -6,6 +6,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import ContactList from './pages/ContactList';
 import Login from './pages/Login';
 import PageNotFound from './pages/PageNotFound';
+import ResetPassword from './pages/ResetPassword';
 import Register from './pages/Register';
 import ThemeConfig from './theme';
 
@@ -52,6 +53,9 @@ function App() {
             <DashboardLayout>
               <PageNotFound />
             </DashboardLayout>
+          </Route>
+          <Route path="/reset-password">
+            <ResetPassword />
           </Route>
           <Route>
             {/* matches any other route: page for 404 error */}
