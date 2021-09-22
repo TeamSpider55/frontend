@@ -142,6 +142,7 @@ const Account = () => {
                 className={classes.textField}
                 variant="outlined"
                 size="small"
+                type="password"
               />
             </Box>
             <Box className={classes.changePasswordLink}>
