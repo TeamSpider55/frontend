@@ -8,3 +8,8 @@ export interface Event {
   tags: string[];
   contacts: string[];
 }
+
+export interface DateRange {
+  from: Date;
+  to: Date
+}

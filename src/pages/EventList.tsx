@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { styled, useTheme, Theme } from '@mui/material/styles';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
 import {
+  Avatar,
+  AvatarGroup,
   Card,
   Table,
   Button,
@@ -15,14 +17,21 @@ import {
   TablePagination,
   Box,
 } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 import Page from '../components/Page';
 import EventService from '../services/EventService';
 import MoreMenu from '../components/MoreMenu';
-import DateSearchBar from '../components/DateSearchBar';
-import TableHeader from '../components/events/TableHeader';
-import SearchNotFound from '../components/SearchNotFound';
+import EventListToolbar from '../components/events/EventListToolbar';
+import TableHeader from '../components/TableHeader';
+import DateSearchNotFound from '../components/events/DateSearchNotFound';
+import DateSearchInvalid from '../components/events/DateSearchInvalid';
 import getComparator from '../util/comparator';
-import { Event } from '../dto/Event';
+import { Event, DateRange } from '../dto/Event';
+import {
+  DAYDATE_FORMAT,
+  isValidDateRange,
+  TIME_FORMAT,
+} from '../util/datetime';
 
 const StyledContainer = styled(Container)((
   {
@@ -34,40 +43,31 @@ const StyledContainer = styled(Container)((
   marginTop: theme.spacing(6),
 }));
 
-const DATE_FORMAT = new Intl.DateTimeFormat(
-  'en-AU',
-  {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  },
-);
-
-const TIME_FORMAT = new Intl.DateTimeFormat(
-  'en-AU',
-  {
-    hour: '2-digit',
-    minute: '2-digit',
-  },
-);
-
 const TABLE_HEAD = [
   { id: 'title', label: 'Title', alignRight: false },
-  { id: 'time', label: 'Time', alignRight: false },
-  { id: 'contacts', label: 'Participants', alignRight: false },
+  { id: 'start', label: 'Time', alignRight: false },
+  { id: 'contacts', label: 'Participants', alignRight: true },
 ];
 
-const applySortFilter = (array: any, comparator: any, query: string) => {
+const applySortFilter = (
+  array: Event[],
+  comparator: (a: Event, b: Event) => number,
+  dateRange: DateRange,
+) => {
   // ensure that equivalent items keep there original order, i.e. stable
-  const stabilizedArray = array.map((el: any, index: number) => [el, index]);
-  stabilizedArray.sort((a: any, b: any) => {
+  const stabilizedArray = array.map(
+    (el: Event, index: number): [Event, number] => [el, index],
+  );
+  stabilizedArray.sort((a: [Event, number], b: [Event, number]) => {
     const order = comparator(a[0], b[0]);
     if (order !== 0) return order;
     return a[1] - b[1];
   });
-  if (query) {
-    return array.filter((event: Event) => {
-      return event.title.indexOf(query.toLowerCase()) !== -1;
+  if (dateRange) {
+    // find event with dates within input range
+    return array.filter((event) => {
+      return new Date(event.start) >= dateRange.from
+          && new Date(event.end) <= dateRange.to;
     });
   }
   return stabilizedArray.map((el: [any, number]) => el[0]);
@@ -80,8 +80,15 @@ const EventList = () => {
   const [orderBy, setOrderBy] = useState('title');
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
+  const now = new Date();
+  const [dateRange, setDateRange] = useState<DateRange>(
+    {
+      from: new Date(now.getFullYear(), now.getMonth(), now.getDate()),
+      to: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 14),
+    },
+  );
+
   const [events, setEvents] = useState<Event[] | null>(null);
-  const [filterName, setFilterName] = useState('');
 
   const fetchEvents = async () => {
     setEvents(await EventService.getEvents());
@@ -147,10 +154,6 @@ const EventList = () => {
     setPage(newPage);
   };
 
-  const onFilterByName = (event: any) => {
-    setFilterName(event.target.value);
-  };
-
   const onChangeRowsPerPage = (event: any) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
@@ -166,7 +169,7 @@ const EventList = () => {
     filteredEvents = applySortFilter(
       events,
       getComparator(order, orderBy),
-      filterName,
+      dateRange,
     );
     emptyRows = page > 0
       ? Math.max(0, (1 + page) * rowsPerPage - events.length) : 0;
@@ -175,25 +178,32 @@ const EventList = () => {
   return (
     <Page title="Schedule - OneThread">
       <StyledContainer theme={theme}>
-        <Typography variant="h2">
-          Schedule
-        </Typography>
-        <Box textAlign="right" paddingY={2}>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          paddingTop={4}
+          paddingBottom={2}
+        >
+          <Typography variant="h2">
+            Schedule
+          </Typography>
           <Button
             variant="contained"
             color="primary"
             component={RouterLink}
             to="#"
           >
+            <AddIcon />
             Add New Event
           </Button>
         </Box>
         <Card>
-          <DateSearchBar
+          <EventListToolbar
             selected={selected}
-            filter={filterName}
-            onFilter={onFilterByName}
             deleteMany={deleteEvents}
+            dateRange={dateRange}
+            setDateRange={setDateRange}
           />
           {filteredEvents === null ? (
             <Typography variant="subtitle2" noWrap>
@@ -225,9 +235,9 @@ const EventList = () => {
                             title,
                             start,
                             end,
-                            contacts,
                           } = row;
-                        const isItemSelected = selected.indexOf(eventId) !== -1;
+                        const isItemSelected = selected
+                          .indexOf(eventId) !== -1;
 
                         return (
                           <TableRow
@@ -241,7 +251,9 @@ const EventList = () => {
                             <TableCell padding="checkbox">
                               <Checkbox
                                 checked={isItemSelected}
-                                onChange={(event) => handleClick(event, eventId)}
+                                onChange={
+                                  (event) => handleClick(event, eventId)
+                                }
                               />
                             </TableCell>
                             <TableCell
@@ -262,7 +274,7 @@ const EventList = () => {
                             </TableCell>
                             <TableCell onClick={() => goToEvent('1')}>
                               <Box>
-                                {DATE_FORMAT.format(start)}
+                                {DAYDATE_FORMAT.format(start)}
                               </Box>
                               <Box>
                                 {TIME_FORMAT.format(start)}
@@ -271,7 +283,16 @@ const EventList = () => {
                               </Box>
                             </TableCell>
                             <TableCell onClick={() => goToEvent('1')}>
-                              {contacts.length}
+                              {/* FIXME: hardcoded avatars and
+                                  non-functioning sort
+                              */}
+                              <AvatarGroup max={4}>
+                                <Avatar alt="Remy Sharp" />
+                                <Avatar alt="Travis Howard" />
+                                <Avatar alt="Cindy Baker" />
+                                <Avatar alt="Agnes Walker" />
+                                <Avatar alt="Trevor Henderson" />
+                              </AvatarGroup>
                             </TableCell>
                             <TableCell align="right">
                               <MoreMenu
@@ -292,7 +313,11 @@ const EventList = () => {
                     <TableBody>
                       <TableRow>
                         <TableCell align="center" colSpan={6}>
-                          <SearchNotFound searchQuery={filterName} />
+                          {
+                            isValidDateRange(dateRange)
+                              ? <DateSearchNotFound searchQuery={dateRange} />
+                              : <DateSearchInvalid />
+                          }
                         </TableCell>
                       </TableRow>
                     </TableBody>

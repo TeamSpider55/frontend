@@ -32,7 +32,7 @@ interface Props {
   deleteMany(ids: string[]): void;
 }
 
-const SearchBar = (
+const ContactListToolbar = (
   {
     selected,
     filter,
@@ -80,4 +80,4 @@ const SearchBar = (
   );
 };
 
-export default SearchBar;
+export default ContactListToolbar;

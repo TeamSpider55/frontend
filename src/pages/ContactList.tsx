@@ -16,12 +16,13 @@ import {
   TablePagination,
   Box,
 } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 import Page from '../components/Page';
 import ContactService from '../services/ContactService';
 import MoreMenu from '../components/MoreMenu';
-import SearchBar from '../components/SearchBar';
-import TableHeader from '../components/contacts/TableHeader';
-import SearchNotFound from '../components/SearchNotFound';
+import ContactListToolbar from '../components/contacts/ContactListToolbar';
+import TableHeader from '../components/TableHeader';
+import SearchNotFound from '../components/contacts/SearchNotFound';
 import getComparator from '../util/comparator';
 import { Contact } from '../dto/Contact';
 
@@ -162,21 +163,28 @@ const ContactList = () => {
   return (
     <Page title="Contacts - OneThread">
       <StyledContainer theme={theme}>
-        <Typography variant="h2">
-          Contacts
-        </Typography>
-        <Box textAlign="right" paddingY={2}>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          paddingTop={4}
+          paddingBottom={2}
+        >
+          <Typography variant="h2">
+            Contacts
+          </Typography>
           <Button
             variant="contained"
             color="primary"
             component={RouterLink}
             to="#"
           >
+            <AddIcon />
             Add New Contact
           </Button>
         </Box>
         <Card>
-          <SearchBar
+          <ContactListToolbar
             selected={selected}
             filter={filterName}
             onFilter={onFilterByName}
@@ -213,7 +221,8 @@ const ContactList = () => {
                             familyName,
                           } = row;
                         const name = `${givenName} ${familyName}`;
-                        const isItemSelected = selected.indexOf(contactId) !== -1;
+                        const isItemSelected = selected
+                          .indexOf(contactId) !== -1;
 
                         return (
                           <TableRow

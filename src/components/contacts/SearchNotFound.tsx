@@ -12,11 +12,11 @@ export default function SearchNotFound({ searchQuery }: Props) {
         Not found
       </Typography>
       <Typography variant="body2" align="center">
-        No results found for &nbsp;
+        No contacts with given name &nbsp;
         <strong>
           {`'${searchQuery}'`}
         </strong>
-        .
+        found.
         Try checking for typos or using complete words.
       </Typography>
     </Box>

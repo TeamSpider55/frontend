@@ -1,50 +1,37 @@
 import React from 'react';
-import { useTheme, styled } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import {
   Box,
   Toolbar,
   Tooltip,
   IconButton,
   Typography,
-  OutlinedInput,
   TextField,
 } from '@mui/material';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DatePicker from '@mui/lab/DatePicker';
 import DeleteIcon from '@mui/icons-material/Delete';
-import SearchIcon from '@mui/icons-material/Search';
+import enAuLocale from 'date-fns/locale/en-AU';
 
-const SearchStyle = styled(OutlinedInput)(({ theme }) => ({
-  width: 240,
-  transition: theme.transitions.create(['box-shadow', 'width'], {
-    easing: theme.transitions.easing.easeInOut,
-    duration: theme.transitions.duration.shorter,
-  }),
-  '& fieldset': {
-    borderWidth: '1px !important',
-    borderColor: `${theme.palette.grey} !important`,
-  },
-}));
+import { DateRange } from '../../dto/Event';
 
 interface Props {
   selected: string[];
-  filter: string;
-  onFilter: React.ChangeEventHandler<HTMLInputElement |
-    HTMLTextAreaElement> | undefined;
   deleteMany(ids: string[]): void;
+  dateRange: DateRange;
+  setDateRange: React.Dispatch<React.SetStateAction<DateRange>>;
 }
 
-const DatePickerBar = (
+const EventListToolbar = (
   {
     selected,
-    filter,
-    onFilter,
     deleteMany,
+    dateRange,
+    setDateRange,
   }: Props,
 ) => {
   const theme = useTheme();
-  const [value, setValue] = React.useState(null);
 
   return (
     <Box
@@ -59,21 +46,29 @@ const DatePickerBar = (
           {`${selected.length} selected`}
         </Typography>
       ) : (
-        <Box display="flex" justifyContent="space-evenly">
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <Box display="flex" justifyContent="space-evenly" alignItems="center">
+          <LocalizationProvider
+            dateAdapter={AdapterDateFns}
+            locale={enAuLocale}
+          >
             <DatePicker
               label="From"
-              value={value}
-              onChange={(newValue) => {
-                setValue(newValue);
+              value={dateRange.from}
+              onChange={(newFromDate) => {
+                if (newFromDate) {
+                  setDateRange({ to: dateRange.to, from: newFromDate });
+                }
               }}
               renderInput={(params) => <TextField {...params} />}
             />
+            <Box marginRight={theme.spacing(2)} />
             <DatePicker
               label="To "
-              value={value}
-              onChange={(newValue) => {
-                setValue(newValue);
+              value={dateRange.to}
+              onChange={(newToDate) => {
+                if (newToDate) {
+                  setDateRange({ to: newToDate, from: dateRange.from });
+                }
               }}
               renderInput={(params) => <TextField {...params} />}
             />
@@ -97,4 +92,4 @@ const DatePickerBar = (
   );
 };
 
-export default DatePickerBar;
+export default EventListToolbar;
