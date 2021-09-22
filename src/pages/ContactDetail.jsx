@@ -137,13 +137,20 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: '32px',
     borderRadius: '5px',
     boxShadow: '0 2px 3px rgb(0 0 0 / 0.2)',
+<<<<<<< HEAD
     backgroundColor: theme.palette.background.default,
+=======
+    backgroundColor: 'white',
+>>>>>>> dev
   },
   timelineTitle: {
     margin: '32px 48px',
     fontWeight: 'bolder',
     fontSize: '40px',
+<<<<<<< HEAD
     color: theme.palette.primary.dark,
+=======
+>>>>>>> dev
   },
 
 }));

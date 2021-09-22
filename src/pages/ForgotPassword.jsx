@@ -28,16 +28,16 @@ const useStyles = makeStyles((theme) => ({
     minWidth: '30%',
   },
   formRow: {
-    marginTop: '0.5rem',
-    marginBottom: '0.5rem',
+    marginTop: theme.spacing(1.25),
+    marginBottom: theme.spacing(1.25),
     backgroundColor: theme.palette.grey[0],
   },
   textField: {
     backgroundColor: theme.palette.grey[0],
   },
   formButton: {
-    marginTop: '0.5rem',
-    marginBottom: '0.5rem',
+    marginTop: theme.spacing(1.25),
+    marginBottom: theme.spacing(1.25),
   },
 }));
 
