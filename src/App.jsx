@@ -2,12 +2,11 @@ import React from 'react';
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import DashboardLayout from './layouts/DashboardLayout';
 import ContactDetail from './pages/ContactDetail';
-<<<<<<< HEAD
 import ForgotPassword from './pages/ForgotPassword';
-=======
 import ContactList from './pages/ContactList';
->>>>>>> dev
+import Login from './pages/Login';
 import PageNotFound from './pages/PageNotFound';
+import Register from './pages/Register';
 import ThemeConfig from './theme';
 
 function App() {
@@ -25,10 +24,16 @@ function App() {
               <PageNotFound />
             </DashboardLayout>
           </Route>
+          <Route path="/register">
+            <Register />
+          </Route>
           <Route path="/calendar">
             <DashboardLayout>
               <PageNotFound />
             </DashboardLayout>
+          </Route>
+          <Route path="/login">
+            <Login />
           </Route>
           <Route exact path="/contacts">
             <DashboardLayout>
