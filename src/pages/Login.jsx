@@ -17,6 +17,12 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'right',
     padding: theme.spacing(2),
   },
+  forgotPasswordLink: {
+    textAlign: 'right',
+    paddingTop: theme.spacing(0),
+    paddingRight: theme.spacing(0),
+    paddingBottom: theme.spacing(1),
+  },
   formContainer: {
     display: 'flex',
     alignItems: 'center',
@@ -28,16 +34,16 @@ const useStyles = makeStyles((theme) => ({
     minWidth: '30%',
   },
   formRow: {
-    marginTop: '0.5rem',
-    marginBottom: '0.5rem',
+    marginTop: theme.spacing(1.25),
+    marginBottom: theme.spacing(1.25),
     backgroundColor: theme.palette.grey[0],
   },
   textField: {
     backgroundColor: theme.palette.grey[0],
   },
   formButton: {
-    marginTop: '0.5rem',
-    marginBottom: '0.5rem',
+    marginTop: theme.spacing(1.25),
+    marginBottom: theme.spacing(1.25),
   },
 }));
 
@@ -76,6 +82,20 @@ const Login = () => {
             type="password"
             // FIXME: required field
           />
+          <Box className={classes.forgotPasswordLink}>
+            {' '}
+            <Link component={RouterLink} to="/forgot-password">
+              <Box
+                display="inline"
+                style={{ 'text-decoration': 'underline' }}
+                fontWeight={theme.typography.fontWeightRegular}
+                fontSize={theme.typography.caption.fontSize}
+                color={theme.palette.common.black}
+              >
+                Forgot password?
+              </Box>
+            </Link>
+          </Box>
           <Button
             className={classes.formButton}
             variant="contained"
