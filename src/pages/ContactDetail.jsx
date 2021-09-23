@@ -97,6 +97,7 @@ const useStyles = makeStyles((theme) => ({
       fontSize: '1em',
       fontWeight: 'lighter',
       border: 'none',
+      width: '100%',
       padding: theme.spacing(0),
       paddingLeft: theme.spacing(1),
       paddingRight: theme.spacing(1),
