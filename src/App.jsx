@@ -1,7 +1,6 @@
 import React from 'react';
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import DashboardLayout from './layouts/DashboardLayout';
-import HeaderBarLayout from './layouts/HeaderBarLayout';
 import Account from './pages/Account';
 import ContactDetail from './pages/ContactDetail';
 import ForgotPassword from './pages/ForgotPassword';
@@ -19,12 +18,12 @@ function App() {
       <Router>
         <Switch>
           <Route exact path="/">
-            <DashboardLayout>
+            <DashboardLayout showHeaderBar showSideBar>
               <PageNotFound />
             </DashboardLayout>
           </Route>
           <Route path="/dashboard">
-            <DashboardLayout>
+            <DashboardLayout showHeaderBar showSideBar>
               <PageNotFound />
             </DashboardLayout>
           </Route>
@@ -40,12 +39,12 @@ function App() {
             <Login />
           </Route>
           <Route exact path="/contacts">
-            <DashboardLayout>
+            <DashboardLayout showHeaderBar showSideBar>
               <ContactList />
             </DashboardLayout>
           </Route>
           <Route exact path="/contacts/1">
-            <DashboardLayout>
+            <DashboardLayout showHeaderBar showSideBar>
               <ContactDetail />
             </DashboardLayout>
           </Route>
@@ -53,13 +52,14 @@ function App() {
             <ForgotPassword />
           </Route>
           <Route path="/memos">
-            <DashboardLayout>
+            <DashboardLayout showHeaderBar showSideBar>
               <PageNotFound />
             </DashboardLayout>
           </Route>
           <Route path="/account">
-            <HeaderBarLayout />
-            <Account />
+            <DashboardLayout showHeaderBar showSideBar={false}>
+              <Account />
+            </DashboardLayout>
           </Route>
           <Route path="/reset-password">
             <ResetPassword />

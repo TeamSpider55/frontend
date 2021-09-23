@@ -12,11 +12,6 @@ const useStyles = makeStyles((theme) => ({
     minHeight: '100vh',
     backgroundColor: theme.palette.grey[200],
   },
-  imgNameWrapper: {
-    marginTop: theme.spacing(16),
-    display: 'flex',
-    flexDirection: 'row',
-  },
   changePasswordLink: {
     textAlign: 'right',
     paddingTop: theme.spacing(0),
@@ -61,6 +56,9 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: 'auto',
     marginRight: theme.spacing(3),
   },
+  img: {
+    borderRadius: '10px',
+  },
 }));
 
 const Account = () => {
@@ -70,8 +68,8 @@ const Account = () => {
   return (
     <>
       <Box className={classes.root}>
-        <Box textAlign="center" paddingTop={theme.spacing(2)}>
-          <img src="" alt="profile" width="144" height="144" />
+        <Box textAlign="center" paddingTop={theme.spacing(10)}>
+          <img className={classes.img} src="" alt="profile" width="144" height="144" />
           <h2>User full name</h2>
         </Box>
         <Box className={classes.formContainer}>
