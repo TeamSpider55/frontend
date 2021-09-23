@@ -74,7 +74,7 @@ const useStyles = makeStyles((theme) => ({
   },
   detailLabelWrapper: {
     display: 'inline-block',
-    marginLeft: theme.spacing(6),
+    marginLeft: theme.spacing(11),
     marginTop: theme.spacing(3),
     textAlign: 'right',
     '& div': {
