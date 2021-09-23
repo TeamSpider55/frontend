@@ -6,6 +6,7 @@ import Account from './pages/Account';
 import ContactDetail from './pages/ContactDetail';
 import ForgotPassword from './pages/ForgotPassword';
 import ContactList from './pages/ContactList';
+import EventList from './pages/EventList';
 import Login from './pages/Login';
 import PageNotFound from './pages/PageNotFound';
 import ResetPassword from './pages/ResetPassword';
@@ -30,9 +31,9 @@ function App() {
           <Route path="/register">
             <Register />
           </Route>
-          <Route path="/calendar">
+          <Route path="/events">
             <DashboardLayout>
-              <PageNotFound />
+              <EventList />
             </DashboardLayout>
           </Route>
           <Route path="/login">

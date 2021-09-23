@@ -1,10 +1,11 @@
 import React from 'react';
 import {
-  Button, Box, TextField, makeStyles, Link,
-} from '@material-ui/core';
+  Button, Box, TextField, Link,
+} from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
-import { useTheme } from '@material-ui/core/styles';
-import VpnKeyIcon from '@material-ui/icons/VpnKey';
+import { makeStyles } from '@mui/styles';
+import { useTheme } from '@mui/material/styles';
+import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import Logo from '../components/Logo';
 import SpiderIcon from '../assets/spider1.png';
 

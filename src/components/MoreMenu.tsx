@@ -6,17 +6,17 @@ import {
   IconButton,
   ListItemIcon,
   ListItemText,
-} from '@material-ui/core';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
+} from '@mui/material';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 interface Props {
-  contactId: string;
-  deleteContact(id: string): void;
+  id: string;
+  deleteOne(id: string): void;
 }
 
-const MoreMenu = ({ contactId, deleteContact }: Props) => {
+const MoreMenu = ({ id, deleteOne }: Props) => {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -47,7 +47,7 @@ const MoreMenu = ({ contactId, deleteContact }: Props) => {
           <ListItemText
             primary="Delete"
             primaryTypographyProps={{ variant: 'body2' }}
-            onClick={() => deleteContact(contactId)}
+            onClick={() => deleteOne(id)}
           />
         </MenuItem>
 

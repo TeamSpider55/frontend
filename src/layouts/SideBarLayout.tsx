@@ -1,19 +1,20 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import DashboardIcon from '@material-ui/icons/Dashboard';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-import ContactsIcon from '@material-ui/icons/Contacts';
-import NoteIcon from '@material-ui/icons/Note';
+import makeStyles from '@mui/styles/makeStyles';
+import Drawer from '@mui/material/Drawer';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import ContactsIcon from '@mui/icons-material/Contacts';
+import NoteIcon from '@mui/icons-material/Note';
+import { useTheme, Theme } from '@mui/material';
 
 const DRAWER_WIDTH = 240;
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   root: {
     display: 'flex',
     minHeight: '100vh',
@@ -39,9 +40,9 @@ const sidebarItems = [
     to: '/dashboard',
   },
   {
-    text: 'Calendar',
+    text: 'Schedule',
     icon: <CalendarTodayIcon />,
-    to: '/calendar',
+    to: '/events',
   },
   {
     text: 'Contacts',
@@ -73,7 +74,8 @@ const SidebarContent = () => {
 };
 
 const SideBarLayout = () => {
-  const classes = useStyles();
+  const theme = useTheme();
+  const classes = useStyles(theme);
 
   return (
     <>

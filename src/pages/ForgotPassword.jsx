@@ -1,10 +1,11 @@
 import React from 'react';
 import {
-  Button, Box, TextField, makeStyles, Link,
-} from '@material-ui/core';
+  Button, Box, TextField, Link,
+} from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
-import { useTheme } from '@material-ui/core/styles';
-import EmailIcon from '@material-ui/icons/Email';
+import { makeStyles } from '@mui/styles';
+import { useTheme } from '@mui/material/styles';
+import EmailIcon from '@mui/icons-material/Email';
 import Logo from '../components/Logo';
 import SpiderIcon from '../assets/spider1.png';
 
