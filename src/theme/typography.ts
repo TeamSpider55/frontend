@@ -78,7 +78,7 @@ const typography = {
     fontSize: pixelsToRem(14),
   },
   body1: {
-    lineHeight: 1.5,
+    lineHeight: 'unset',
     fontSize: pixelsToRem(16),
   },
   body2: {

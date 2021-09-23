@@ -114,6 +114,8 @@ const useStyles = makeStyles((theme) => ({
       border: 'none',
       width: '100%',
       padding: theme.spacing(0),
+      paddingLeft: theme.spacing(1),
+      paddingRight: theme.spacing(1),
       marginTop: theme.spacing(1),
       lineHeight: 'unset',
       resize: 'none',
@@ -214,11 +216,11 @@ const ContactDetail = () => {
       <div
         className={classes.contactsButtonWrapper}
         style={{
-          '-moz-user-select': 'none',
-          '-webkit-user-select': 'none',
-          '-ms-user-select': 'none',
-          'user-select': 'none',
-          '-o-user-select': 'none',
+          MozUserSelect: 'none',
+          WebkitUserSelect: 'none',
+          msUserSelect: 'none',
+          userSelect: 'none',
+          OUserSelect: 'none',
         }}
       >
         <Link to="/contacts">
@@ -275,7 +277,7 @@ const ContactDetail = () => {
               defaultValue="Example@123.com"
               readOnly={!editModeOn}
               spellCheck="false"
-              style={{ 'box-shadow': editModeOn ? '0 0 0 1pt lightGrey' : 'none', 'border-radius': editModeOn ? '5px' : '0px' }}
+              style={{ boxShadow: editModeOn ? '0 0 0 1pt lightGrey' : 'none', borderRadius: editModeOn ? '5px' : '0px' }}
             />
           </div>
           <div>

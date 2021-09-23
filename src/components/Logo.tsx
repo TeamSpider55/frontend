@@ -10,19 +10,19 @@ interface LogoHighlightProps {
 const LogoHighlight = styled('span')(({ theme }: LogoHighlightProps) => ({
   color: theme.palette.primary.light,
   fontWeight: theme.typography.fontWeightBold,
-  '-moz-user-select': 'none',
-  '-webkit-user-select': 'none',
-  '-ms-user-select': 'none',
-  'user-select': 'none',
-  '-o-user-select': 'none',
+  MozUserSelect: 'none',
+  WebkitUserSelect: 'none',
+  msUserSelect: 'none',
+  userSelect: 'none',
+  OUserSelect: 'none',
 }));
 
 const LogoFront = styled('span')(() => ({
-  '-moz-user-select': 'none',
-  '-webkit-user-select': 'none',
-  '-ms-user-select': 'none',
-  'user-select': 'none',
-  '-o-user-select': 'none',
+  MozUserSelect: 'none',
+  WebkitUserSelect: 'none',
+  msUserSelect: 'none',
+  userSelect: 'none',
+  OUserSelect: 'none',
 }));
 
 const Logo = () => {
