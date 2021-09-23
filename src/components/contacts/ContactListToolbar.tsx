@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTheme, styled } from '@material-ui/core/styles';
+import { useTheme, styled } from '@mui/material/styles';
 import {
   Box,
   Toolbar,
@@ -8,9 +8,9 @@ import {
   Typography,
   OutlinedInput,
   InputAdornment,
-} from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
-import SearchIcon from '@material-ui/icons/Search';
+} from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import SearchIcon from '@mui/icons-material/Search';
 
 const SearchStyle = styled(OutlinedInput)(({ theme }) => ({
   width: 240,
@@ -26,18 +26,18 @@ const SearchStyle = styled(OutlinedInput)(({ theme }) => ({
 
 interface Props {
   selected: string[];
-  filterName: string;
-  onFilterName: React.ChangeEventHandler<HTMLInputElement |
+  filter: string;
+  onFilter: React.ChangeEventHandler<HTMLInputElement |
     HTMLTextAreaElement> | undefined;
-  deleteContacts(ids: string[]): void;
+  deleteMany(ids: string[]): void;
 }
 
-const SearchBar = (
+const ContactListToolbar = (
   {
     selected,
-    filterName,
-    onFilterName,
-    deleteContacts,
+    filter,
+    onFilter,
+    deleteMany,
   }: Props,
 ) => {
   const theme = useTheme();
@@ -56,9 +56,9 @@ const SearchBar = (
         </Typography>
       ) : (
         <SearchStyle
-          value={filterName}
-          onChange={onFilterName}
-          placeholder="Search user..."
+          value={filter}
+          onChange={onFilter}
+          placeholder="Search..."
           startAdornment={(
             <InputAdornment position="start">
               <SearchIcon />
@@ -70,7 +70,7 @@ const SearchBar = (
       {selected.length > 0 ? (
         <Tooltip title="Delete">
           <IconButton
-            onClick={() => deleteContacts(selected)}
+            onClick={() => deleteMany(selected)}
           >
             <DeleteIcon />
           </IconButton>
@@ -80,4 +80,4 @@ const SearchBar = (
   );
 };
 
-export default SearchBar;
+export default ContactListToolbar;

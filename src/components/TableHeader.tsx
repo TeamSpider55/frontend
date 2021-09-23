@@ -5,7 +5,7 @@ import {
   TableCell,
   TableHead,
   TableSortLabel,
-} from '@material-ui/core';
+} from '@mui/material';
 
 interface Props {
   order: 'asc' | 'desc';

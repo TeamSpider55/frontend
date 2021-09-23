@@ -1,7 +1,7 @@
 import React from 'react';
-import { styled, useTheme } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import { Theme } from '@material-ui/core';
+import { styled, useTheme } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
+import { Theme } from '@mui/material';
 
 interface LogoHighlightProps {
   theme: Theme;

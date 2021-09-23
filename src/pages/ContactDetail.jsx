@@ -1,28 +1,50 @@
 import React, { useState } from 'react';
-import EditIcon from '@material-ui/icons/Edit';
-import DoneIcon from '@material-ui/icons/Done';
-import ClearIcon from '@material-ui/icons/Clear';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
+import { styled, useTheme } from '@mui/material/styles';
+import EditIcon from '@mui/icons-material/Edit';
+import DoneIcon from '@mui/icons-material/Done';
+import ClearIcon from '@mui/icons-material/Clear';
+import Button from '@mui/material/Button';
+import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 import { Link } from 'react-router-dom';
 
-const useStyles = makeStyles((theme) => ({
-  contactsButtonWrapper: {
+const PREFIX = 'ContactDetail';
+
+const classes = {
+  contactsButtonWrapper: `${PREFIX}-contactsButtonWrapper`,
+  contactsButton: `${PREFIX}-contactsButton`,
+  arrowLeftIcon: `${PREFIX}-arrowLeftIcon`,
+  contactDetail: `${PREFIX}-contactDetail`,
+  imgNameWrapper: `${PREFIX}-imgNameWrapper`,
+  contactImgWrapper: `${PREFIX}-contactImgWrapper`,
+  contactName: `${PREFIX}-contactName`,
+  contactInfo: `${PREFIX}-contactInfo`,
+  detailLabelWrapper: `${PREFIX}-detailLabelWrapper`,
+  detailWrapper: `${PREFIX}-detailWrapper`,
+  editIconWrapper: `${PREFIX}-editIconWrapper`,
+  editIcon: `${PREFIX}-editIcon`,
+  doneIcon: `${PREFIX}-doneIcon`,
+  clearIcon: `${PREFIX}-clearIcon`,
+};
+
+const Root = styled('div')(({ theme }) => ({
+  [`& .${classes.contactsButtonWrapper}`]: {
     display: 'block',
     marginTop: '5%',
   },
-  contactsButton: {
+
+  [`& .${classes.contactsButton}`]: {
     fontSize: '36px',
   },
-  arrowLeftIcon: {
+
+  [`& .${classes.arrowLeftIcon}`]: {
     cursor: 'pointer',
     fontSize: '36px',
   },
-  contactDetail: {
-    display: 'inline-block',
-    height: '75%',
-    width: '45%',
+
+  [`& .${classes.contactDetail}`]: {
+    display: 'block',
+    height: 'fit-content',
+    width: 'fit-content',
     top: '30%',
     right: '50%',
     left: '20%',
@@ -32,11 +54,13 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: '0 2px 3px rgb(0 0 0 / 0.2)',
     backgroundColor: theme.palette.background.default,
   },
-  imgNameWrapper: {
+
+  [`& .${classes.imgNameWrapper}`]: {
     display: 'flex',
     flexDirection: 'row',
   },
-  contactImgWrapper: {
+
+  [`& .${classes.contactImgWrapper}`]: {
     display: 'block',
     height: '144px',
     width: '144px',
@@ -47,16 +71,19 @@ const useStyles = makeStyles((theme) => ({
       borderRadius: '10px',
     },
   },
-  contactName: {
+
+  [`& .${classes.contactName}`]: {
     margin: '0 32px',
     fontWeight: 'bolder',
     fontSize: '32px',
   },
-  contactInfo: {
+
+  [`& .${classes.contactInfo}`]: {
     margin: '0 32px',
     fontSize: '16px',
   },
-  detailLabelWrapper: {
+
+  [`& .${classes.detailLabelWrapper}`]: {
     display: 'inline-block',
     marginLeft: '48px',
     marginTop: '24px',
@@ -67,7 +94,8 @@ const useStyles = makeStyles((theme) => ({
       fontWeight: 'bold',
     },
   },
-  detailWrapper: {
+
+  [`& .${classes.detailWrapper}`]: {
     display: 'inline-block',
     left: 'auto',
     right: '0',
@@ -100,57 +128,37 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
-  editIconWrapper: {
+
+  [`& .${classes.editIconWrapper}`]: {
     width: '100%',
     paddingTop: '8px',
     textAlign: 'right',
   },
-  editIcon: {
+
+  [`& .${classes.editIcon}`]: {
     cursor: 'pointer',
     outline: 'none',
     marginLeft: '8px',
     marginRight: '8px',
   },
-  doneIcon: {
+
+  [`& .${classes.doneIcon}`]: {
     display: 'inline-flex',
     cursor: 'pointer',
     outline: 'none',
     marginLeft: '8px',
     marginRight: '8px',
   },
-  clearIcon: {
+
+  [`& .${classes.clearIcon}`]: {
     cursor: 'pointer',
     outline: 'none',
     marginLeft: '8px',
     marginRight: '8px',
   },
-  contactTimeline: {
-    display: 'inline-block',
-    verticalAlign: 'top',
-    height: '75%',
-    width: '45%',
-    top: '30%',
-    right: '50%',
-    left: '20%',
-    marginTop: '5%',
-    marginLeft: '5%',
-    marginBottom: '32px',
-    borderRadius: '5px',
-    boxShadow: '0 2px 3px rgb(0 0 0 / 0.2)',
-    backgroundColor: theme.palette.background.default,
-  },
-  timelineTitle: {
-    margin: '32px 48px',
-    fontWeight: 'bolder',
-    fontSize: '40px',
-    color: theme.palette.primary.dark,
-  },
-
 }));
 
 const ContactDetail = () => {
-  const theme = useTheme();
-  const classes = useStyles(theme);
   const [editModeOn, setEditModeOn] = useState(false);
   const [phone, setPhone] = useState('');
   const [occupation, setOccupation] = useState('');
@@ -184,8 +192,10 @@ const ContactDetail = () => {
     setEditModeOn(false);
   };
 
+  const theme = useTheme();
+
   return (
-    <>
+    <Root theme={theme}>
       <div className={classes.contactsButtonWrapper}>
         <Link to="/contacts">
           <Button className={classes.contactsButton}>
@@ -276,7 +286,7 @@ const ContactDetail = () => {
           </div>
         </div>
       </div>
-    </>
+    </Root>
   );
 };
 
