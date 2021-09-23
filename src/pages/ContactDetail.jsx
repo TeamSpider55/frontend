@@ -45,24 +45,36 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(6),
     '& img': {
       height: '100%',
-      width: '100%',
       borderRadius: '10px',
     },
   },
   contactName: {
     marginLeft: theme.spacing(4),
     marginRight: theme.spacing(4),
-    fontWeight: 'bolder',
-    fontSize: '32px',
+    '& input': {
+      fontWeight: 'bolder',
+      fontSize: '32px',
+      fontFamily: 'Cairo',
+      border: 'none',
+      width: '75%',
+      marginLeft: theme.spacing(3),
+      marginRight: theme.spacing(3),
+      padding: theme.spacing(0),
+      lineHeight: 'unset',
+      resize: 'none',
+      '&:focus': {
+        outline: 'none',
+      },
+    },
   },
   contactInfo: {
-    marginLeft: theme.spacing(4),
+    marginLeft: theme.spacing(7),
     marginRight: theme.spacing(4),
     fontSize: '16px',
   },
   detailLabelWrapper: {
     display: 'inline-block',
-    marginLeft: theme.spacing(6),
+    marginLeft: theme.spacing(11),
     marginTop: theme.spacing(3),
     textAlign: 'right',
     '& div': {
@@ -80,11 +92,15 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(2),
     verticalAlign: 'top',
     '& input': {
+      display: 'block',
       fontFamily: 'Cairo',
       fontSize: '1em',
       fontWeight: 'lighter',
       border: 'none',
+      width: '100%',
       padding: theme.spacing(0),
+      paddingLeft: theme.spacing(1),
+      paddingRight: theme.spacing(1),
       marginTop: theme.spacing(1),
       lineHeight: 'unset',
       resize: 'none',
@@ -97,7 +113,10 @@ const useStyles = makeStyles((theme) => ({
       fontSize: '1em',
       fontWeight: 'lighter',
       border: 'none',
+      width: '100%',
       padding: theme.spacing(0),
+      paddingLeft: theme.spacing(1),
+      paddingRight: theme.spacing(1),
       marginTop: theme.spacing(1),
       lineHeight: 'unset',
       resize: 'none',
@@ -161,12 +180,14 @@ const ContactDetail = () => {
   const theme = useTheme();
   const classes = useStyles(theme);
   const [editModeOn, setEditModeOn] = useState(false);
+  const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [occupation, setOccupation] = useState('');
   const [location, setLocation] = useState('');
   const [description, setDescription] = useState('');
 
   const toggleEditMode = () => {
+    setName(document.getElementById('name').value);
     setPhone(document.getElementById('phone').value);
     setOccupation(document.getElementById('occupation').value);
     setLocation(document.getElementById('location').value);
@@ -174,6 +195,7 @@ const ContactDetail = () => {
     setEditModeOn(true);
   };
   const editModeCancel = () => {
+    document.getElementById('name').value = name;
     document.getElementById('phone').value = phone;
     document.getElementById('occupation').value = occupation;
     document.getElementById('location').value = location;
@@ -182,6 +204,7 @@ const ContactDetail = () => {
     setEditModeOn(false);
   };
   const editModeConfirm = () => {
+    setName(document.getElementById('name').value);
     setPhone(document.getElementById('phone').value);
     setOccupation(document.getElementById('occupation').value);
     setLocation(document.getElementById('location').value);
@@ -191,7 +214,16 @@ const ContactDetail = () => {
 
   return (
     <>
-      <div className={classes.contactsButtonWrapper}>
+      <div
+        className={classes.contactsButtonWrapper}
+        style={{
+          MozUserSelect: 'none',
+          WebkitUserSelect: 'none',
+          msUserSelect: 'none',
+          userSelect: 'none',
+          OUserSelect: 'none',
+        }}
+      >
         <Link to="/contacts">
           <Button className={classes.contactsButton}>
             <ArrowLeftIcon className={classes.arrowLeftIcon} />
@@ -208,13 +240,23 @@ const ContactDetail = () => {
         <div className={classes.imgNameWrapper}>
           <div className={classes.contactImgWrapper}>
             <img
-              src=""
+              src="https://images.unsplash.com/photo-1600180758890-6b94519a8ba6?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80"
               alt="Unknown"
+              height="144px"
+              width="144px"
             />
           </div>
           <div>
             <div className={classes.contactName}>
-              Farhan Fauzan
+              <input
+                type="text"
+                name="name"
+                id="name"
+                defaultValue="Farhan Fauzan"
+                readOnly={!editModeOn}
+                spellCheck="false"
+              />
+
             </div>
             <div className={classes.contactInfo}>
               Available for hire
@@ -235,6 +277,8 @@ const ContactDetail = () => {
               name="email"
               defaultValue="Example@123.com"
               readOnly={!editModeOn}
+              spellCheck="false"
+              style={{ boxShadow: editModeOn ? '0 0 0 1pt lightGrey' : 'none', borderRadius: editModeOn ? '5px' : '0px' }}
             />
           </div>
           <div>
@@ -245,6 +289,8 @@ const ContactDetail = () => {
               maxLength={12}
               defaultValue="+61123456789"
               readOnly={!editModeOn}
+              spellCheck="false"
+              style={{ 'box-shadow': editModeOn ? '0 0 0 1pt lightGrey' : 'none', 'border-radius': editModeOn ? '5px' : '0px' }}
             />
           </div>
           <div>
@@ -253,6 +299,8 @@ const ContactDetail = () => {
               name="occupation"
               id="occupation"
               readOnly={!editModeOn}
+              spellCheck="false"
+              style={{ 'box-shadow': editModeOn ? '0 0 0 1pt lightGrey' : 'none', 'border-radius': editModeOn ? '5px' : '0px' }}
             />
           </div>
           <div>
@@ -261,9 +309,17 @@ const ContactDetail = () => {
               name="location"
               id="location"
               readOnly={!editModeOn}
+              spellCheck="false"
+              style={{ 'box-shadow': editModeOn ? '0 0 0 1pt lightGrey' : 'none', 'border-radius': editModeOn ? '5px' : '0px' }}
             />
           </div>
-          <textarea id="description" rows="5" readOnly={!editModeOn} />
+          <textarea
+            id="description"
+            rows="5"
+            readOnly={!editModeOn}
+            spellCheck="false"
+            style={{ 'box-shadow': editModeOn ? '0 0 0 1pt lightGrey' : 'none', 'border-radius': editModeOn ? '5px' : '0px' }}
+          />
         </div>
       </div>
 

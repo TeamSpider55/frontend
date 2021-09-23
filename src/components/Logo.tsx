@@ -10,14 +10,32 @@ interface LogoHighlightProps {
 const LogoHighlight = styled('span')(({ theme }: LogoHighlightProps) => ({
   color: theme.palette.primary.light,
   fontWeight: theme.typography.fontWeightBold,
+  MozUserSelect: 'none',
+  WebkitUserSelect: 'none',
+  msUserSelect: 'none',
+  userSelect: 'none',
+  OUserSelect: 'none',
+}));
+
+const LogoFront = styled('span')(() => ({
+  MozUserSelect: 'none',
+  WebkitUserSelect: 'none',
+  msUserSelect: 'none',
+  userSelect: 'none',
+  OUserSelect: 'none',
 }));
 
 const Logo = () => {
   const theme = useTheme();
 
   return (
-    <Typography variant="h3">
-      One
+    <Typography
+      variant="h3"
+      style={{ cursor: 'pointer' }}
+    >
+      <LogoFront>
+        One
+      </LogoFront>
       <LogoHighlight theme={theme}>Thread</LogoHighlight>
     </Typography>
   );
