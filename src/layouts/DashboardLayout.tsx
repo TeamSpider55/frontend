@@ -20,15 +20,17 @@ const Content = styled('main')(({ theme }: { theme: Theme }) => (
 
 interface Props {
   children: React.ComponentType;
+  showHeaderBar: boolean;
+  showSideBar: boolean;
 }
 
-const DashboardLayout = ({ children }: Props) => {
+const DashboardLayout = ({ children, showHeaderBar, showSideBar }: Props) => {
   const theme = useTheme();
 
   return (
     <Root theme={theme}>
-      <HeaderBarLayout />
-      <SideBarLayout />
+      {showHeaderBar && <HeaderBarLayout />}
+      {showSideBar && <SideBarLayout />}
       <Content theme={theme}>
         { children }
       </Content>

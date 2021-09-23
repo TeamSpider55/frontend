@@ -4,7 +4,7 @@ import {
 } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
-import { useTheme } from '@mui/material/styles';
+import { useTheme, styled } from '@mui/material/styles';
 import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import Logo from '../components/Logo';
 import SpiderIcon from '../assets/spider1.png';
@@ -28,18 +28,17 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     minWidth: '30%',
   },
-  formRow: {
-    marginTop: theme.spacing(1.25),
-    marginBottom: theme.spacing(1.25),
-    backgroundColor: theme.palette.grey[0],
-  },
-  textField: {
-    backgroundColor: theme.palette.grey[0],
-  },
-  formButton: {
-    marginTop: theme.spacing(1.25),
-    marginBottom: theme.spacing(1.25),
-  },
+}));
+
+const FormTextField = styled(TextField)(({ theme }) => ({
+  marginTop: theme.spacing(1.25),
+  marginBottom: theme.spacing(1.25),
+  backgroundColor: theme.palette.grey[0],
+}));
+
+const FormButton = styled(Button)(({ theme }) => ({
+  marginTop: theme.spacing(1.25),
+  marginBottom: theme.spacing(1.25),
 }));
 
 const ResetPassword = () => {
@@ -63,28 +62,25 @@ const ResetPassword = () => {
             <img src={SpiderIcon} alt="spider" width="100" height="100" />
             <Logo />
           </Box>
-          <TextField
-            className={classes.formRow}
+          <FormTextField
             label="Password"
             variant="outlined"
             type="password"
             // FIXME: required field
           />
-          <TextField
-            className={classes.formRow}
+          <FormTextField
             label="Confirm Password"
             variant="outlined"
             type="password"
             // FIXME: required field
           />
-          <Button
-            className={classes.formButton}
+          <FormButton
             variant="contained"
             color="primary"
           >
             <VpnKeyIcon />
             Reset Password
-          </Button>
+          </FormButton>
         </Box>
       </Box>
     </Box>

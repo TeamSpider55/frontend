@@ -4,7 +4,7 @@ import {
 } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
-import { useTheme } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import Logo from '../components/Logo';
 import SpiderIcon from '../assets/spider1.png';
@@ -28,23 +28,22 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     minWidth: '30%',
   },
-  formRow: {
-    marginTop: '0.5rem',
-    marginBottom: '0.5rem',
-    backgroundColor: theme.palette.grey[0],
-  },
-  textField: {
-    backgroundColor: theme.palette.grey[0],
-  },
   splitRow: {
     marginTop: '0.5rem',
     marginBottom: '0.5rem',
     display: 'flex',
   },
-  formButton: {
-    marginTop: '0.5rem',
-    marginBottom: '0.5rem',
-  },
+}));
+
+const FormTextField = styled(TextField)(({ theme }) => ({
+  marginTop: theme.spacing(1.25),
+  marginBottom: theme.spacing(1.25),
+  backgroundColor: theme.palette.grey[0],
+}));
+
+const FormButton = styled(Button)(({ theme }) => ({
+  marginTop: theme.spacing(1.25),
+  marginBottom: theme.spacing(1.25),
 }));
 
 const Register = () => {
@@ -68,51 +67,44 @@ const Register = () => {
             <img src={SpiderIcon} alt="spider" width="100" height="100" />
             <Logo />
           </Box>
-          <TextField
-            className={classes.formRow}
+          <FormTextField
             label="Username"
             variant="outlined"
           />
-          <TextField
-            className={classes.formRow}
+          <FormTextField
             label="Email Address"
             variant="outlined"
             type="email"
           />
           <Box className={classes.splitRow}>
-            <Box marginRight="0.5rem">
-              <TextField
-                className={classes.textField}
+            <Box marginRight={theme.spacing(1.5)}>
+              <FormTextField
                 label="Given Name"
                 variant="outlined"
               />
             </Box>
-            <TextField
-              className={classes.textField}
+            <FormTextField
               label="Family Name"
               variant="outlined"
             />
           </Box>
-          <TextField
-            className={classes.formRow}
+          <FormTextField
             label="Password"
             variant="outlined"
             type="password"
           />
-          <TextField
-            className={classes.formRow}
+          <FormTextField
             label="Confirm Password"
             variant="outlined"
             type="password"
           />
-          <Button
-            className={classes.formButton}
+          <FormButton
             variant="contained"
             color="primary"
           >
             <ExitToAppIcon />
             Register
-          </Button>
+          </FormButton>
         </Box>
       </Box>
     </Box>
