@@ -31,7 +31,7 @@ function App() {
             <Register />
           </Route>
           <Route path="/events">
-            <DashboardLayout>
+            <DashboardLayout showHeaderBar showSideBar>
               <EventList />
             </DashboardLayout>
           </Route>
