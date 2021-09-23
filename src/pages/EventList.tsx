@@ -264,7 +264,6 @@ const EventList = () => {
                               <Box display="flex" alignItems="center">
                                 <Box
                                   component={Typography}
-                                  paddingLeft={2}
                                   fontWeight="bold"
                                   noWrap
                                 >
