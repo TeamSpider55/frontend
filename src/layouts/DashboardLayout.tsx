@@ -1,35 +1,38 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { styled, Theme, useTheme } from '@mui/material/styles';
 import HeaderBarLayout from './HeaderBarLayout';
 import SideBarLayout from './SideBarLayout';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
+const Root = styled('div')(({ theme }: { theme: Theme }) => (
+  {
     display: 'flex',
     minHeight: '100vh',
     backgroundColor: theme.palette.grey[200],
-  },
-  content: {
+  }
+));
+
+const Content = styled('main')(({ theme }: { theme: Theme }) => (
+  {
     flexGrow: 1,
     padding: theme.spacing(5),
-  },
-}));
+  }
+));
 
 interface Props {
   children: React.ComponentType;
 }
 
 const DashboardLayout = ({ children }: Props) => {
-  const classes = useStyles();
+  const theme = useTheme();
 
   return (
-    <div className={classes.root}>
+    <Root theme={theme}>
       <HeaderBarLayout />
       <SideBarLayout />
-      <main className={classes.content}>
+      <Content theme={theme}>
         { children }
-      </main>
-    </div>
+      </Content>
+    </Root>
   );
 };
 
