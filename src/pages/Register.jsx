@@ -52,7 +52,7 @@ const Register = () => {
   const classes = useStyles(theme);
 
   return (
-    <Page title="Forgot Password - OneThread">
+    <Page title="Register - OneThread">
       <Box className={classes.root}>
         <Box className={classes.signInLink}>
           Already have an account?
