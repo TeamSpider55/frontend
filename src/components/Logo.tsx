@@ -1,10 +1,15 @@
 import React from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
-import { Theme } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
 
 interface LogoHighlightProps {
-  theme: Theme;
+  theme: any;
+}
+
+interface LogoFrontProps {
+  theme: any;
+  dark: boolean;
 }
 
 const LogoHighlight = styled('span')(({ theme }: LogoHighlightProps) => ({
@@ -17,7 +22,8 @@ const LogoHighlight = styled('span')(({ theme }: LogoHighlightProps) => ({
   OUserSelect: 'none',
 }));
 
-const LogoFront = styled('span')(() => ({
+const LogoFront = styled('span')(({ theme, dark }: LogoFrontProps) => ({
+  color: theme.palette.grey[dark ? 800 : 0],
   MozUserSelect: 'none',
   WebkitUserSelect: 'none',
   msUserSelect: 'none',
@@ -25,20 +31,28 @@ const LogoFront = styled('span')(() => ({
   OUserSelect: 'none',
 }));
 
-const Logo = () => {
+interface Props {
+  dark?: boolean;
+}
+
+const Logo = ({ dark = false }: Props) => {
   const theme = useTheme();
 
   return (
     <Typography
       variant="h3"
-      style={{ cursor: 'pointer' }}
+      sx={{ cursor: 'pointer' }}
     >
-      <LogoFront>
-        One
-      </LogoFront>
-      <LogoHighlight theme={theme}>Thread</LogoHighlight>
+      <RouterLink to="/">
+        <LogoFront theme={theme} dark={dark}>One</LogoFront>
+        <LogoHighlight theme={theme}>Thread</LogoHighlight>
+      </RouterLink>
     </Typography>
   );
+};
+
+Logo.defaultProps = {
+  dark: false,
 };
 
 export default Logo;

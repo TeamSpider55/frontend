@@ -7,6 +7,7 @@ import { makeStyles } from '@mui/styles';
 import { styled, useTheme } from '@mui/material/styles';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import Logo from '../components/Logo';
+import Page from '../components/Page';
 import SpiderIcon from '../assets/spider1.png';
 
 const useStyles = makeStyles((theme) => ({
@@ -51,63 +52,66 @@ const Register = () => {
   const classes = useStyles(theme);
 
   return (
-    <Box className={classes.root}>
-      <Box className={classes.signInLink}>
-        Already have an account?
-        {' '}
-        <Link component={RouterLink} to="/login">
-          <Box display="inline" fontWeight={theme.typography.fontWeightBold}>
-            Sign in
-          </Box>
-        </Link>
-      </Box>
-      <Box className={classes.formContainer}>
-        <Box className={classes.form}>
-          <Box textAlign="center" paddingBottom={theme.spacing(1)}>
-            <img src={SpiderIcon} alt="spider" width="100" height="100" />
-            <Logo />
-          </Box>
-          <FormTextField
-            label="Username"
-            variant="outlined"
-          />
-          <FormTextField
-            label="Email Address"
-            variant="outlined"
-            type="email"
-          />
-          <Box className={classes.splitRow}>
-            <Box marginRight={theme.spacing(1.5)}>
+    <Page title="Forgot Password - OneThread">
+      <Box className={classes.root}>
+        <Box className={classes.signInLink}>
+          Already have an account?
+          {' '}
+          <Link component={RouterLink} to="/login">
+            <Box display="inline" fontWeight={theme.typography.fontWeightBold}>
+              Sign in
+            </Box>
+          </Link>
+        </Box>
+        <Box className={classes.formContainer}>
+          <Box className={classes.form}>
+            <Box textAlign="center" paddingBottom={theme.spacing(1)}>
+              <img src={SpiderIcon} alt="spider" width="100" height="100" />
+              <Logo dark />
+            </Box>
+            <FormTextField
+              label="Username"
+              variant="outlined"
+            />
+            <FormTextField
+              label="Email Address"
+              variant="outlined"
+              type="email"
+            />
+            <Box className={classes.splitRow}>
+              {/* FIXME: row split issue on larger screen */}
+              <Box marginRight={theme.spacing(1.5)}>
+                <FormTextField
+                  label="Given Name"
+                  variant="outlined"
+                />
+              </Box>
               <FormTextField
-                label="Given Name"
+                label="Family Name"
                 variant="outlined"
               />
             </Box>
             <FormTextField
-              label="Family Name"
+              label="Password"
               variant="outlined"
+              type="password"
             />
+            <FormTextField
+              label="Confirm Password"
+              variant="outlined"
+              type="password"
+            />
+            <FormButton
+              variant="contained"
+              color="primary"
+            >
+              <ExitToAppIcon />
+              Register
+            </FormButton>
           </Box>
-          <FormTextField
-            label="Password"
-            variant="outlined"
-            type="password"
-          />
-          <FormTextField
-            label="Confirm Password"
-            variant="outlined"
-            type="password"
-          />
-          <FormButton
-            variant="contained"
-            color="primary"
-          >
-            <ExitToAppIcon />
-            Register
-          </FormButton>
         </Box>
       </Box>
-    </Box>
+    </Page>
   );
 };
 

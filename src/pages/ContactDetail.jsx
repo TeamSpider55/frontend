@@ -7,6 +7,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import Button from '@mui/material/Button';
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 import { Link } from 'react-router-dom';
+import Page from '../components/Page';
 
 const useStyles = makeStyles((theme) => ({
   contactsButtonWrapper: {
@@ -213,7 +214,7 @@ const ContactDetail = () => {
   };
 
   return (
-    <>
+    <Page title="Account - OneThread">
       <div
         className={classes.contactsButtonWrapper}
         style={{
@@ -330,7 +331,7 @@ const ContactDetail = () => {
           </div>
         </div>
       </div>
-    </>
+    </Page>
   );
 };
 
