@@ -139,13 +139,6 @@ const Account = () => {
                 variant="outlined"
               />
             </Box>
-            <Box className={classes.splitRow}>
-              <Box className={classes.formLabel}>Password</Box>
-              <TextField
-                className={classes.textField}
-                variant="outlined"
-              />
-            </Box>
             <Box className={classes.changePasswordLink}>
               {' '}
               <Link component={RouterLink} to="/forgot-password">
