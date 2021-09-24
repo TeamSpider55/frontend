@@ -180,7 +180,7 @@ const ContactList = () => {
             to="#"
           >
             <AddIcon />
-            Add New Contact
+            ADD NEW EVENT
           </Button>
         </Box>
         <Card>

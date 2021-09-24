@@ -195,7 +195,7 @@ const EventList = () => {
             to="#"
           >
             <AddIcon />
-            Add New Event
+            ADD NEW EVENT
           </Button>
         </Box>
         <Card>

@@ -5,7 +5,8 @@ import {
 import makeStyles from '@mui/styles/makeStyles';
 import { Link as RouterLink } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
-// import LogoutIcon from '@mui/icons-material/Logout';
+import LogoutIcon from '@mui/icons-material/Logout';
+import EditIcon from '@mui/icons-material/Edit';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -151,7 +152,7 @@ const Account = () => {
               variant="contained"
               color="primary"
             >
-              {/* <LogoutIcon /> */}
+              <EditIcon />
               Update
             </Button>
             <Button
@@ -159,7 +160,7 @@ const Account = () => {
               variant="contained"
               color="primary"
             >
-              {/* <LogoutIcon /> */}
+              <LogoutIcon />
               Sign out
             </Button>
           </Box>
