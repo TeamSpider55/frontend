@@ -10,8 +10,12 @@ import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   contactsButtonWrapper: {
-    display: 'block',
-    marginTop: '5%',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingTop: theme.spacing(8),
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(4),
   },
   contactsButton: {
     fontSize: '36px',
@@ -28,7 +32,8 @@ const useStyles = makeStyles((theme) => ({
     top: '30%',
     right: '50%',
     left: '20%',
-    marginTop: '5%',
+    marginTop: theme.spacing(2),
+    marginLeft: theme.spacing(3),
     marginBottom: theme.spacing(4),
     borderRadius: '5px',
     boxShadow: '0 2px 3px rgb(0 0 0 / 0.2)',
@@ -157,9 +162,10 @@ const useStyles = makeStyles((theme) => ({
     top: '30%',
     right: '50%',
     left: '20%',
-    marginTop: '5%',
-    marginLeft: '5%',
+    marginTop: theme.spacing(2),
+    marginLeft: theme.spacing(7),
     marginBottom: theme.spacing(4),
+    marginRight: theme.spacing(4),
     borderRadius: '5px',
     boxShadow: '0 2px 3px rgb(0 0 0 / 0.2)',
     backgroundColor: theme.palette.background.default,
@@ -170,10 +176,17 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(6),
     marginRight: theme.spacing(6),
     fontWeight: 'bolder',
-    fontSize: '40px',
+    fontSize: '32px',
     color: theme.palette.primary.dark,
   },
-
+  '@global': {
+    '*::-webkit-scrollbar': {
+      width: '0.2em',
+    },
+    '*::-webkit-scrollbar-thumb': {
+      backgroundColor: theme.palette.grey[400],
+    },
+  },
 }));
 
 const ContactDetail = () => {
@@ -290,7 +303,7 @@ const ContactDetail = () => {
               defaultValue="+61123456789"
               readOnly={!editModeOn}
               spellCheck="false"
-              style={{ 'box-shadow': editModeOn ? '0 0 0 1pt lightGrey' : 'none', 'border-radius': editModeOn ? '5px' : '0px' }}
+              style={{ boxShadow: editModeOn ? '0 0 0 1pt lightGrey' : 'none', borderRadius: editModeOn ? '5px' : '0px' }}
             />
           </div>
           <div>
@@ -300,7 +313,7 @@ const ContactDetail = () => {
               id="occupation"
               readOnly={!editModeOn}
               spellCheck="false"
-              style={{ 'box-shadow': editModeOn ? '0 0 0 1pt lightGrey' : 'none', 'border-radius': editModeOn ? '5px' : '0px' }}
+              style={{ boxShadow: editModeOn ? '0 0 0 1pt lightGrey' : 'none', borderRadius: editModeOn ? '5px' : '0px' }}
             />
           </div>
           <div>
@@ -310,7 +323,7 @@ const ContactDetail = () => {
               id="location"
               readOnly={!editModeOn}
               spellCheck="false"
-              style={{ 'box-shadow': editModeOn ? '0 0 0 1pt lightGrey' : 'none', 'border-radius': editModeOn ? '5px' : '0px' }}
+              style={{ boxShadow: editModeOn ? '0 0 0 1pt lightGrey' : 'none', borderRadius: editModeOn ? '5px' : '0px' }}
             />
           </div>
           <textarea
@@ -318,7 +331,7 @@ const ContactDetail = () => {
             rows="5"
             readOnly={!editModeOn}
             spellCheck="false"
-            style={{ 'box-shadow': editModeOn ? '0 0 0 1pt lightGrey' : 'none', 'border-radius': editModeOn ? '5px' : '0px' }}
+            style={{ boxShadow: editModeOn ? '0 0 0 1pt lightGrey' : 'none', borderRadius: editModeOn ? '5px' : '0px' }}
           />
         </div>
       </div>
