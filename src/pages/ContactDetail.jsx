@@ -14,11 +14,11 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingTop: theme.spacing(8),
-    paddingLeft: theme.spacing(1),
     paddingRight: theme.spacing(4),
   },
   contactsButton: {
     fontSize: '36px',
+    marginLeft: theme.spacing(3),
     color: theme.palette.primary.dark,
   },
   arrowLeftIcon: {
@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
   },
   contactDetail: {
     display: 'inline-block',
-    height: '75%',
+    minHeight: '75%',
     width: '45%',
     top: '30%',
     right: '50%',
@@ -157,7 +157,7 @@ const useStyles = makeStyles((theme) => ({
   contactTimeline: {
     display: 'inline-block',
     verticalAlign: 'top',
-    height: '75%',
+    minHeight: '75%',
     width: '45%',
     top: '30%',
     right: '50%',

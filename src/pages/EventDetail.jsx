@@ -1,6 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTheme } from '@mui/material/styles';
-import { Box, TextField } from '@mui/material';
+import {
+  Box,
+  TextField,
+  Table,
+  Avatar,
+} from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import EditIcon from '@mui/icons-material/Edit';
 import DoneIcon from '@mui/icons-material/Done';
@@ -9,9 +14,12 @@ import Button from '@mui/material/Button';
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 import { Link } from 'react-router-dom';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EmailIcon from '@mui/icons-material/Email';
+import CancelIcon from '@mui/icons-material/Cancel';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DesktopDateTimePicker from '@mui/lab/DateTimePicker';
+import ContactService from '../services/ContactService';
 
 const useStyles = makeStyles((theme) => ({
   eventButtonsContainer: {
@@ -19,11 +27,12 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingTop: theme.spacing(8),
-    paddingLeft: theme.spacing(1),
+    // paddingLeft: theme.spacing(1),
     paddingRight: theme.spacing(5),
   },
   eventsButton: {
     fontSize: '36px',
+    marginLeft: theme.spacing(3),
     color: theme.palette.primary.dark,
   },
   arrowLeftIcon: {
@@ -64,24 +73,10 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
-  editIcon: {
-    cursor: 'pointer',
-    outline: 'none',
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-  },
-  doneIcon: {
-    display: 'inline-flex',
-    cursor: 'pointer',
-    outline: 'none',
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-  },
-  clearIcon: {
-    cursor: 'pointer',
-    outline: 'none',
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
+  eventDateTime: {
+    marginLeft: theme.spacing(7),
+    marginRight: theme.spacing(4),
+    marginTop: theme.spacing(4),
   },
   eventDescription: {
     display: 'inline-block',
@@ -127,6 +122,44 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '24px',
     color: theme.palette.common.black,
   },
+  participantTitle: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: theme.spacing(4),
+    marginBottom: theme.spacing(1),
+    marginLeft: theme.spacing(7),
+    marginRight: theme.spacing(6),
+    fontWeight: 'bolder',
+    fontSize: '16px',
+    color: theme.palette.common.black,
+  },
+  inviteButton: {
+    color: theme.palette.common.black,
+    '&:hover': {
+      backgroundColor: theme.palette.grey[200],
+    },
+  },
+  emailIcon: {
+    height: '16px',
+    width: '16px',
+  },
+  cancelIcon: {
+    height: '16px',
+    width: '16px',
+  },
+  participantAvatar: {
+    height: '32px',
+    width: '32px',
+  },
+  participantContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginLeft: theme.spacing(7),
+    marginRight: theme.spacing(7),
+    marginBottom: theme.spacing(1),
+  },
   '@global': {
     '*::-webkit-scrollbar': {
       width: '0.2em',
@@ -146,6 +179,9 @@ const EventDetail = () => {
   const [newDateTime, setNewDateTime] = useState('01/01/1900 12:00 am');
   const [description, setDescription] = useState('');
 
+  const [participants, setParticipants] = useState([]);
+  const [newParticipants, setNewParticipants] = useState([]);
+
   const toggleEditMode = () => {
     setDescription(document.getElementById('description').value);
     if (document.getElementById('eventDateTime')) {
@@ -160,15 +196,33 @@ const EventDetail = () => {
       document.getElementById('eventDateTime').value = dateTime;
     }
     setNewDateTime(dateTime);
+    setNewParticipants(participants);
 
     setEditModeOn(false);
   };
   const editModeConfirm = () => {
     setDescription(document.getElementById('description').value);
     setDateTime(newDateTime);
+    setParticipants(newParticipants);
     setEditModeOn(false);
   };
   const removeEvent = () => {
+    /* FIXME: functionality of cancel event button and redirect. */
+  };
+
+  const fetchParticipants = (async () => {
+    /* FIXME: setParticipants(await (await fetch('')).json()); */
+    const list = await ContactService.getContacts();
+    setParticipants(list);
+    setNewParticipants(list);
+  });
+  useEffect(() => {
+    fetchParticipants();
+  }, []);
+
+  const deleteParticipant = (email) => {
+    if (participants === null) return;
+    setNewParticipants(participants.filter((c) => c.email !== email));
   };
 
   return (
@@ -244,7 +298,6 @@ const EventDetail = () => {
         </Box>
       </Box>
       <Box className={classes.eventDetail}>
-
         <Box>
           <Box className={classes.eventName}>
             <input
@@ -255,22 +308,54 @@ const EventDetail = () => {
               readOnly={!editModeOn}
               spellCheck="false"
             />
-
           </Box>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DesktopDateTimePicker
-              renderInput={(props) => <TextField {...props} />}
-              label="Event Date and Time"
-              value={newDateTime}
-              disabled={!editModeOn}
-              onChange={(newValue) => {
-                setNewDateTime(newValue);
-              }}
-              disablePast
-              id="eventDateTime"
-              inputProps={{ readOnly: true }}
-            />
-          </LocalizationProvider>
+          <Box className={classes.eventDateTime}>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DesktopDateTimePicker
+                renderInput={(props) => <TextField {...props} />}
+                label="Event Date and Time"
+                value={newDateTime}
+                disabled={!editModeOn}
+                onChange={(newValue) => {
+                  setNewDateTime(newValue);
+                }}
+                disablePast
+                id="eventDateTime"
+                inputProps={{ readOnly: true }}
+              />
+            </LocalizationProvider>
+          </Box>
+          <Box className={classes.participantTitle}>
+            Participants
+            <Button className={classes.inviteButton}>
+              <EmailIcon className={classes.emailIcon} />
+              Invite
+            </Button>
+          </Box>
+          <Box>
+            {newParticipants.map((participant) => {
+              const { avatarURL, email } = participant;
+              return (
+                <Box className={classes.participantContainer}>
+                  <Box display="flex">
+                    <Avatar className={classes.participantAvatar} alt="avatarURL" src="#FIXME: avatarURL" />
+                    <Box
+                      paddingLeft={2}
+                      noWrap
+                    >
+                      {email}
+                    </Box>
+                  </Box>
+                  {editModeOn && (
+                    <CancelIcon
+                      className={classes.cancelIcon}
+                      onClick={() => deleteParticipant(email)}
+                    />
+                  )}
+                </Box>
+              );
+            })}
+          </Box>
         </Box>
       </Box>
 
