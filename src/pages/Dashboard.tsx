@@ -3,6 +3,7 @@ import { useTheme } from '@emotion/react';
 import { Box, Button, Typography } from '@mui/material';
 import Page from '../components/Page';
 import AuthService from '../services/AuthService';
+import UserService from '../services/UserService';
 
 const Dashboard = () => {
   const theme = useTheme() as any;
@@ -25,6 +26,12 @@ const Dashboard = () => {
           !
           <Button onClick={() => AuthService.login()}>
             LOGIN
+          </Button>
+          <Button onClick={() => UserService.getUser()}>
+            PROFILE
+          </Button>
+          <Button onClick={() => UserService.logout()}>
+            LOGOUT
           </Button>
         </Typography>
       </Box>
