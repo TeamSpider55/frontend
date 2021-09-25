@@ -8,6 +8,7 @@ import ContactList from './pages/ContactList';
 import EventList from './pages/EventList';
 import Login from './pages/Login';
 import PageNotFound from './pages/PageNotFound';
+import Dashboard from './pages/Dashboard';
 import ResetPassword from './pages/ResetPassword';
 import Register from './pages/Register';
 import ThemeConfig from './theme';
@@ -24,7 +25,7 @@ function App() {
           </Route>
           <Route path="/dashboard">
             <DashboardLayout showHeaderBar showSideBar>
-              <PageNotFound />
+              <Dashboard />
             </DashboardLayout>
           </Route>
           <Route path="/register">
