@@ -3,7 +3,7 @@ import { useTheme } from '@mui/material/styles';
 import {
   Box,
   TextField,
-  Table,
+  Paper,
   Avatar,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
@@ -33,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
   eventsButton: {
     fontSize: '36px',
     marginLeft: theme.spacing(3),
+    paddingRight: theme.spacing(4),
     color: theme.palette.primary.dark,
   },
   arrowLeftIcon: {
@@ -159,6 +160,11 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(7),
     marginRight: theme.spacing(7),
     marginBottom: theme.spacing(1),
+  },
+  participantScrollable: {
+    maxHeight: '192px',
+    overflow: 'auto',
+    boxShadow: 'none',
   },
   '@global': {
     '*::-webkit-scrollbar': {
@@ -333,28 +339,30 @@ const EventDetail = () => {
             </Button>
           </Box>
           <Box>
-            {newParticipants.map((participant) => {
-              const { avatarURL, email } = participant;
-              return (
-                <Box className={classes.participantContainer}>
-                  <Box display="flex">
-                    <Avatar className={classes.participantAvatar} alt="avatarURL" src="#FIXME: avatarURL" />
-                    <Box
-                      paddingLeft={2}
-                      noWrap
-                    >
-                      {email}
+            <Paper className={classes.participantScrollable}>
+              {newParticipants.map((participant) => {
+                const { avatarURL, email } = participant;
+                return (
+                  <Box className={classes.participantContainer}>
+                    <Box display="flex">
+                      <Avatar className={classes.participantAvatar} alt="avatarURL" src="#FIXME: avatarURL" />
+                      <Box
+                        paddingLeft={2}
+                        noWrap
+                      >
+                        {email}
+                      </Box>
                     </Box>
+                    {editModeOn && (
+                      <CancelIcon
+                        className={classes.cancelIcon}
+                        onClick={() => deleteParticipant(email)}
+                      />
+                    )}
                   </Box>
-                  {editModeOn && (
-                    <CancelIcon
-                      className={classes.cancelIcon}
-                      onClick={() => deleteParticipant(email)}
-                    />
-                  )}
-                </Box>
-              );
-            })}
+                );
+              })}
+            </Paper>
           </Box>
         </Box>
       </Box>

@@ -19,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
   contactsButton: {
     fontSize: '36px',
     marginLeft: theme.spacing(3),
+    paddingRight: theme.spacing(4),
     color: theme.palette.primary.dark,
   },
   arrowLeftIcon: {
