@@ -6,6 +6,7 @@ import ContactDetail from './pages/ContactDetail';
 import ForgotPassword from './pages/ForgotPassword';
 import ContactList from './pages/ContactList';
 import EventList from './pages/EventList';
+import EventDetail from './pages/EventDetail';
 import Login from './pages/Login';
 import PageNotFound from './pages/PageNotFound';
 import ResetPassword from './pages/ResetPassword';
@@ -33,6 +34,11 @@ function App() {
           <Route path="/events">
             <DashboardLayout showHeaderBar showSideBar>
               <EventList />
+            </DashboardLayout>
+          </Route>
+          <Route path="/event/1">
+            <DashboardLayout showHeaderBar showSideBar>
+              <EventDetail />
             </DashboardLayout>
           </Route>
           <Route path="/login">
