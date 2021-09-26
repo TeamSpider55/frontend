@@ -7,7 +7,7 @@ const Dashboard = () => {
   const theme = useTheme() as any;
 
   return (
-    <Page title="Page Not Found - OneThread">
+    <Page title="Dashboard - OneThread">
       <Box
         sx={{
           minHeight: '100vh',
