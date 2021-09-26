@@ -176,7 +176,7 @@ const EventList = () => {
   }
 
   return (
-    <Page title="Schedule - OneThread">
+    <Page title="Events - OneThread">
       <StyledContainer theme={theme}>
         <Box
           display="flex"
@@ -195,7 +195,7 @@ const EventList = () => {
             to="#"
           >
             <AddIcon />
-            Add New Event
+            ADD NEW EVENT
           </Button>
         </Box>
         <Card>

@@ -341,7 +341,7 @@ const EventDetail = () => {
           <Box>
             <Paper className={classes.participantScrollable}>
               {newParticipants.map((participant) => {
-                const { avatarURL, email } = participant;
+                const { email } = participant;
                 return (
                   <Box className={classes.participantContainer}>
                     <Box display="flex">

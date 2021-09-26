@@ -11,6 +11,7 @@ import Login from './pages/Login';
 import PageNotFound from './pages/PageNotFound';
 import ResetPassword from './pages/ResetPassword';
 import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
 import ThemeConfig from './theme';
 
 function App() {
@@ -25,7 +26,7 @@ function App() {
           </Route>
           <Route path="/dashboard">
             <DashboardLayout showHeaderBar showSideBar>
-              <PageNotFound />
+              <Dashboard />
             </DashboardLayout>
           </Route>
           <Route path="/register">
@@ -49,7 +50,7 @@ function App() {
               <ContactList />
             </DashboardLayout>
           </Route>
-          <Route exact path="/contacts/1">
+          <Route exact path="/contacts/:contactId">
             <DashboardLayout showHeaderBar showSideBar>
               <ContactDetail />
             </DashboardLayout>
