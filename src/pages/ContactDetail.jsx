@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
-import { Page } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DoneIcon from '@mui/icons-material/Done';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -228,7 +227,7 @@ const ContactDetail = () => {
   };
 
   return (
-    <Page title="Contact - OneThread">
+    <>
       <div
         className={classes.contactsButtonWrapper}
         style={{

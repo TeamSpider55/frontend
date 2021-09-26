@@ -5,7 +5,6 @@ import {
   TextField,
   Paper,
   Avatar,
-  Page,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import EditIcon from '@mui/icons-material/Edit';
@@ -233,7 +232,7 @@ const EventDetail = () => {
   };
 
   return (
-    <Page title="Event - OneThread">
+    <>
       <Box
         className={classes.eventButtonsContainer}
         style={{
@@ -342,7 +341,7 @@ const EventDetail = () => {
           <Box>
             <Paper className={classes.participantScrollable}>
               {newParticipants.map((participant) => {
-                const { avatarURL, email } = participant;
+                const { email } = participant;
                 return (
                   <Box className={classes.participantContainer}>
                     <Box display="flex">
@@ -382,7 +381,7 @@ const EventDetail = () => {
           style={{ boxShadow: editModeOn ? '0 0 0 1pt lightGrey' : 'none', borderRadius: editModeOn ? '5px' : '0px' }}
         />
       </Box>
-    </Page>
+    </>
   );
 };
 
