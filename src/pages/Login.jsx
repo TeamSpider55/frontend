@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  Button, Box, TextField, Link,
+  Button, Box, TextField, Link, Alert,
 } from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
+import { useHistory, Link as RouterLink } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
 import { styled, useTheme } from '@mui/material/styles';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import Logo from '../components/Logo';
 import Page from '../components/Page';
 import SpiderIcon from '../assets/spider1.png';
+import AuthService from '../services/AuthService';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,6 +51,26 @@ const FormTextField = styled(TextField)(({ theme }) => ({
 const Login = () => {
   const theme = useTheme();
   const classes = useStyles(theme);
+  const history = useHistory();
+
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [isError, setIsError] = useState(false);
+
+  const login = async () => {
+    if (username === '' || password === '') {
+      setIsError(true);
+      return;
+    }
+    setIsError(false);
+
+    try {
+      const loginResponse = await AuthService.login({ username, password });
+      history.push('/dashboard');
+    } catch {
+      setIsError(true);
+    }
+  };
 
   return (
     <Page title="Login - OneThread">
@@ -70,16 +91,15 @@ const Login = () => {
               <Logo dark />
             </Box>
             <FormTextField
-              label="Email Address"
+              label="Username"
               variant="outlined"
-              type="email"
-              // FIXME: required field
+              onChange={(e) => setUsername(e.target.value)}
             />
             <FormTextField
               label="Password"
               variant="outlined"
               type="password"
-              // FIXME: required field
+              onChange={(e) => setPassword(e.target.value)}
             />
             <Box className={classes.forgotPasswordLink}>
               {' '}
@@ -95,10 +115,20 @@ const Login = () => {
                 </Box>
               </Link>
             </Box>
+            {
+              isError
+                ? (
+                  <Alert severity="error">
+                    Invalid username or password.
+                  </Alert>
+                )
+                : null
+            }
             <Button
               className={classes.formButton}
               variant="contained"
               color="primary"
+              onClick={login}
             >
               <ExitToAppIcon />
               Login
