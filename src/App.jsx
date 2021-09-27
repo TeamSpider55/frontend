@@ -6,11 +6,13 @@ import ContactDetail from './pages/ContactDetail';
 import ForgotPassword from './pages/ForgotPassword';
 import ContactList from './pages/ContactList';
 import EventList from './pages/EventList';
+import EventDetail from './pages/EventDetail';
 import Login from './pages/Login';
 import PageNotFound from './pages/PageNotFound';
 import Dashboard from './pages/Dashboard';
 import ResetPassword from './pages/ResetPassword';
 import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
 import ThemeConfig from './theme';
 
 function App() {
@@ -36,6 +38,11 @@ function App() {
               <EventList />
             </DashboardLayout>
           </Route>
+          <Route path="/event/1">
+            <DashboardLayout showHeaderBar showSideBar>
+              <EventDetail />
+            </DashboardLayout>
+          </Route>
           <Route path="/login">
             <Login />
           </Route>
@@ -44,7 +51,7 @@ function App() {
               <ContactList />
             </DashboardLayout>
           </Route>
-          <Route exact path="/contacts/1">
+          <Route exact path="/contacts/:contactId">
             <DashboardLayout showHeaderBar showSideBar>
               <ContactDetail />
             </DashboardLayout>
