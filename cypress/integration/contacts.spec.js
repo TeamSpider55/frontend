@@ -93,10 +93,23 @@ describe('Contacts List', () => {
   });
 
   it('can search by name', () => {
-    
+    cy.get('[placeholder="Search..."]').should('match', 'input')
+      .type('given9');
+
+    const normalizeText = (s) => s.replace(/\s/g, '').toLowerCase()
+    cy.get('table').find('tbody>tr').first().find('p').then(($p) => {
+        const val = normalizeText($p.text());
+        if (!val.match(/\\*given9\\*/)) {
+            throw new Error(`Could not find the searched text`);
+        }
+    });
   });
 
   it('can select multiple', () => {
+    cy.get('table').find('tbody>tr [type="checkbox"]').first()
+      .should('match', 'input').click();
 
+    cy.get('table').find('tbody>tr [type="checkbox"]').last()
+      .should('match', 'input').click();
   });
 });
