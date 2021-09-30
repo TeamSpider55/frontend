@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTheme, styled } from '@material-ui/core/styles';
+import { useTheme, styled } from '@mui/material/styles';
 import {
   Box,
   Toolbar,
@@ -8,9 +8,9 @@ import {
   Typography,
   OutlinedInput,
   InputAdornment,
-} from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
-import SearchIcon from '@material-ui/icons/Search';
+} from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import SearchIcon from '@mui/icons-material/Search';
 
 const SearchStyle = styled(OutlinedInput)(({ theme }) => ({
   width: 240,
@@ -25,13 +25,23 @@ const SearchStyle = styled(OutlinedInput)(({ theme }) => ({
 }));
 
 interface Props {
-  numSelected: number;
-  filterName: string;
-  onFilterName: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> | undefined;
+  selected: string[];
+  filter: string;
+  onFilter: React.ChangeEventHandler<HTMLInputElement |
+    HTMLTextAreaElement> | undefined;
+  deleteMany(ids: string[]): void;
 }
 
-export default function UserListToolbar({ numSelected, filterName, onFilterName }: Props) {
+const ContactListToolbar = (
+  {
+    selected,
+    filter,
+    onFilter,
+    deleteMany,
+  }: Props,
+) => {
   const theme = useTheme();
+
   return (
     <Box
       component={Toolbar}
@@ -40,15 +50,15 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName 
       justifyContent="space-between"
       padding={theme.spacing(0, 1, 0, 3)}
     >
-      {numSelected > 0 ? (
+      {selected.length > 0 ? (
         <Typography component="div" variant="subtitle1">
-          {`${numSelected} selected`}
+          {`${selected.length} selected`}
         </Typography>
       ) : (
         <SearchStyle
-          value={filterName}
-          onChange={onFilterName}
-          placeholder="Search user..."
+          value={filter}
+          onChange={onFilter}
+          placeholder="Search..."
           startAdornment={(
             <InputAdornment position="start">
               <SearchIcon />
@@ -57,13 +67,17 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName 
         />
       )}
 
-      {numSelected > 0 ? (
+      {selected.length > 0 ? (
         <Tooltip title="Delete">
-          <IconButton>
+          <IconButton
+            onClick={() => deleteMany(selected)}
+          >
             <DeleteIcon />
           </IconButton>
         </Tooltip>
       ) : null}
     </Box>
   );
-}
+};
+
+export default ContactListToolbar;

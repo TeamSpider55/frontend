@@ -1,36 +1,44 @@
 import React, { useState } from 'react';
-import EditIcon from '@material-ui/icons/Edit';
-import DoneIcon from '@material-ui/icons/Done';
-import ClearIcon from '@material-ui/icons/Clear';
-import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
+import { useTheme } from '@mui/material/styles';
+import { makeStyles } from '@mui/styles';
+import EditIcon from '@mui/icons-material/Edit';
+import DoneIcon from '@mui/icons-material/Done';
+import ClearIcon from '@mui/icons-material/Clear';
+import Button from '@mui/material/Button';
+import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 import { Link } from 'react-router-dom';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   contactsButtonWrapper: {
-    display: 'block',
-    marginTop: '5%',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingTop: theme.spacing(8),
+    paddingRight: theme.spacing(4),
   },
   contactsButton: {
     fontSize: '36px',
+    marginLeft: theme.spacing(3),
+    paddingRight: theme.spacing(4),
+    color: theme.palette.primary.dark,
   },
   arrowLeftIcon: {
     cursor: 'pointer',
     fontSize: '36px',
   },
   contactDetail: {
-    display: 'block',
-    height: 'fit-content',
-    width: 'fit-content',
+    display: 'inline-block',
+    minHeight: '75%',
+    width: '45%',
     top: '30%',
     right: '50%',
     left: '20%',
-    marginTop: '5%',
-    marginBottom: '32px',
+    marginTop: theme.spacing(2),
+    marginLeft: theme.spacing(3),
+    marginBottom: theme.spacing(4),
     borderRadius: '5px',
     boxShadow: '0 2px 3px rgb(0 0 0 / 0.2)',
-    backgroundColor: 'white',
+    backgroundColor: theme.palette.background.default,
   },
   imgNameWrapper: {
     display: 'flex',
@@ -40,30 +48,44 @@ const useStyles = makeStyles(() => ({
     display: 'block',
     height: '144px',
     width: '144px',
-    marginLeft: '48px',
+    marginLeft: theme.spacing(6),
     '& img': {
       height: '100%',
-      width: '100%',
       borderRadius: '10px',
     },
   },
   contactName: {
-    margin: '0 32px',
-    fontWeight: 'bolder',
-    fontSize: '32px',
+    marginLeft: theme.spacing(4),
+    marginRight: theme.spacing(4),
+    '& input': {
+      fontWeight: 'bolder',
+      fontSize: '32px',
+      fontFamily: 'Cairo',
+      border: 'none',
+      width: '75%',
+      marginLeft: theme.spacing(3),
+      marginRight: theme.spacing(3),
+      padding: theme.spacing(0),
+      lineHeight: 'unset',
+      resize: 'none',
+      '&:focus': {
+        outline: 'none',
+      },
+    },
   },
   contactInfo: {
-    margin: '0 32px',
+    marginLeft: theme.spacing(7),
+    marginRight: theme.spacing(4),
     fontSize: '16px',
   },
   detailLabelWrapper: {
     display: 'inline-block',
-    marginLeft: '48px',
-    marginTop: '24px',
+    marginLeft: theme.spacing(11),
+    marginTop: theme.spacing(3),
     textAlign: 'right',
     '& div': {
-      marginTop: '8px',
-      marginBottom: '8px',
+      marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(1),
       fontWeight: 'bold',
     },
   },
@@ -71,17 +93,22 @@ const useStyles = makeStyles(() => ({
     display: 'inline-block',
     left: 'auto',
     right: '0',
-    marginTop: '24px',
-    marginRight: '32px',
-    marginLeft: '16px',
+    marginTop: theme.spacing(3),
+    marginRight: theme.spacing(4),
+    marginLeft: theme.spacing(2),
     verticalAlign: 'top',
     '& input': {
+      display: 'block',
       fontFamily: 'Cairo',
       fontSize: '1em',
       fontWeight: 'lighter',
       border: 'none',
-      padding: '0',
-      marginTop: '8px',
+      width: '100%',
+      padding: theme.spacing(0),
+      paddingLeft: theme.spacing(1),
+      paddingRight: theme.spacing(1),
+      marginTop: theme.spacing(1),
+      lineHeight: 'unset',
       resize: 'none',
       '&:focus': {
         outline: 'none',
@@ -92,8 +119,12 @@ const useStyles = makeStyles(() => ({
       fontSize: '1em',
       fontWeight: 'lighter',
       border: 'none',
-      padding: '0',
-      marginTop: '8px',
+      width: '100%',
+      padding: theme.spacing(0),
+      paddingLeft: theme.spacing(1),
+      paddingRight: theme.spacing(1),
+      marginTop: theme.spacing(1),
+      lineHeight: 'unset',
       resize: 'none',
       '&:focus': {
         outline: 'none',
@@ -102,69 +133,111 @@ const useStyles = makeStyles(() => ({
   },
   editIconWrapper: {
     width: '100%',
-    paddingTop: '8px',
+    paddingTop: theme.spacing(1),
     textAlign: 'right',
   },
   editIcon: {
     cursor: 'pointer',
     outline: 'none',
-    marginLeft: '8px',
-    marginRight: '8px',
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
   },
   doneIcon: {
     display: 'inline-flex',
     cursor: 'pointer',
     outline: 'none',
-    marginLeft: '8px',
-    marginRight: '8px',
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
   },
   clearIcon: {
     cursor: 'pointer',
     outline: 'none',
-    marginLeft: '8px',
-    marginRight: '8px',
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
   },
-
+  contactTimeline: {
+    display: 'inline-block',
+    verticalAlign: 'top',
+    minHeight: '75%',
+    width: '45%',
+    top: '30%',
+    right: '50%',
+    left: '20%',
+    marginTop: theme.spacing(2),
+    marginLeft: theme.spacing(7),
+    marginBottom: theme.spacing(4),
+    marginRight: theme.spacing(4),
+    borderRadius: '5px',
+    boxShadow: '0 2px 3px rgb(0 0 0 / 0.2)',
+    backgroundColor: theme.palette.background.default,
+  },
+  timelineTitle: {
+    marginTop: theme.spacing(4),
+    marginBottom: theme.spacing(4),
+    marginLeft: theme.spacing(6),
+    marginRight: theme.spacing(6),
+    fontWeight: 'bolder',
+    fontSize: '32px',
+    color: theme.palette.primary.dark,
+  },
+  '@global': {
+    '*::-webkit-scrollbar': {
+      width: '0.2em',
+    },
+    '*::-webkit-scrollbar-thumb': {
+      backgroundColor: theme.palette.grey[400],
+    },
+  },
 }));
 
 const ContactDetail = () => {
-  const classes = useStyles();
+  const theme = useTheme();
+  const classes = useStyles(theme);
   const [editModeOn, setEditModeOn] = useState(false);
+  const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [occupation, setOccupation] = useState('');
-  const [address1, setAddress1] = useState('');
-  const [address2, setAddress2] = useState('');
+  const [location, setLocation] = useState('');
   const [description, setDescription] = useState('');
 
   const toggleEditMode = () => {
+    setName(document.getElementById('name').value);
     setPhone(document.getElementById('phone').value);
     setOccupation(document.getElementById('occupation').value);
-    setAddress1(document.getElementById('address1').value);
-    setAddress2(document.getElementById('address2').value);
+    setLocation(document.getElementById('location').value);
     setDescription(document.getElementById('description').value);
     setEditModeOn(true);
   };
   const editModeCancel = () => {
+    document.getElementById('name').value = name;
     document.getElementById('phone').value = phone;
     document.getElementById('occupation').value = occupation;
-    document.getElementById('address1').value = address1;
-    document.getElementById('address2').value = address2;
+    document.getElementById('location').value = location;
     document.getElementById('description').value = description;
 
     setEditModeOn(false);
   };
   const editModeConfirm = () => {
+    setName(document.getElementById('name').value);
     setPhone(document.getElementById('phone').value);
     setOccupation(document.getElementById('occupation').value);
-    setAddress1(document.getElementById('address1').value);
-    setAddress2(document.getElementById('address2').value);
+    setLocation(document.getElementById('location').value);
     setDescription(document.getElementById('description').value);
     setEditModeOn(false);
   };
 
   return (
     <>
-      <div className={classes.contactsButtonWrapper}>
+      <div
+        className={classes.contactsButtonWrapper}
+        style={{
+          MozUserSelect: 'none',
+          WebkitUserSelect: 'none',
+          msUserSelect: 'none',
+          userSelect: 'none',
+          OUserSelect: 'none',
+        }}
+      >
         <Link to="/contacts">
           <Button className={classes.contactsButton}>
             <ArrowLeftIcon className={classes.arrowLeftIcon} />
@@ -181,13 +254,23 @@ const ContactDetail = () => {
         <div className={classes.imgNameWrapper}>
           <div className={classes.contactImgWrapper}>
             <img
-              src="https://images.unsplash.com/photo-1584673392125-f91e13c6a3cb?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80"
+              src="https://images.unsplash.com/photo-1600180758890-6b94519a8ba6?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80"
               alt="Unknown"
+              height="144px"
+              width="144px"
             />
           </div>
           <div>
             <div className={classes.contactName}>
-              Farhan Fauzan
+              <input
+                type="text"
+                name="name"
+                id="name"
+                defaultValue="Farhan Fauzan"
+                readOnly={!editModeOn}
+                spellCheck="false"
+              />
+
             </div>
             <div className={classes.contactInfo}>
               Available for hire
@@ -197,9 +280,8 @@ const ContactDetail = () => {
         <div className={classes.detailLabelWrapper}>
           <div id="detail-label-email">Email</div>
           <div id="detail-label-phone">Phone Number</div>
-          <div id="detail-label-location">Occupation</div>
-          <div id="detail-label-location">Address 1</div>
-          <div id="detail-label-location">Address 2</div>
+          <div id="detail-label-occupation">Occupation</div>
+          <div id="detail-label-location">Location</div>
           <div id="detail-label-description">Description</div>
         </div>
         <div className={classes.detailWrapper}>
@@ -209,6 +291,8 @@ const ContactDetail = () => {
               name="email"
               defaultValue="Example@123.com"
               readOnly={!editModeOn}
+              spellCheck="false"
+              style={{ boxShadow: editModeOn ? '0 0 0 1pt lightGrey' : 'none', borderRadius: editModeOn ? '5px' : '0px' }}
             />
           </div>
           <div>
@@ -219,6 +303,8 @@ const ContactDetail = () => {
               maxLength={12}
               defaultValue="+61123456789"
               readOnly={!editModeOn}
+              spellCheck="false"
+              style={{ boxShadow: editModeOn ? '0 0 0 1pt lightGrey' : 'none', borderRadius: editModeOn ? '5px' : '0px' }}
             />
           </div>
           <div>
@@ -227,27 +313,36 @@ const ContactDetail = () => {
               name="occupation"
               id="occupation"
               readOnly={!editModeOn}
+              spellCheck="false"
+              style={{ boxShadow: editModeOn ? '0 0 0 1pt lightGrey' : 'none', borderRadius: editModeOn ? '5px' : '0px' }}
             />
           </div>
           <div>
             <input
               type="text"
-              name="address1"
-              id="address1"
+              name="location"
+              id="location"
               readOnly={!editModeOn}
+              spellCheck="false"
+              style={{ boxShadow: editModeOn ? '0 0 0 1pt lightGrey' : 'none', borderRadius: editModeOn ? '5px' : '0px' }}
             />
           </div>
-          <div>
-            <input
-              type="text"
-              name="address2"
-              id="address2"
-              readOnly={!editModeOn}
-            />
-          </div>
-          <textarea id="description" rows="5" readOnly={!editModeOn} />
+          <textarea
+            id="description"
+            rows="5"
+            readOnly={!editModeOn}
+            spellCheck="false"
+            style={{ boxShadow: editModeOn ? '0 0 0 1pt lightGrey' : 'none', borderRadius: editModeOn ? '5px' : '0px' }}
+          />
         </div>
+      </div>
 
+      <div className={classes.contactTimeline}>
+        <div>
+          <div className={classes.timelineTitle}>
+            Timeline
+          </div>
+        </div>
       </div>
     </>
   );

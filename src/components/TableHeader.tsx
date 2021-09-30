@@ -1,12 +1,11 @@
 import React from 'react';
 import {
-  Box,
   Checkbox,
   TableRow,
   TableCell,
   TableHead,
   TableSortLabel,
-} from '@material-ui/core';
+} from '@mui/material';
 
 interface Props {
   order: 'asc' | 'desc';
@@ -54,9 +53,6 @@ const TableHeader = ({
               onClick={createSortHandler(headCell.id)}
             >
               {headCell.label}
-              {orderBy === headCell.id ? (
-                <Box />
-              ) : null}
             </TableSortLabel>
           </TableCell>
         ))}

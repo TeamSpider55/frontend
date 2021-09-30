@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
-// material
-import { CssBaseline } from '@material-ui/core';
-import { ThemeProvider, createTheme } from '@material-ui/core/styles';
+import { CssBaseline } from '@mui/material';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import palette from './palette';
 import typography from './typography';
 
