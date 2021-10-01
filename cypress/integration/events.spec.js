@@ -37,11 +37,38 @@ describe('Events List', () => {
     });
   });
 
+  it('can sort by \'Time\' table header', () => {
+    cy.get('table').find('thead>tr').as('tableHeaderRow');
+    cy.get('@tableHeaderRow').contains('Time').click();
+
+    // arrow should be indicated
+    cy.get('@tableHeaderRow').contains('Time').find('svg').first()
+      .should('have.attr', 'data-testid', 'ArrowDownwardIcon');
+  });
+
   it('can select multiple', () => {
     cy.get('table').find('tbody>tr [type="checkbox"]').first()
       .should('match', 'input').click();
 
     cy.get('table').find('tbody>tr [type="checkbox"]').last()
       .should('match', 'input').click();
+  });
+
+  it('can search by valid date by typing (leap year test)', () => {
+    // from the 1st january of 2063 to 29 February of 2064
+    cy.contains('From').parent().find('input').clear().type('01012063');
+    cy.contains('To').parent().find('input').clear().type('29022064');
+  });
+
+  it('can search by invalid date by selecting', () => {
+    // user selects the 15th of the current month
+    cy.contains('From').parent().find('button').click();
+    cy.get('.MuiCalendarPicker-root').contains('15').click();
+
+    // user selects the 13th of the current month
+    cy.contains('To').parent().find('button').click();
+    cy.get('.MuiCalendarPicker-root').contains('13').click();
+
+    cy.contains('Invalid Date Range!');
   });
 });
