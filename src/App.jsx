@@ -32,12 +32,12 @@ function App() {
           <Route path="/register">
             <Register />
           </Route>
-          <Route path="/events">
+          <Route exact path="/events">
             <DashboardLayout showHeaderBar showSideBar>
               <EventList />
             </DashboardLayout>
           </Route>
-          <Route path="/event/1">
+          <Route exact path="/events/:eventId">
             <DashboardLayout showHeaderBar showSideBar>
               <EventDetail />
             </DashboardLayout>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { styled, useTheme, Theme } from '@mui/material/styles';
-import { Link as RouterLink, useHistory } from 'react-router-dom';
+import { Link as RouterLink, useHistory, useLocation } from 'react-router-dom';
 import {
   Avatar,
   AvatarGroup,
@@ -74,6 +74,12 @@ const applySortFilter = (
 };
 
 const EventList = () => {
+  // check url for a query param indicating whether list is to be populated
+  // with dummy data or not, this is used for automated testing: no flakiness!
+  const { search } = useLocation();
+  const isDummy = new URLSearchParams(search).get('dummy');
+  const initEvents = isDummy ? EventService.getDummyEvents() : null;
+
   const [page, setPage] = useState(0);
   const [selected, setSelected] = useState<string[]>([]);
   const [order, setOrder] = useState<'asc'|'desc'>('asc');
@@ -88,14 +94,16 @@ const EventList = () => {
     },
   );
 
-  const [events, setEvents] = useState<Event[] | null>(null);
+  const [events, setEvents] = useState<Event[] | null>(initEvents);
 
   const fetchEvents = async () => {
     setEvents(await EventService.getEvents());
   };
 
   useEffect(() => {
-    fetchEvents();
+    if (!isDummy) {
+      fetchEvents();
+    }
   }, []);
 
   const theme = useTheme();
@@ -160,7 +168,7 @@ const EventList = () => {
   };
 
   const goToEvent = (id: string) => {
-    history.push(`/event/${id}`);
+    history.push(`/events/${id}`);
   };
 
   let emptyRows = null;
