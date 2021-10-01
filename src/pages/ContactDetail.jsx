@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
   },
   contactDetail: {
     display: 'inline-block',
-    minHeight: '75%',
+    minHeight: '80%',
     width: '45%',
     top: '30%',
     right: '50%',
@@ -158,7 +158,7 @@ const useStyles = makeStyles((theme) => ({
   contactTimeline: {
     display: 'inline-block',
     verticalAlign: 'top',
-    minHeight: '75%',
+    minHeight: '80%',
     width: '45%',
     top: '30%',
     right: '50%',
@@ -194,34 +194,42 @@ const ContactDetail = () => {
   const theme = useTheme();
   const classes = useStyles(theme);
   const [editModeOn, setEditModeOn] = useState(false);
+  const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [occupation, setOccupation] = useState('');
   const [location, setLocation] = useState('');
+  const [role, setRole] = useState('');
+  const [organisation, setOrganisation] = useState('');
   const [description, setDescription] = useState('');
 
   const toggleEditMode = () => {
+    setEmail(document.getElementById('email').value);
     setName(document.getElementById('name').value);
     setPhone(document.getElementById('phone').value);
-    setOccupation(document.getElementById('occupation').value);
     setLocation(document.getElementById('location').value);
+    setRole(document.getElementById('role').value);
+    setOrganisation(document.getElementById('organisation').value);
     setDescription(document.getElementById('description').value);
     setEditModeOn(true);
   };
   const editModeCancel = () => {
+    document.getElementById('email').value = email;
     document.getElementById('name').value = name;
     document.getElementById('phone').value = phone;
-    document.getElementById('occupation').value = occupation;
     document.getElementById('location').value = location;
+    document.getElementById('role').value = role;
+    document.getElementById('organisation').value = organisation;
     document.getElementById('description').value = description;
 
     setEditModeOn(false);
   };
   const editModeConfirm = () => {
+    setEmail(document.getElementById('email').value);
     setName(document.getElementById('name').value);
     setPhone(document.getElementById('phone').value);
-    setOccupation(document.getElementById('occupation').value);
     setLocation(document.getElementById('location').value);
+    setRole(document.getElementById('role').value);
+    setOrganisation(document.getElementById('organisation').value);
     setDescription(document.getElementById('description').value);
     setEditModeOn(false);
   };
@@ -280,8 +288,9 @@ const ContactDetail = () => {
         <div className={classes.detailLabelWrapper}>
           <div id="detail-label-email">Email</div>
           <div id="detail-label-phone">Phone Number</div>
-          <div id="detail-label-occupation">Occupation</div>
           <div id="detail-label-location">Location</div>
+          <div id="detail-label-role">Role</div>
+          <div id="detail-label-organisation">Organisation</div>
           <div id="detail-label-description">Description</div>
         </div>
         <div className={classes.detailWrapper}>
@@ -289,6 +298,7 @@ const ContactDetail = () => {
             <input
               type="email"
               name="email"
+              id="email"
               defaultValue="Example@123.com"
               readOnly={!editModeOn}
               spellCheck="false"
@@ -310,8 +320,8 @@ const ContactDetail = () => {
           <div>
             <input
               type="text"
-              name="occupation"
-              id="occupation"
+              name="location"
+              id="location"
               readOnly={!editModeOn}
               spellCheck="false"
               style={{ boxShadow: editModeOn ? '0 0 0 1pt lightGrey' : 'none', borderRadius: editModeOn ? '5px' : '0px' }}
@@ -320,8 +330,18 @@ const ContactDetail = () => {
           <div>
             <input
               type="text"
-              name="location"
-              id="location"
+              name="role"
+              id="role"
+              readOnly={!editModeOn}
+              spellCheck="false"
+              style={{ boxShadow: editModeOn ? '0 0 0 1pt lightGrey' : 'none', borderRadius: editModeOn ? '5px' : '0px' }}
+            />
+          </div>
+          <div>
+            <input
+              type="text"
+              name="organisation"
+              id="organisation"
               readOnly={!editModeOn}
               spellCheck="false"
               style={{ boxShadow: editModeOn ? '0 0 0 1pt lightGrey' : 'none', borderRadius: editModeOn ? '5px' : '0px' }}
