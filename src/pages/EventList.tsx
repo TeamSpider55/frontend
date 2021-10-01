@@ -168,7 +168,7 @@ const EventList = () => {
   };
 
   const goToEvent = (id: string) => {
-    history.push(`/event/${id}`);
+    history.push(`/events/${id}`);
   };
 
   let emptyRows = null;

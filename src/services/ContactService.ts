@@ -2,7 +2,7 @@ import { Contact } from '../dto/Contact';
 
 class ContactService {
   static async getContacts(): Promise<Array<Contact>> {
-    return [...Array(2)].map((_, i) => {
+    return [...Array(24)].map((_, i) => {
       const idx = i.toString();
       return {
         contactId: String(idx),
