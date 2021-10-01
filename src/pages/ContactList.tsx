@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { styled, useTheme, Theme } from '@mui/material/styles';
-import { Link as RouterLink, useHistory } from 'react-router-dom';
+import { Link as RouterLink, useHistory, useLocation } from 'react-router-dom';
 import {
   Card,
   Table,
@@ -62,13 +62,19 @@ const applySortFilter = (array: any, comparator: any, query: string) => {
 };
 
 const ContactList = () => {
+  // check url for a query param indicating whether list is to be populated
+  // with dummy data or not, this is used for automated testing: no flakiness!
+  const { search } = useLocation();
+  const isDummy = new URLSearchParams(search).get('dummy');
+  const initContacts = isDummy ? ContactService.getDummyContacts() : null;
+
   const [page, setPage] = useState(0);
   const [selected, setSelected] = useState<string[]>([]);
   const [order, setOrder] = useState<'asc'|'desc'>('asc');
   const [orderBy, setOrderBy] = useState('givenName');
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const [contacts, setContacts] = useState<Contact[] | null>(null);
+  const [contacts, setContacts] = useState<Contact[] | null>(initContacts);
   const [filterName, setFilterName] = useState('');
 
   const fetchContacts = async () => {
@@ -76,7 +82,9 @@ const ContactList = () => {
   };
 
   useEffect(() => {
-    fetchContacts();
+    if (!isDummy) {
+      fetchContacts();
+    }
   }, []);
 
   const theme = useTheme();
@@ -180,7 +188,7 @@ const ContactList = () => {
             to="#"
           >
             <AddIcon />
-            Add New Contact
+            ADD NEW CONTACT
           </Button>
         </Box>
         <Card>

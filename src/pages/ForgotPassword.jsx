@@ -7,6 +7,7 @@ import { makeStyles } from '@mui/styles';
 import { styled, useTheme } from '@mui/material/styles';
 import EmailIcon from '@mui/icons-material/Email';
 import Logo from '../components/Logo';
+import Page from '../components/Page';
 import SpiderIcon from '../assets/spider1.png';
 
 const useStyles = makeStyles((theme) => ({
@@ -46,38 +47,40 @@ const ForgotPassword = () => {
   const classes = useStyles(theme);
 
   return (
-    <Box className={classes.root}>
-      <Box className={classes.signInLink}>
-        Remember the password?
-        {' '}
-        <Link component={RouterLink} to="/login">
-          <Box display="inline" fontWeight={theme.typography.fontWeightBold}>
-            Sign in
+    <Page title="Forgot Password - OneThread">
+      <Box className={classes.root}>
+        <Box className={classes.signInLink}>
+          Remember the password?
+          {' '}
+          <Link component={RouterLink} to="/login">
+            <Box display="inline" fontWeight={theme.typography.fontWeightBold}>
+              Sign in
+            </Box>
+          </Link>
+        </Box>
+        <Box className={classes.formContainer}>
+          <Box className={classes.form}>
+            <Box textAlign="center" paddingBottom={theme.spacing(1)}>
+              <img src={SpiderIcon} alt="spider" width="100" height="100" />
+              <Logo dark />
+            </Box>
+            <FormTextField
+              label="Email Address"
+              variant="outlined"
+              type="email"
+              // FIXME: required field
+            />
+            <FormButton
+              variant="contained"
+              color="primary"
+            >
+              <EmailIcon />
+              Reset Password
+            </FormButton>
           </Box>
-        </Link>
-      </Box>
-      <Box className={classes.formContainer}>
-        <Box className={classes.form}>
-          <Box textAlign="center" paddingBottom={theme.spacing(1)}>
-            <img src={SpiderIcon} alt="spider" width="100" height="100" />
-            <Logo />
-          </Box>
-          <FormTextField
-            label="Email Address"
-            variant="outlined"
-            type="email"
-            // FIXME: required field
-          />
-          <FormButton
-            variant="contained"
-            color="primary"
-          >
-            <EmailIcon />
-            Reset Password
-          </FormButton>
         </Box>
       </Box>
-    </Box>
+    </Page>
   );
 };
 
