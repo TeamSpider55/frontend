@@ -5,7 +5,7 @@ describe('Event Detail', () => {
   });
 
   it('cannot edit date directly by typing', () => {
-    cy.contains('Event Date and Time')
+    cy.contains('Start')
       .parent()
       .find('input')
       .should('have.attr', 'readonly');
@@ -14,7 +14,7 @@ describe('Event Detail', () => {
   it('can save edits to date and participants', () => {
     cy.get('[data-testid="EditIcon"]').click();
 
-    cy.contains('Event Date and Time')
+    cy.contains('Start')
       .parent()
       .find('button')
       .click()
