@@ -49,7 +49,7 @@ function App() {
               <ContactList />
             </DashboardLayout>
           </Route>
-          <Route exact path="/contacts/1">
+          <Route exact path="/contacts/:contactId">
             <DashboardLayout showHeaderBar showSideBar>
               <ContactDetail />
             </DashboardLayout>

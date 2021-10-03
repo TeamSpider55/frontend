@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import EditIcon from '@mui/icons-material/Edit';
@@ -6,7 +6,8 @@ import DoneIcon from '@mui/icons-material/Done';
 import ClearIcon from '@mui/icons-material/Clear';
 import Button from '@mui/material/Button';
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
+import ContactService from '../services/ContactService';
 
 const useStyles = makeStyles((theme) => ({
   contactsButtonWrapper: {
@@ -193,46 +194,91 @@ const useStyles = makeStyles((theme) => ({
 const ContactDetail = () => {
   const theme = useTheme();
   const classes = useStyles(theme);
+  const { contactId } = useParams();
   const [editModeOn, setEditModeOn] = useState(false);
-  const [email, setEmail] = useState('');
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [location, setLocation] = useState('');
-  const [role, setRole] = useState('');
-  const [organisation, setOrganisation] = useState('');
-  const [description, setDescription] = useState('');
+  const [contact, setContact] = useState({
+    email: '',
+    name: '',
+    phone: '',
+    location: '',
+    role: '',
+    organisation: '',
+    description: '',
+  });
+  // const [email, setEmail] = useState('');
+  // const [name, setName] = useState('');
+  // const [phone, setPhone] = useState('');
+  // const [location, setLocation] = useState('');
+  // const [role, setRole] = useState('');
+  // const [organisation, setOrganisation] = useState('');
+  // const [description, setDescription] = useState('');
 
   const toggleEditMode = () => {
-    setEmail(document.getElementById('email').value);
-    setName(document.getElementById('name').value);
-    setPhone(document.getElementById('phone').value);
-    setLocation(document.getElementById('location').value);
-    setRole(document.getElementById('role').value);
-    setOrganisation(document.getElementById('organisation').value);
-    setDescription(document.getElementById('description').value);
+    setContact({
+      email: `${document.getElementById('email').value}`,
+      name: `${document.getElementById('name').value}`,
+      phone: `${document.getElementById('phone').value}`,
+      location: `${document.getElementById('location').value}`,
+      role: `${document.getElementById('role').value}`,
+      organisation: `${document.getElementById('organisation').value}`,
+      description: `${document.getElementById('description').value}`,
+    });
+    // setEmail(document.getElementById('email').value);
+    // setName(document.getElementById('name').value);
+    // setPhone(document.getElementById('phone').value);
+    // setLocation(document.getElementById('location').value);
+    // setRole(document.getElementById('role').value);
+    // setOrganisation(document.getElementById('organisation').value);
+    // setDescription(document.getElementById('description').value);
     setEditModeOn(true);
   };
   const editModeCancel = () => {
-    document.getElementById('email').value = email;
-    document.getElementById('name').value = name;
-    document.getElementById('phone').value = phone;
-    document.getElementById('location').value = location;
-    document.getElementById('role').value = role;
-    document.getElementById('organisation').value = organisation;
-    document.getElementById('description').value = description;
-
+    document.getElementById('email').value = contact.email;
+    document.getElementById('name').value = contact.name;
+    document.getElementById('phone').value = contact.phone;
+    document.getElementById('location').value = contact.location;
+    document.getElementById('role').value = contact.role;
+    document.getElementById('organisation').value = contact.organisation;
+    document.getElementById('description').value = contact.description;
     setEditModeOn(false);
   };
   const editModeConfirm = () => {
-    setEmail(document.getElementById('email').value);
-    setName(document.getElementById('name').value);
-    setPhone(document.getElementById('phone').value);
-    setLocation(document.getElementById('location').value);
-    setRole(document.getElementById('role').value);
-    setOrganisation(document.getElementById('organisation').value);
-    setDescription(document.getElementById('description').value);
+    setContact({
+      email: `${document.getElementById('email').value}`,
+      name: `${document.getElementById('name').value}`,
+      phone: `${document.getElementById('phone').value}`,
+      location: `${document.getElementById('location').value}`,
+      role: `${document.getElementById('role').value}`,
+      organisation: `${document.getElementById('organisation').value}`,
+      description: `${document.getElementById('description').value}`,
+    });
+    const X = ContactService
+      .updateContact(contact)
+      .then((result) => {
+        console.log(result.familyName);
+      });
     setEditModeOn(false);
   };
+
+  const setDetail = (detail) => {
+    setContact({ ...detail });
+    document.getElementById('email').value = detail.email;
+    document.getElementById('name').value = `${detail.givenName} ${detail.middleName} ${detail.familyName}`;
+    document.getElementById('phone').value = detail.phone;
+    document.getElementById('location').value = detail.address;
+    document.getElementById('role').value = 'not in the database yet';
+    document.getElementById('organisation').value = 'not in the database yet';
+    document.getElementById('description').value = detail.description;
+  };
+
+  const fetchContact = (async () => {
+    /* FIXME: await ContactService.getContact(userName, contactId); */
+    const contactDetail = await ContactService.getContact('change later', contactId);
+    await setDetail(contactDetail);
+  });
+  useEffect(() => {
+    fetchContact();
+  }, []);
 
   return (
     <>
@@ -274,7 +320,6 @@ const ContactDetail = () => {
                 type="text"
                 name="name"
                 id="name"
-                defaultValue="Farhan Fauzan"
                 readOnly={!editModeOn}
                 spellCheck="false"
               />
@@ -299,7 +344,6 @@ const ContactDetail = () => {
               type="email"
               name="email"
               id="email"
-              defaultValue="Example@123.com"
               readOnly={!editModeOn}
               spellCheck="false"
               style={{ boxShadow: editModeOn ? '0 0 0 1pt lightGrey' : 'none', borderRadius: editModeOn ? '5px' : '0px' }}
@@ -311,7 +355,6 @@ const ContactDetail = () => {
               name="phone"
               id="phone"
               maxLength={12}
-              defaultValue="+61123456789"
               readOnly={!editModeOn}
               spellCheck="false"
               style={{ boxShadow: editModeOn ? '0 0 0 1pt lightGrey' : 'none', borderRadius: editModeOn ? '5px' : '0px' }}
