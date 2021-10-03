@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-class AuthService {
+class UserService {
   static async getUser() {
     return axios.get('/user/profile/');
   }
@@ -10,4 +10,4 @@ class AuthService {
   }
 }
 
-export default AuthService;
+export default UserService;

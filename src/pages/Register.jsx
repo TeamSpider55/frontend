@@ -51,6 +51,8 @@ const Register = () => {
   const theme = useTheme();
   const classes = useStyles(theme);
 
+  // FIXME: make sure username is alphanumeric
+
   return (
     <Page title="Register - OneThread">
       <Box className={classes.root}>
