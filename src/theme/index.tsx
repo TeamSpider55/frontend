@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-// material
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import palette from './palette';

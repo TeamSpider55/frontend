@@ -5,7 +5,9 @@ import {
 import makeStyles from '@mui/styles/makeStyles';
 import { Link as RouterLink } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
-// import LogoutIcon from '@mui/icons-material/Logout';
+import LogoutIcon from '@mui/icons-material/Logout';
+import EditIcon from '@mui/icons-material/Edit';
+import Page from '../components/Page';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -66,10 +68,16 @@ const Account = () => {
   const classes = useStyles(theme);
 
   return (
-    <>
+    <Page title="Account - OneThread">
       <Box className={classes.root}>
         <Box textAlign="center" paddingTop={theme.spacing(10)}>
-          <img className={classes.img} src="" alt="profile" width="144" height="144" />
+          <img
+            className={classes.img}
+            src=""
+            alt="profile"
+            width="144"
+            height="144"
+          />
           <h2>User full name</h2>
         </Box>
         <Box className={classes.formContainer}>
@@ -79,7 +87,7 @@ const Account = () => {
               <TextField
                 className={classes.textField}
                 variant="standard"
-                defaultValue="Exmaple1"
+                defaultValue="e.male@gmail.com"
                 style={{ 'background-color': theme.palette.grey[200] }}
                 inputProps={
                   {
@@ -131,17 +139,16 @@ const Account = () => {
                 variant="outlined"
               />
             </Box>
-            <Box className={classes.splitRow}>
-              <Box className={classes.formLabel}>Password</Box>
-              <TextField
-                className={classes.textField}
-                variant="outlined"
-              />
-            </Box>
             <Box className={classes.changePasswordLink}>
               {' '}
               <Link component={RouterLink} to="/forgot-password">
-                <Box display="inline" style={{ 'text-decoration': 'underline' }} fontWeight={theme.typography.fontWeightRegular} fontSize={theme.typography.caption.fontSize} color={theme.palette.common.black}>
+                <Box
+                  display="inline"
+                  style={{ 'text-decoration': 'underline' }}
+                  fontWeight={theme.typography.fontWeightRegular}
+                  fontSize={theme.typography.caption.fontSize}
+                  color={theme.palette.common.black}
+                >
                   Change password
                 </Box>
               </Link>
@@ -151,7 +158,7 @@ const Account = () => {
               variant="contained"
               color="primary"
             >
-              {/* <LogoutIcon /> */}
+              <EditIcon />
               Update
             </Button>
             <Button
@@ -159,13 +166,13 @@ const Account = () => {
               variant="contained"
               color="primary"
             >
-              {/* <LogoutIcon /> */}
+              <LogoutIcon />
               Sign out
             </Button>
           </Box>
         </Box>
       </Box>
-    </>
+    </Page>
   );
 };
 

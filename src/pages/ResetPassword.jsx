@@ -7,6 +7,7 @@ import { makeStyles } from '@mui/styles';
 import { useTheme, styled } from '@mui/material/styles';
 import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import Logo from '../components/Logo';
+import Page from '../components/Page';
 import SpiderIcon from '../assets/spider1.png';
 
 const useStyles = makeStyles((theme) => ({
@@ -46,44 +47,46 @@ const ResetPassword = () => {
   const classes = useStyles(theme);
 
   return (
-    <Box className={classes.root}>
-      <Box className={classes.signInLink}>
-        Remember the password?
-        {' '}
-        <Link component={RouterLink} to="/login">
-          <Box display="inline" fontWeight={theme.typography.fontWeightBold}>
-            Sign in
+    <Page title="Reset Password - OneThread">
+      <Box className={classes.root}>
+        <Box className={classes.signInLink}>
+          Remember the password?
+          {' '}
+          <Link component={RouterLink} to="/login">
+            <Box display="inline" fontWeight={theme.typography.fontWeightBold}>
+              Sign in
+            </Box>
+          </Link>
+        </Box>
+        <Box className={classes.formContainer}>
+          <Box className={classes.form}>
+            <Box textAlign="center" paddingBottom={theme.spacing(1)}>
+              <img src={SpiderIcon} alt="spider" width="100" height="100" />
+              <Logo dark />
+            </Box>
+            <FormTextField
+              label="Password"
+              variant="outlined"
+              type="password"
+              // FIXME: required field
+            />
+            <FormTextField
+              label="Confirm Password"
+              variant="outlined"
+              type="password"
+              // FIXME: required field
+            />
+            <FormButton
+              variant="contained"
+              color="primary"
+            >
+              <VpnKeyIcon />
+              Reset Password
+            </FormButton>
           </Box>
-        </Link>
-      </Box>
-      <Box className={classes.formContainer}>
-        <Box className={classes.form}>
-          <Box textAlign="center" paddingBottom={theme.spacing(1)}>
-            <img src={SpiderIcon} alt="spider" width="100" height="100" />
-            <Logo />
-          </Box>
-          <FormTextField
-            label="Password"
-            variant="outlined"
-            type="password"
-            // FIXME: required field
-          />
-          <FormTextField
-            label="Confirm Password"
-            variant="outlined"
-            type="password"
-            // FIXME: required field
-          />
-          <FormButton
-            variant="contained"
-            color="primary"
-          >
-            <VpnKeyIcon />
-            Reset Password
-          </FormButton>
         </Box>
       </Box>
-    </Box>
+    </Page>
   );
 };
 
