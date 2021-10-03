@@ -165,6 +165,7 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: '192px',
     overflow: 'auto',
     boxShadow: 'none',
+    marginBottom: theme.spacing(16),
   },
   '@global': {
     '*::-webkit-scrollbar': {
@@ -178,11 +179,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const EventDetail = () => {
+  const time = new Date();
+  const currentDateTime = `${time.getMonth() + 1}/${time.getDate()}/${time.getFullYear()} ${time.getHours() - 12}:${time.getMinutes()} ${Math.floor(time.getHours()) === 0 ? 'am' : 'pm'}`;
   const theme = useTheme();
   const classes = useStyles(theme);
   const [editModeOn, setEditModeOn] = useState(false);
-  const [dateTime, setDateTime] = useState('01/01/1900 12:00 am');
-  const [newDateTime, setNewDateTime] = useState('01/01/1900 12:00 am');
+  const [startDateTime, setStartDateTime] = useState(currentDateTime);
+  const [newStartDateTime, setNewStartDateTime] = useState(currentDateTime);
+  const [endDateTime, setEndDateTime] = useState(currentDateTime);
+  const [newEndDateTime, setNewEndDateTime] = useState(currentDateTime);
   const [description, setDescription] = useState('');
 
   const [participants, setParticipants] = useState([]);
@@ -190,25 +195,34 @@ const EventDetail = () => {
 
   const toggleEditMode = () => {
     setDescription(document.getElementById('description').value);
-    if (document.getElementById('eventDateTime')) {
-      setDateTime(document.getElementById('eventDateTime').value);
-      setNewDateTime(document.getElementById('eventDateTime').value);
+    if (document.getElementById('eventStartDateTime')) {
+      setStartDateTime(document.getElementById('eventStartDateTime').value);
+      setNewStartDateTime(document.getElementById('eventStartDateTime').value);
+    }
+    if (document.getElementById('eventEndDateTime')) {
+      setEndDateTime(document.getElementById('eventEndDateTime').value);
+      setNewEndDateTime(document.getElementById('eventEndDateTime').value);
     }
     setEditModeOn(true);
   };
   const editModeCancel = () => {
     document.getElementById('description').value = description;
-    if (document.getElementById('eventDateTime')) {
-      document.getElementById('eventDateTime').value = dateTime;
+    if (document.getElementById('eventStartDateTime')) {
+      document.getElementById('eventStartDateTime').value = startDateTime;
     }
-    setNewDateTime(dateTime);
+    if (document.getElementById('eventEndDateTime')) {
+      document.getElementById('eventEndDateTime').value = endDateTime;
+    }
+    setNewStartDateTime(startDateTime);
+    setNewEndDateTime(endDateTime);
     setNewParticipants(participants);
 
     setEditModeOn(false);
   };
   const editModeConfirm = () => {
     setDescription(document.getElementById('description').value);
-    setDateTime(newDateTime);
+    setStartDateTime(newStartDateTime);
+    setEndDateTime(newEndDateTime);
     setParticipants(newParticipants);
     setEditModeOn(false);
   };
@@ -319,14 +333,30 @@ const EventDetail = () => {
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DesktopDateTimePicker
                 renderInput={(props) => <TextField {...props} />}
-                label="Event Date and Time"
-                value={newDateTime}
+                label="Start"
+                value={newStartDateTime}
                 disabled={!editModeOn}
                 onChange={(newValue) => {
-                  setNewDateTime(newValue);
+                  setNewStartDateTime(newValue);
                 }}
                 disablePast
-                id="eventDateTime"
+                id="eventStartDateTime"
+                inputProps={{ readOnly: true }}
+              />
+            </LocalizationProvider>
+          </Box>
+          <Box className={classes.eventDateTime}>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DesktopDateTimePicker
+                renderInput={(props) => <TextField {...props} />}
+                label="End"
+                value={newEndDateTime}
+                disabled={!editModeOn}
+                onChange={(newValue) => {
+                  setNewEndDateTime(newValue);
+                }}
+                disablePast
+                id="eventEndDateTime"
                 inputProps={{ readOnly: true }}
               />
             </LocalizationProvider>

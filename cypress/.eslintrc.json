@@ -1,0 +1,13 @@
+{
+  "plugins": [
+    "cypress"
+  ],
+  "extends": [
+    "plugin:cypress/recommended"
+  ],
+  "rules": {
+      "semi": "off",
+      "func-names": "off",
+      "prefer-arrow-callback": "off",
+  }
+}
