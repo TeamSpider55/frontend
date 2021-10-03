@@ -252,11 +252,12 @@ const ContactDetail = () => {
       organisation: `${document.getElementById('organisation').value}`,
       description: `${document.getElementById('description').value}`,
     });
-    const X = ContactService
+
+    ContactService
       .updateContact(contact)
-      .then((result) => {
-        console.log(result.familyName);
+      .then(() => {
       });
+
     setEditModeOn(false);
   };
 
