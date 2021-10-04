@@ -8,6 +8,7 @@ import ContactList from './pages/ContactList';
 import EventList from './pages/EventList';
 import EventDetail from './pages/EventDetail';
 import Login from './pages/Login';
+import Landing from './pages/Landing';
 import PageNotFound from './pages/PageNotFound';
 import ResetPassword from './pages/ResetPassword';
 import Register from './pages/Register';
@@ -20,9 +21,10 @@ function App() {
       <Router>
         <Switch>
           <Route exact path="/">
-            <DashboardLayout showHeaderBar showSideBar>
-              <PageNotFound />
-            </DashboardLayout>
+            {/* <DashboardLayout showHeaderBar showSideBar={false}> */}
+            {/* FIXME: need to add header bar */}
+            <Landing />
+            {/* </DashboardLayout> */}
           </Route>
           <Route path="/dashboard">
             <DashboardLayout showHeaderBar showSideBar>
