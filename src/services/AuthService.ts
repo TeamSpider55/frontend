@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { LoginResponse } from '../dto/LoginResponse';
-import { API_URL } from '../util/constants';
 
 export interface LoginInput {
   id: string;

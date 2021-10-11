@@ -11,16 +11,6 @@ class UserService {
     );
 
     return response.data;
-    // return {
-    //   status: response.data.status,
-    //   email: response.data.email,
-    //   userName: response.data.userName,
-    //   familyName: response.data.familyName,
-    //   givenName: response.data.givenName,
-    //   phone: response.data.phone,
-    //   address: response.data.address,
-    //   contacts: response.data.contacts,
-    // };
   }
 
   static async logout() {

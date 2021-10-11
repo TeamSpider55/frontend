@@ -4,13 +4,14 @@ import {
 } from '@mui/material';
 import { useHistory, Link as RouterLink } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
+import CircularProgress from '@mui/material/CircularProgress';
 import { styled, useTheme } from '@mui/material/styles';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import Logo from '../components/Logo';
 import Page from '../components/Page';
 import SpiderIcon from '../assets/spider1.png';
 import { login } from '../redux/action/authAction';
-import { useAppDispatch } from '../redux/store';
+import { useAppDispatch, useAppSelector } from '../redux/store';
 
 const useStyles = makeStyles((theme: any) => ({
   root: {
@@ -56,13 +57,20 @@ const Login = () => {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [isError, setIsError] = useState(false);
+  const error = useAppSelector((state) => state.auth.error);
+  const user = useAppSelector((state) => state.auth.user);
+  const isLoading = useAppSelector((state) => state.auth.isLoading);
 
   const dispatch = useAppDispatch();
 
-  const submitLogin = async () => {
+  const submitLogin = () => {
     dispatch(login({ id: username, password }));
   };
+
+  if (user) {
+    // user already logged in: redirect
+    history.push('/');
+  }
 
   return (
     <Page title="Login - OneThread">
@@ -108,10 +116,13 @@ const Login = () => {
               </Link>
             </Box>
             {
-              isError
+              error
                 ? (
-                  <Alert severity="error">
-                    Invalid username or password.
+                  <Alert
+                    severity="error"
+                    sx={{ marginBottom: theme.spacing(4) }}
+                  >
+                    { error }
                   </Alert>
                 )
                 : null
@@ -122,8 +133,21 @@ const Login = () => {
               color="primary"
               onClick={submitLogin}
             >
-              <ExitToAppIcon />
-              Login
+              {
+                isLoading
+                  ? (
+                    <CircularProgress
+                      size="1.5rem"
+                      sx={{ color: 'white' }}
+                    />
+                  )
+                  : (
+                    <>
+                      <ExitToAppIcon />
+                      Login
+                    </>
+                  )
+              }
             </Button>
           </Box>
         </Box>

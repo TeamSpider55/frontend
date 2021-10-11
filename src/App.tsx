@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
   Redirect,
   Route,
@@ -17,18 +17,19 @@ import PageNotFound from './pages/PageNotFound';
 import Dashboard from './pages/Dashboard';
 import ResetPassword from './pages/ResetPassword';
 import Register from './pages/Register';
-import LocalStorage from './redux/LocalStorage';
 import ThemeConfig from './theme';
-import { User } from './dto/User';
+import { useAppSelector } from './redux/store';
 
 const PrivateRoute = ({
-  children, auth, ...rest
+  children, ...rest
 }: any) => {
+  const user = useAppSelector((state) => state.auth.user);
+
   return (
     <Route
       {...rest}
       render={({ location }) => {
-        return auth.isAuthenticated === true
+        return user
           ? children
           : (
             <Redirect to={{
@@ -42,59 +43,7 @@ const PrivateRoute = ({
   );
 };
 
-const REACT_APP_STORAGE_NAME = 'ONE_THREAD_STATE';
-
-/**
- * load state from local storage
- */
-const loadState = () => {
-  try {
-    const localStorage = LocalStorage.get(REACT_APP_STORAGE_NAME);
-    if (localStorage === null) {
-      return undefined;
-    }
-    return localStorage;
-  } catch (e) {
-    return undefined;
-  }
-};
-
-interface AuthState {
-  // is auth process finished?
-  isLoading: boolean
-
-  // is user authenticated?
-  isAuthenticated: boolean
-
-  // user data
-  user: User | null
-}
-
 function App() {
-  // const [auth, setAuth] = useState<AuthState>(
-  //   {
-  //     isLoading: false,
-  //     isAuthenticated: false,
-  //     user: null,
-  //   },
-  // );
-
-  const [auth, setAuth] = useState<AuthState>(loadState() || {
-    isLoading: false,
-    isAuthenticated: false,
-    user: null,
-  });
-
-  // useEffect(() => {
-  //   const preloadedState = loadState();
-  //   setAuth(preloadedState.user);
-  // }, []);
-
-  useEffect(() => {
-    console.log('sotring state', JSON.stringify(auth.user));
-    LocalStorage.store(REACT_APP_STORAGE_NAME, auth.user);
-  }, [auth]);
-
   return (
     <ThemeConfig>
       <Router>
@@ -151,19 +100,16 @@ function App() {
               <PageNotFound />
             </DashboardLayout>
           </Route>
-          <PrivateRoute path="/momo" auth={auth}>
+          <PrivateRoute path="/momo">
             <DashboardLayout showHeaderBar showSideBar>
-              <PageNotFound />
+              ASDJSALKDj
             </DashboardLayout>
           </PrivateRoute>
-          <Route
-            path="/account"
-            render={() => (
-              <DashboardLayout showHeaderBar showSideBar={false}>
-                <Account />
-              </DashboardLayout>
-            )}
-          />
+          <PrivateRoute path="/account">
+            <DashboardLayout showHeaderBar showSideBar={false}>
+              <Account />
+            </DashboardLayout>
+          </PrivateRoute>
           <Route path="/reset-password">
             <ResetPassword />
           </Route>

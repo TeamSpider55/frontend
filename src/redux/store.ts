@@ -2,7 +2,8 @@ import { configureStore } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import LocalStorage from './LocalStorage';
 import authReducer from './reducer/authReducer';
-import { ONE_THREAD_LOCAL_STORAGE_NAME } from '../util/constants';
+
+const ONE_THREAD_LOCAL_STORAGE_NAME = 'ONE_THREAD_FE';
 
 const loadState = () => {
   try {
@@ -22,6 +23,7 @@ const preloadedState = {
   auth: {
     isLoading: false,
     user: localState?.user,
+    error: null,
   },
 };
 

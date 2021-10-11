@@ -23,7 +23,7 @@ export const login = ({
     await AuthService.login({ id, password });
     const user = await UserService.getUser();
     dispatch(loginSucceeded({ user }));
-  } catch (err) {
+  } catch (e) {
     dispatch(loginFailed({ err: 'Failed to login' }));
   }
 };
