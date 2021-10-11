@@ -1,20 +1,30 @@
 import axios from 'axios';
-import { User } from '../dto/User';
+
+export interface LogoutResponse {
+  success: boolean;
+  redirect: boolean;
+}
 
 class UserService {
   static async getUser() {
-    const response = await axios.get<User>(
+    const response = await axios.get(
       '/user/profile/',
       {
         withCredentials: true,
       },
     );
 
-    return response.data;
+    return response.data.data;
   }
 
-  static async logout() {
-    return axios.post('/user/logout/');
+  static async logout(): Promise<LogoutResponse> {
+    const response: LogoutResponse = await axios.post(
+      '/user/logout/',
+      '',
+      { withCredentials: true },
+    );
+
+    return response;
   }
 }
 

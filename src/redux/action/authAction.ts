@@ -22,8 +22,28 @@ export const login = ({
   try {
     await AuthService.login({ id, password });
     const user = await UserService.getUser();
+
     dispatch(loginSucceeded({ user }));
   } catch (e) {
+    // error message should be from API response, not hardcoded...
     dispatch(loginFailed({ err: 'Failed to login' }));
+  }
+};
+
+export const logoutStarted = createAction('auth/logoutStarted');
+export const logoutSucceeded = createAction('auth/logoutSucceeded');
+export const logoutFailed = createAction<{
+  err: string
+}>('auth/logoutFailed');
+
+export const logout = () => async (dispatch: AppDispatch) => {
+  dispatch(logoutStarted());
+
+  try {
+    await UserService.logout();
+
+    dispatch(logoutSucceeded());
+  } catch (e) {
+    dispatch(logoutFailed({ err: 'Failed to logout' }));
   }
 };

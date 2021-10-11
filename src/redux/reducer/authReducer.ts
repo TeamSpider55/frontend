@@ -4,6 +4,9 @@ import {
   loginStarted,
   loginSucceeded,
   loginFailed,
+  logoutStarted,
+  logoutSucceeded,
+  logoutFailed,
 } from '../action/authAction';
 
 // equivalently, the state and reducers can be bundled up in a 'slice'
@@ -35,6 +38,17 @@ export default createReducer(initialState, (builder) => {
       state.user = action.payload.user;
     })
     .addCase(loginFailed, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload.err;
+    })
+    .addCase(logoutStarted, (state, _action) => {
+      state.isLoading = true;
+    })
+    .addCase(logoutSucceeded, (state, _action) => {
+      state.isLoading = false;
+      state.user = null;
+    })
+    .addCase(logoutFailed, (state, action) => {
       state.isLoading = false;
       state.error = action.payload.err;
     });

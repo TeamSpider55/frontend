@@ -1,9 +1,16 @@
 import axios from 'axios';
-import { LoginResponse } from '../dto/LoginResponse';
 
 export interface LoginInput {
   id: string;
   password: string;
+}
+
+export interface LoginResponse {
+  token?: string
+  expiresIn?: number;
+  success: boolean;
+  msg: string;
+  error?: string;
 }
 
 class AuthService {

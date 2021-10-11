@@ -4,10 +4,10 @@ import {
 } from '@mui/material';
 import { useHistory, Link as RouterLink } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
-import CircularProgress from '@mui/material/CircularProgress';
 import { styled, useTheme } from '@mui/material/styles';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import Logo from '../components/Logo';
+import Spinner from '../components/Spinner';
 import Page from '../components/Page';
 import SpiderIcon from '../assets/spider1.png';
 import { login } from '../redux/action/authAction';
@@ -135,12 +135,7 @@ const Login = () => {
             >
               {
                 isLoading
-                  ? (
-                    <CircularProgress
-                      size="1.5rem"
-                      sx={{ color: 'white' }}
-                    />
-                  )
+                  ? <Spinner />
                   : (
                     <>
                       <ExitToAppIcon />
