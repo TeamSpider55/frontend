@@ -20,7 +20,7 @@ class UserService {
   static async logout(): Promise<LogoutResponse> {
     const response: LogoutResponse = await axios.post(
       '/user/logout/',
-      '',
+      {},
       { withCredentials: true },
     );
 

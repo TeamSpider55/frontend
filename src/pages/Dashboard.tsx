@@ -1,11 +1,12 @@
 import React from 'react';
 import { useTheme } from '@emotion/react';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import Page from '../components/Page';
-import UserService from '../services/UserService';
+import { useAppSelector } from '../redux/store';
 
 const Dashboard = () => {
   const theme = useTheme() as any;
+  const user = useAppSelector((state) => state.auth.user);
 
   return (
     <Page title="Dashboard - OneThread">
@@ -20,15 +21,9 @@ const Dashboard = () => {
           Hello,
           {' '}
           <Typography variant="h2" display="inline" color="primary">
-            ADMIN
+            { user ? `${user.userName}` : 'Guest'}
           </Typography>
           !
-          <Button onClick={() => UserService.getUser()}>
-            PROFILE
-          </Button>
-          <Button onClick={() => UserService.logout()}>
-            LOGOUT
-          </Button>
         </Typography>
       </Box>
     </Page>
