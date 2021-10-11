@@ -17,7 +17,7 @@ import PageNotFound from './pages/PageNotFound';
 import Dashboard from './pages/Dashboard';
 import ResetPassword from './pages/ResetPassword';
 import Register from './pages/Register';
-import Storage from './state/Storage';
+import LocalStorage from './redux/LocalStorage';
 import ThemeConfig from './theme';
 import { User } from './dto/User';
 
@@ -49,7 +49,7 @@ const REACT_APP_STORAGE_NAME = 'ONE_THREAD_STATE';
  */
 const loadState = () => {
   try {
-    const localStorage = Storage.get(REACT_APP_STORAGE_NAME);
+    const localStorage = LocalStorage.get(REACT_APP_STORAGE_NAME);
     if (localStorage === null) {
       return undefined;
     }
@@ -92,7 +92,7 @@ function App() {
 
   useEffect(() => {
     console.log('sotring state', JSON.stringify(auth.user));
-    Storage.store(REACT_APP_STORAGE_NAME, auth.user);
+    LocalStorage.store(REACT_APP_STORAGE_NAME, auth.user);
   }, [auth]);
 
   return (
@@ -104,7 +104,7 @@ function App() {
             path="/"
             render={() => (
               <DashboardLayout showHeaderBar showSideBar>
-                <Dashboard username={auth.user?.userName} />
+                <Dashboard />
               </DashboardLayout>
             )}
           />
@@ -112,7 +112,7 @@ function App() {
             path="/dashboard"
             render={() => (
               <DashboardLayout showHeaderBar showSideBar>
-                <Dashboard username={auth.user?.userName} />
+                <Dashboard />
               </DashboardLayout>
             )}
           />
@@ -131,7 +131,7 @@ function App() {
           </Route>
           <Route
             path="/login"
-            render={() => <Login setUser={setAuth} />}
+            render={() => <Login />}
           />
           <Route exact path="/contacts">
             <DashboardLayout showHeaderBar showSideBar>

@@ -1,22 +1,25 @@
 import axios from 'axios';
 import { LoginResponse } from '../dto/LoginResponse';
+import { API_URL } from '../util/constants';
 
-interface LoginInput {
-  username: string;
+export interface LoginInput {
+  id: string;
   password: string;
 }
 
 class AuthService {
   static async login(
     {
-      username,
+      id,
       password,
     }: LoginInput,
   ): Promise<LoginResponse> {
-    const response: LoginResponse = await axios.post('/auth/login/', {
-      userName: username,
-      password,
-    });
+    const response: LoginResponse = await axios.post(
+      '/auth/login/', {
+        id,
+        password,
+      },
+    );
 
     return response;
   }

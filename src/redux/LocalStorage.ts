@@ -1,4 +1,5 @@
-class Storage {
+// local storage wrapper
+class LocalStorage {
   static store(key: string, value: any) {
     localStorage.setItem(key, JSON.stringify(value));
   }
@@ -17,4 +18,4 @@ class Storage {
   }
 }
 
-export default Storage;
+export default LocalStorage;

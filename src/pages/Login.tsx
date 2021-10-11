@@ -9,9 +9,10 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import Logo from '../components/Logo';
 import Page from '../components/Page';
 import SpiderIcon from '../assets/spider1.png';
-import AuthService from '../services/AuthService';
+import { login } from '../redux/action/authAction';
+import { useAppDispatch } from '../redux/store';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: any) => ({
   root: {
     minHeight: '100vh',
     backgroundColor: theme.palette.background.neutral,
@@ -42,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const FormTextField = styled(TextField)(({ theme }) => ({
+const FormTextField = styled(TextField)(({ theme }: any) => ({
   marginTop: theme.spacing(1.25),
   marginBottom: theme.spacing(1.25),
   backgroundColor: theme.palette.grey[0],
@@ -57,19 +58,10 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [isError, setIsError] = useState(false);
 
-  const login = async () => {
-    if (username === '' || password === '') {
-      setIsError(true);
-      return;
-    }
-    setIsError(false);
+  const dispatch = useAppDispatch();
 
-    try {
-      const loginResponse = await AuthService.login({ username, password });
-      history.push('/dashboard');
-    } catch {
-      setIsError(true);
-    }
+  const submitLogin = async () => {
+    dispatch(login({ id: username, password }));
   };
 
   return (
@@ -88,25 +80,25 @@ const Login = () => {
           <Box className={classes.form}>
             <Box textAlign="center" paddingBottom={theme.spacing(1)}>
               <img src={SpiderIcon} alt="spider" width="100" height="100" />
-              <Logo dark />
+              <Logo darktext />
             </Box>
             <FormTextField
               label="Username"
               variant="outlined"
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e: any) => setUsername(e.target.value)}
             />
             <FormTextField
               label="Password"
               variant="outlined"
               type="password"
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e: any) => setPassword(e.target.value)}
             />
             <Box className={classes.forgotPasswordLink}>
               {' '}
               <Link component={RouterLink} to="/forgot-password">
                 <Box
                   display="inline"
-                  style={{ 'text-decoration': 'underline' }}
+                  // style={{ 'text-decoration': 'underline' }}
                   fontWeight={theme.typography.fontWeightRegular}
                   fontSize={theme.typography.caption.fontSize}
                   color={theme.palette.common.black}
@@ -128,7 +120,7 @@ const Login = () => {
               className={classes.formButton}
               variant="contained"
               color="primary"
-              onClick={login}
+              onClick={submitLogin}
             >
               <ExitToAppIcon />
               Login

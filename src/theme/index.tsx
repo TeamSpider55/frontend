@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { CssBaseline } from '@mui/material';
+import { CssBaseline, ThemeOptions } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import palette from './palette';
 import typography from './typography';
@@ -17,7 +17,7 @@ export default function ThemeConfig({ children }: Props) {
     [],
   );
 
-  const theme = createTheme(themeOptions as any);
+  const theme = createTheme(themeOptions as ThemeOptions);
 
   return (
     <ThemeProvider theme={theme}>
