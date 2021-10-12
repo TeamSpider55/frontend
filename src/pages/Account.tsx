@@ -90,7 +90,7 @@ const Account = () => {
         <Box textAlign="center" paddingTop={theme.spacing(10)}>
           Currently logged in as:
           <h2>
-            {`${user.givenName} ${user.familyName}`}
+            {user.userName}
           </h2>
         </Box>
         <Box className={classes.formContainer}>
