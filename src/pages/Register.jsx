@@ -81,17 +81,20 @@ const Register = () => {
               type="email"
             />
             <Box className={classes.splitRow}>
-              {/* FIXME: row split issue on larger screen */}
-              <Box marginRight={theme.spacing(1.5)}>
+              <Box flexGrow={1} marginRight={theme.spacing(1)}>
                 <FormTextField
+                  sx={{ width: '100%' }}
                   label="Given Name"
                   variant="outlined"
                 />
               </Box>
-              <FormTextField
-                label="Family Name"
-                variant="outlined"
-              />
+              <Box flexGrow={1} marginLeft={theme.spacing(1)}>
+                <FormTextField
+                  sx={{ width: '100%' }}
+                  label="Family Name"
+                  variant="outlined"
+                />
+              </Box>
             </Box>
             <FormTextField
               label="Password"
