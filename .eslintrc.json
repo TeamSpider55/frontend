@@ -29,10 +29,11 @@
         "@typescript-eslint/no-use-before-define": ["error"],
         "react/jsx-filename-extension": [1, { "extensions": [".jsx", ".tsx"] }],
         "react/jsx-props-no-spreading": "off",
-        "no-unused-vars": "warn",
+        "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
         "linebreak-style": "off",
         "import/extensions": "off",
-        "arrow-body-style": "off"
+        "arrow-body-style": "off",
+        "no-param-reassign": "off"
     },
     "settings": {
         "import/resolver": {

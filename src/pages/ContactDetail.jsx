@@ -8,6 +8,7 @@ import Button from '@mui/material/Button';
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 import { Link, useParams } from 'react-router-dom';
 import ContactService from '../services/ContactService';
+import { useAppSelector } from '../redux/store';
 
 const useStyles = makeStyles((theme) => ({
   contactsButtonWrapper: {
@@ -195,8 +196,10 @@ const ContactDetail = () => {
   const theme = useTheme();
   const classes = useStyles(theme);
   const { contactId } = useParams();
+  const { userName } = useAppSelector((state) => state.auth.user);
   const [editModeOn, setEditModeOn] = useState(false);
   const [contact, setContact] = useState({
+    contactId,
     email: '',
     name: '',
     phone: '',
@@ -204,6 +207,8 @@ const ContactDetail = () => {
     role: '',
     organisation: '',
     description: '',
+    nickname: '',
+    tags: [],
   });
   // const [email, setEmail] = useState('');
   // const [name, setName] = useState('');
@@ -212,6 +217,12 @@ const ContactDetail = () => {
   // const [role, setRole] = useState('');
   // const [organisation, setOrganisation] = useState('');
   // const [description, setDescription] = useState('');
+  const updateContactDetail = async () => {
+    await (ContactService
+      .updateContact(contact)
+      .then(() => {
+      }));
+  };
 
   const toggleEditMode = () => {
     setContact({
@@ -253,28 +264,27 @@ const ContactDetail = () => {
       description: `${document.getElementById('description').value}`,
     });
 
-    ContactService
-      .updateContact(contact)
-      .then(() => {
-      });
+    updateContactDetail();
 
     setEditModeOn(false);
   };
 
   const setDetail = (detail) => {
     setContact({ ...detail });
-    document.getElementById('email').value = detail.email;
-    document.getElementById('name').value = `${detail.givenName} ${detail.middleName} ${detail.familyName}`;
-    document.getElementById('phone').value = detail.phone;
-    document.getElementById('location').value = detail.address;
-    document.getElementById('role').value = 'not in the database yet';
-    document.getElementById('organisation').value = 'not in the database yet';
-    document.getElementById('description').value = detail.description;
+    document.getElementById('email').value = detail.email === undefined || detail.email === null ? '' : detail.email;
+    document.getElementById('name').value = `${detail.givenName === undefined || detail.givenName === null ? '' : detail.givenName}`
+                                          + ` ${detail.middleName === undefined || detail.middleName === null ? '' : detail.middleName}`
+                                          + ` ${detail.familyName === undefined || detail.familyName === null ? '' : detail.familyName}`;
+    document.getElementById('phone').value = detail.phone === undefined || detail.phone === null ? '' : detail.phone;
+    document.getElementById('location').value = detail.address === undefined || detail.address === null ? '' : detail.address;
+    document.getElementById('role').value = detail.role === undefined || detail.role === null ? '' : detail.role;
+    document.getElementById('organisation').value = detail.organisation === undefined || detail.organisation === null ? '' : detail.organisation;
+    document.getElementById('description').value = detail.description === undefined || detail.description === null ? '' : detail.description;
   };
 
   const fetchContact = (async () => {
     /* FIXME: await ContactService.getContact(userName, contactId); */
-    const contactDetail = await ContactService.getContact('change later', contactId);
+    const contactDetail = await ContactService.getContact(userName, contactId);
     await setDetail(contactDetail);
   });
   useEffect(() => {
