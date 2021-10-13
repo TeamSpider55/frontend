@@ -19,8 +19,6 @@ describe('Event Detail', () => {
       .find('button')
       .click()
 
-    cy.get('.MuiCalendarPicker-root').contains('8').click();
-
     cy.get('[value="Meeting with Bean and Beanz"]').clear().type("new name");
 
     cy.get('[data-testid="CancelIcon"]').first().click();

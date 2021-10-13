@@ -1,5 +1,10 @@
 import React from 'react';
-import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
+import {
+  Redirect,
+  Route,
+  BrowserRouter as Router,
+  Switch,
+} from 'react-router-dom';
 import DashboardLayout from './layouts/DashboardLayout';
 import Account from './pages/Account';
 import ContactDetail from './pages/ContactDetail';
@@ -9,26 +14,57 @@ import EventList from './pages/EventList';
 import EventDetail from './pages/EventDetail';
 import Login from './pages/Login';
 import PageNotFound from './pages/PageNotFound';
+import Dashboard from './pages/Dashboard';
 import ResetPassword from './pages/ResetPassword';
 import Register from './pages/Register';
-import Dashboard from './pages/Dashboard';
 import ThemeConfig from './theme';
+import { useAppSelector } from './redux/store';
+
+const PrivateRoute = ({
+  children, ...rest
+}: any) => {
+  const user = useAppSelector((state) => state.auth.user);
+
+  return (
+    <Route
+      {...rest}
+      render={({ location }) => {
+        return user
+          ? children
+          : (
+            <Redirect to={{
+              pathname: '/login',
+              state: { from: location },
+            }}
+            />
+          );
+      }}
+    />
+  );
+};
 
 function App() {
   return (
     <ThemeConfig>
       <Router>
         <Switch>
-          <Route exact path="/">
-            <DashboardLayout showHeaderBar showSideBar>
-              <PageNotFound />
-            </DashboardLayout>
-          </Route>
-          <Route path="/dashboard">
-            <DashboardLayout showHeaderBar showSideBar>
-              <Dashboard />
-            </DashboardLayout>
-          </Route>
+          <Route
+            exact
+            path="/"
+            render={() => (
+              <DashboardLayout showHeaderBar showSideBar>
+                <Dashboard />
+              </DashboardLayout>
+            )}
+          />
+          <Route
+            path="/dashboard"
+            render={() => (
+              <DashboardLayout showHeaderBar showSideBar>
+                <Dashboard />
+              </DashboardLayout>
+            )}
+          />
           <Route path="/register">
             <Register />
           </Route>
@@ -42,9 +78,10 @@ function App() {
               <EventDetail />
             </DashboardLayout>
           </Route>
-          <Route path="/login">
-            <Login />
-          </Route>
+          <Route
+            path="/login"
+            render={() => <Login />}
+          />
           <Route exact path="/contacts">
             <DashboardLayout showHeaderBar showSideBar>
               <ContactList />
@@ -63,11 +100,16 @@ function App() {
               <PageNotFound />
             </DashboardLayout>
           </Route>
-          <Route path="/account">
+          <PrivateRoute path="/momo">
+            <DashboardLayout showHeaderBar showSideBar>
+              ASDJSALKDj
+            </DashboardLayout>
+          </PrivateRoute>
+          <PrivateRoute path="/account">
             <DashboardLayout showHeaderBar showSideBar={false}>
               <Account />
             </DashboardLayout>
-          </Route>
+          </PrivateRoute>
           <Route path="/reset-password">
             <ResetPassword />
           </Route>

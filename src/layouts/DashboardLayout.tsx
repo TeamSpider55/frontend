@@ -19,7 +19,7 @@ const Content = styled('main')(({ theme }: { theme: Theme }) => (
 ));
 
 interface Props {
-  children: React.ComponentType;
+  children: any;
   showHeaderBar: boolean;
   showSideBar: boolean;
 }
