@@ -25,6 +25,8 @@ import TableHeader from '../components/TableHeader';
 import SearchNotFound from '../components/contacts/SearchNotFound';
 import getComparator from '../util/comparator';
 import { Contact } from '../dto/Contact';
+import { useAppDispatch, useAppSelector } from '../redux/store';
+import { getContacts, getDummyContacts } from '../redux/action/contactAction';
 
 const StyledContainer = styled(Container)((
   {
@@ -66,7 +68,6 @@ const ContactList = () => {
   // with dummy data or not, this is used for automated testing: no flakiness!
   const { search } = useLocation();
   const isDummy = new URLSearchParams(search).get('dummy');
-  const initContacts = isDummy ? ContactService.getDummyContacts() : null;
 
   const [page, setPage] = useState(0);
   const [selected, setSelected] = useState<string[]>([]);
@@ -74,33 +75,31 @@ const ContactList = () => {
   const [orderBy, setOrderBy] = useState('givenName');
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const [contacts, setContacts] = useState<Contact[] | null>(initContacts);
+  const dispatch = useAppDispatch();
+  const contacts = useAppSelector((state) => state.contact.contacts);
   const [filterName, setFilterName] = useState('');
-
-  const fetchContacts = async () => {
-    setContacts(await ContactService.getContacts());
-  };
 
   useEffect(() => {
     if (!isDummy) {
-      fetchContacts();
+      dispatch(getDummyContacts);
+    } else {
+      dispatch(getContacts());
     }
   }, []);
 
   const theme = useTheme();
-
   const history = useHistory();
 
   const deleteContact = (id: string) => {
     if (contacts === null) return;
     const newContacts = contacts.filter((c) => c.contactId !== id);
-    setContacts(newContacts);
+    // setContacts(newContacts);
   };
 
   const deleteContacts = (ids: string[]) => {
     if (contacts === null) return;
     const newContacts = contacts?.filter((c) => !ids.includes(c.contactId));
-    setContacts(newContacts);
+    // setContacts(newContacts);
     setSelected([]);
   };
 
