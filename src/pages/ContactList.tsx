@@ -29,6 +29,7 @@ import {
   getContacts,
   getDummyContacts,
   deleteContact,
+  deleteContacts,
 } from '../redux/action/contactAction';
 
 const StyledContainer = styled(Container)((
@@ -100,10 +101,9 @@ const ContactList = () => {
     dispatch(deleteContact(id));
   };
 
-  const deleteContacts = (ids: string[]) => {
+  const onDeleteContacts = (ids: string[]) => {
     if (contacts === null) return;
-    // const newContacts = contacts?.filter((c) => !ids.includes(c.contactId));
-    // setContacts(newContacts);
+    dispatch(deleteContacts(ids));
     setSelected([]);
   };
 
@@ -199,7 +199,7 @@ const ContactList = () => {
             selected={selected}
             filter={filterName}
             onFilter={onFilterByName}
-            deleteMany={deleteContacts}
+            deleteMany={onDeleteContacts}
           />
           {filteredContacts === null ? (
             <Typography variant="subtitle2" noWrap>

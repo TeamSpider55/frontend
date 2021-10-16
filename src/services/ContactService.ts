@@ -1,5 +1,4 @@
 import { Contact } from '../dto/Contact';
-import LocalStorage from '../redux/LocalStorage';
 
 let CONTACTS = [...Array(3)].map((_, i) => {
   const idx = i.toString();
@@ -25,6 +24,11 @@ class ContactService {
 
   static async deleteContact(id: string): Promise<Array<Contact>> {
     CONTACTS = CONTACTS.filter((contact) => contact.contactId !== id);
+    return CONTACTS;
+  }
+
+  static async deleteContacts(ids: string[]): Promise<Array<Contact>> {
+    CONTACTS = CONTACTS.filter((c) => !ids.includes(c.contactId));
     return CONTACTS;
   }
 

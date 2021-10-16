@@ -29,24 +29,29 @@ export const getDummyContacts = getContactsSucceeded({
   contacts: ContactService.getDummyContacts(),
 });
 
-export const deleteContactStarted = createAction(
-  'contact/deleteContactStarted',
+export const deleteContactsStarted = createAction(
+  'contact/deleteContactsStarted',
 );
-export const deleteContactSucceeded = createAction<{
+export const deleteContactsSucceeded = createAction<{
   contacts: Array<Contact>
-}>('auth/deleteContactSucceeded');
-export const deleteContactFailed = createAction<{
+}>('auth/deleteContactsSucceeded');
+export const deleteContactsFailed = createAction<{
   err: string
-}>('auth/deleteContactFailed');
+}>('auth/deleteContactsFailed');
 
-export const deleteContact = (id: string) => async (dispatch: AppDispatch) => {
-  dispatch(deleteContactStarted());
+export const deleteContacts = (
+  ids: string[],
+) => async (dispatch: AppDispatch) => {
+  dispatch(deleteContactsStarted());
 
   try {
-    const contacts = await ContactService.deleteContact(id);
+    const contacts = await ContactService.deleteContacts(ids);
 
-    dispatch(deleteContactSucceeded({ contacts }));
+    dispatch(deleteContactsSucceeded({ contacts }));
   } catch (e) {
-    dispatch(deleteContactFailed({ err: 'Failed to get contacts' }));
+    dispatch(deleteContactsFailed({ err: 'Failed to delete contacts' }));
   }
 };
+
+// reuse action type and payload, and service call
+export const deleteContact = (id: string) => deleteContacts([id]);
