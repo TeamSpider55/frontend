@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 import { AppDispatch } from '../store';
-import { Contact } from '../../dto/Contact';
+import { AddContactInput, Contact } from '../../dto/Contact';
 import ContactService from '../../services/ContactService';
 
 export const getContactsStarted = createAction('contact/getContactsStarted');
@@ -55,3 +55,33 @@ export const deleteContacts = (
 
 // reuse action type and payload, and service call
 export const deleteContact = (id: string) => deleteContacts([id]);
+
+export const addContactStarted = createAction(
+  'contact/addContactStarted',
+);
+export const addContactSucceeded = createAction<{
+  contacts: Array<Contact>
+}>('auth/addContactSucceeded');
+export const addContactFailed = createAction<{
+  err: string
+}>('auth/addContactFailed');
+
+export const addContact = (
+  {
+    email,
+    givenName,
+    familyName,
+  }: AddContactInput,
+) => async (dispatch: AppDispatch) => {
+  dispatch(addContactStarted());
+
+  try {
+    const contacts = await ContactService.addContact({
+      email, givenName, familyName,
+    });
+
+    dispatch(addContactSucceeded({ contacts }));
+  } catch (e) {
+    dispatch(addContactFailed({ err: 'Failed to add contact' }));
+  }
+};

@@ -30,6 +30,7 @@ import {
   getDummyContacts,
   deleteContact,
   deleteContacts,
+  addContact,
 } from '../redux/action/contactAction';
 
 const StyledContainer = styled(Container)((
@@ -105,6 +106,15 @@ const ContactList = () => {
     if (contacts === null) return;
     dispatch(deleteContacts(ids));
     setSelected([]);
+  };
+
+  const onAddContact = () => {
+    if (contacts === null) return;
+    dispatch(addContact({
+      email: 'email@email.com',
+      givenName: '',
+      familyName: '',
+    }));
   };
 
   const handleRequestSort = (event: any, property: string) => {
@@ -188,6 +198,7 @@ const ContactList = () => {
             variant="contained"
             color="primary"
             component={RouterLink}
+            onClick={onAddContact}
             to="#"
           >
             <AddIcon />

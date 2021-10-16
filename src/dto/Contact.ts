@@ -14,3 +14,9 @@ export interface Contact {
   description: string;
   note: string;
 }
+
+export interface AddContactInput {
+  email: string,
+  givenName: string,
+  familyName: string,
+}

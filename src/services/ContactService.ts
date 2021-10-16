@@ -1,4 +1,4 @@
-import { Contact } from '../dto/Contact';
+import { AddContactInput, Contact } from '../dto/Contact';
 
 let CONTACTS = [...Array(3)].map((_, i) => {
   const idx = i.toString();
@@ -29,6 +29,33 @@ class ContactService {
 
   static async deleteContacts(ids: string[]): Promise<Array<Contact>> {
     CONTACTS = CONTACTS.filter((c) => !ids.includes(c.contactId));
+    return CONTACTS;
+  }
+
+  static async addContact({
+    email,
+    givenName,
+    familyName,
+  }: AddContactInput): Promise<Array<Contact>> {
+    const ids = (await this.getContacts()).map((c) => c.contactId);
+    const newId = ids[ids.length - 1] + 1;
+
+    CONTACTS = [...CONTACTS,
+      {
+        contactId: newId,
+        nickName: '',
+        tags: [],
+        givenName,
+        middleName: '',
+        familyName,
+        email,
+        phone: '',
+        address: '',
+        description: '',
+        note: '',
+      },
+    ];
+
     return CONTACTS;
   }
 

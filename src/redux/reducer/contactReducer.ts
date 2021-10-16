@@ -7,6 +7,9 @@ import {
   deleteContactsStarted,
   deleteContactsSucceeded,
   deleteContactsFailed,
+  addContactStarted,
+  addContactSucceeded,
+  addContactFailed,
 } from '../action/contactAction';
 
 interface ContactState {
@@ -44,6 +47,18 @@ export default createReducer(initialState, (builder) => {
       state.contacts = action.payload.contacts;
     })
     .addCase(deleteContactsFailed, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload.err;
+    })
+    .addCase(addContactStarted, (state, _action) => {
+      state.isLoading = true;
+      state.contacts = null;
+    })
+    .addCase(addContactSucceeded, (state, action) => {
+      state.isLoading = false;
+      state.contacts = action.payload.contacts;
+    })
+    .addCase(addContactFailed, (state, action) => {
       state.isLoading = false;
       state.error = action.payload.err;
     });
