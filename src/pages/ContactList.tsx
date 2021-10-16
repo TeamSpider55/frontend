@@ -18,7 +18,6 @@ import {
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import Page from '../components/Page';
-import ContactService from '../services/ContactService';
 import MoreMenu from '../components/MoreMenu';
 import ContactListToolbar from '../components/contacts/ContactListToolbar';
 import TableHeader from '../components/TableHeader';
@@ -26,7 +25,11 @@ import SearchNotFound from '../components/contacts/SearchNotFound';
 import getComparator from '../util/comparator';
 import { Contact } from '../dto/Contact';
 import { useAppDispatch, useAppSelector } from '../redux/store';
-import { getContacts, getDummyContacts } from '../redux/action/contactAction';
+import {
+  getContacts,
+  getDummyContacts,
+  deleteContact,
+} from '../redux/action/contactAction';
 
 const StyledContainer = styled(Container)((
   {
@@ -69,18 +72,20 @@ const ContactList = () => {
   const { search } = useLocation();
   const isDummy = new URLSearchParams(search).get('dummy');
 
+  // pagination, filtering, batch select and ordering config as local state
   const [page, setPage] = useState(0);
   const [selected, setSelected] = useState<string[]>([]);
   const [order, setOrder] = useState<'asc'|'desc'>('asc');
   const [orderBy, setOrderBy] = useState('givenName');
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [filterName, setFilterName] = useState('');
 
   const dispatch = useAppDispatch();
   const contacts = useAppSelector((state) => state.contact.contacts);
-  const [filterName, setFilterName] = useState('');
 
+  // initialise either synchronously if using dummy data, or asynchronously
   useEffect(() => {
-    if (!isDummy) {
+    if (isDummy) {
       dispatch(getDummyContacts);
     } else {
       dispatch(getContacts());
@@ -90,15 +95,14 @@ const ContactList = () => {
   const theme = useTheme();
   const history = useHistory();
 
-  const deleteContact = (id: string) => {
+  const onDeleteContact = (id: string) => {
     if (contacts === null) return;
-    const newContacts = contacts.filter((c) => c.contactId !== id);
-    // setContacts(newContacts);
+    dispatch(deleteContact(id));
   };
 
   const deleteContacts = (ids: string[]) => {
     if (contacts === null) return;
-    const newContacts = contacts?.filter((c) => !ids.includes(c.contactId));
+    // const newContacts = contacts?.filter((c) => !ids.includes(c.contactId));
     // setContacts(newContacts);
     setSelected([]);
   };
@@ -275,7 +279,7 @@ const ContactList = () => {
                             <TableCell align="right">
                               <MoreMenu
                                 id={contactId}
-                                deleteOne={deleteContact}
+                                deleteOne={onDeleteContact}
                               />
                             </TableCell>
                           </TableRow>
