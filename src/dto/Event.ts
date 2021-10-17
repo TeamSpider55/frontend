@@ -6,7 +6,7 @@ export interface Event {
   end: number;
   type: 'personal' | 'collaborate';
   tags: string[];
-  contacts: string[];
+  contacts: Array<string>;
 }
 
 export interface DateRange {

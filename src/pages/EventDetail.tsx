@@ -17,14 +17,18 @@ import { Link, useParams } from 'react-router-dom';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EmailIcon from '@mui/icons-material/Email';
 import CancelIcon from '@mui/icons-material/Cancel';
+import CheckIcon from '@mui/icons-material/Check';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DesktopDateTimePicker from '@mui/lab/DateTimePicker';
 import { useAppDispatch, useAppSelector } from '../redux/store';
 import { getEvents, updateEvent } from '../redux/action/eventAction';
+import { getContacts } from '../redux/action/contactAction';
 import ContactService from '../services/ContactService';
+import { Contact } from '../dto/Contact';
+import { Event } from '../dto/Event';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: any) => ({
   eventButtonsContainer: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -151,6 +155,7 @@ const useStyles = makeStyles((theme) => ({
   cancelIcon: {
     height: '16px',
     width: '16px',
+    color: 'black',
   },
   participantAvatar: {
     height: '32px',
@@ -181,6 +186,10 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
+const getParticipants = (event: Event, contacts: Array<Contact>) => {
+  return contacts.filter((c) => event.contacts.includes(c.contactId));
+};
+
 const EventDetail = () => {
   const time = new Date();
   const currentDateTime = `${time.getMonth() + 1}/${time.getDate()}/${time.getFullYear()} ${time.getHours() - 12}:${time.getMinutes()} ${Math.floor(time.getHours()) === 0 ? 'am' : 'pm'}`;
@@ -192,35 +201,41 @@ const EventDetail = () => {
 
   const [title, setTitle] = useState('');
 
-  const [startDateTime, setStartDateTime] = useState('');
-  const [newStartDateTime, setNewStartDateTime] = useState(currentDateTime);
-  const [endDateTime, setEndDateTime] = useState('');
-  const [newEndDateTime, setNewEndDateTime] = useState(currentDateTime);
+  const [startDateTime, setStartDateTime] = useState(0);
+  // const [newStartDateTime, setNewStartDateTime] = useState(currentDateTime);
+  const [endDateTime, setEndDateTime] = useState(0);
+  // const [newEndDateTime, setNewEndDateTime] = useState(currentDateTime);
 
   // assuming note in the backend is description
   const [description, setDescription] = useState('');
 
-  const [participants, setParticipants] = useState([]);
-  const [newParticipants, setNewParticipants] = useState([]);
+  const [participants, setParticipants] = useState<Contact[]>([]);
+  // const [newParticipants, setNewParticipants] = useState<Contact[]>([]);
 
-  const { eventId } = useParams();
+  const [newParticipant, setNewParticipant] = useState<string | null>(null);
+
+  // get from URL path params
+  const { eventId } = useParams<{ eventId: string }>();
 
   const dispatch = useAppDispatch();
   const event = useAppSelector((state) => {
     return state.event.events?.find((e) => e.eventId === eventId);
   });
+  const contacts = useAppSelector((state) => state.contact.contacts);
 
   // fetch data from store to initialise
   useEffect(() => {
     dispatch(getEvents());
+    dispatch(getContacts());
   }, []);
 
   const toggleEditMode = () => {
-    if (!event) return;
+    if (!event || !contacts) return;
     setTitle(event.title);
     setStartDateTime(event.start);
     setEndDateTime(event.end);
-    setDescription(event.description);
+    setDescription(event.note);
+    setParticipants(getParticipants(event, contacts));
 
     // setDescription(document.getElementById('description').value);
     // if (document.getElementById('eventStartDateTime')) {
@@ -246,6 +261,7 @@ const EventDetail = () => {
     // setNewParticipants(participants);
 
     setEditModeOn(false);
+    setNewParticipant(null);
   };
   const editModeConfirm = () => {
     // setDescription(document.getElementById('description').value);
@@ -261,25 +277,49 @@ const EventDetail = () => {
       start: startDateTime,
       end: endDateTime,
       note: description,
+      contacts: participants.map((p) => p.contactId),
     }));
   };
   const removeEvent = () => {
     /* FIXME: functionality of cancel event button and redirect. */
   };
 
-  const fetchParticipants = (async () => {
-    /* FIXME: setParticipants(await (await fetch('')).json()); */
-    const list = await ContactService.getContacts();
-    setParticipants(list);
-    setNewParticipants(list);
-  });
-  useEffect(() => {
-    fetchParticipants();
-  }, []);
+  // const fetchParticipants = (async () => {
+  //   /* FIXME: setParticipants(await (await fetch('')).json()); */
+  //   const list = await ContactService.getContacts();
+  //   setParticipants(list);
+  //   setNewParticipants(list);
+  // });
+  // useEffect(() => {
+  //   fetchParticipants();
+  // }, []);
 
-  const deleteParticipant = (email) => {
+  const deleteParticipant = (email: string) => {
     if (participants === null) return;
-    setNewParticipants(participants.filter((c) => c.email !== email));
+    // setNewParticipants(participants.filter((c) => c.email !== email));
+    setParticipants(participants.filter((c) => c.email !== email));
+    console.log(participants);
+  };
+
+  // const addParticipant = (id: string) => {
+  //   setParticipants([...participants, id]);
+  // };
+
+  const addEmptyParticipant = () => {
+    // setParticipants([...participants, '3']);
+    // console.log(participants);
+    setNewParticipant('');
+  };
+
+  // FIXME:
+  const saveNewParticipant = () => {
+    if (!contacts || !newParticipant) return;
+    const contact = contacts.find((c) => c.email === newParticipant);
+    console.log(contact);
+    if (contact !== undefined) {
+      setParticipants([...participants, contact]);
+    }
+    setNewParticipant(null);
   };
 
   return (
@@ -291,7 +331,6 @@ const EventDetail = () => {
           WebkitUserSelect: 'none',
           msUserSelect: 'none',
           userSelect: 'none',
-          OUserSelect: 'none',
         }}
       >
         <Link to="/events">
@@ -308,7 +347,6 @@ const EventDetail = () => {
             /* FIXME: add components */
             onClick={removeEvent}
             style={{ marginRight: theme.spacing(1), backgroundColor: theme.palette.warning.dark }}
-            to="#"
           >
             <DeleteIcon />
             CANCEL EVENT
@@ -320,7 +358,6 @@ const EventDetail = () => {
             color="primary"
             /* FIXME: add components */
             onClick={toggleEditMode}
-            to="#"
           >
             <EditIcon />
             EDIT EVENT
@@ -333,7 +370,6 @@ const EventDetail = () => {
             /* FIXME: add components */
             onClick={editModeCancel}
             style={{ marginRight: theme.spacing(1), backgroundColor: theme.palette.error.dark }}
-            to="#"
           >
             <ClearIcon />
             CANCEL
@@ -346,7 +382,6 @@ const EventDetail = () => {
             /* FIXME: add components */
             onClick={editModeConfirm}
             style={{ backgroundColor: theme.palette.success.dark }}
-            to="#"
           >
             <DoneIcon />
             CONFIRM
@@ -355,7 +390,7 @@ const EventDetail = () => {
         </Box>
       </Box>
       {
-      event ? (
+      event && contacts ? (
         <>
           <Box className={classes.eventDetail}>
             <Box>
@@ -377,11 +412,11 @@ const EventDetail = () => {
                     value={editModeOn ? startDateTime : event.start}
                     disabled={!editModeOn}
                     onChange={(newValue) => {
-                      setStartDateTime(newValue);
+                      setStartDateTime(newValue as number);
                     }}
                     disablePast
-                    id="eventStartDateTime"
-                    inputProps={{ readOnly: true }}
+                    // id="eventStartDateTime"
+                    // inputProps={{ readOnly: true }}
                   />
                 </LocalizationProvider>
               </Box>
@@ -393,45 +428,70 @@ const EventDetail = () => {
                     value={editModeOn ? endDateTime : event.end}
                     disabled={!editModeOn}
                     onChange={(newValue) => {
-                      setEndDateTime(newValue);
+                      setEndDateTime(newValue as number);
                     }}
                     disablePast
-                    id="eventEndDateTime"
-                    inputProps={{ readOnly: true }}
+                    // id="eventEndDateTime"
+                    // inputProps={{ readOnly: true }}
                   />
                 </LocalizationProvider>
               </Box>
               <Box className={classes.participantTitle}>
                 Participants
-                <Button className={classes.inviteButton}>
+                <Button
+                  className={classes.inviteButton}
+                  disabled={!editModeOn}
+                  onClick={addEmptyParticipant}
+                >
                   <EmailIcon className={classes.emailIcon} />
                   Invite
                 </Button>
               </Box>
               <Box>
                 <Paper className={classes.participantScrollable}>
-                  {newParticipants.map((participant) => {
+                  {(editModeOn
+                    ? participants
+                    : getParticipants(event, contacts)).map((participant) => {
                     const { email } = participant;
                     return (
                       <Box className={classes.participantContainer}>
                         <Box display="flex">
-                          <Avatar className={classes.participantAvatar} alt="avatarURL" src="#FIXME: avatarURL" />
+                          <Avatar className={classes.participantAvatar} alt={participant.givenName} src="/#FIXME: avatarURL" />
                           <Box
                             paddingLeft={2}
-                            noWrap
                           >
                             {email}
                           </Box>
                         </Box>
                         {editModeOn && (
-                          <CancelIcon
-                            className={classes.cancelIcon}
+                          <Button
                             onClick={() => deleteParticipant(email)}
-                          />
+                          >
+                            <CancelIcon
+                              className={classes.cancelIcon}
+                            />
+                          </Button>
                         )}
                       </Box>
                     );
                   })}
+                  {
+                    newParticipant !== null
+                      ? (
+                        <Box className={classes.participantContainer}>
+                          <TextField
+                            variant="outlined"
+                            value={newParticipant}
+                            onChange={(e) => setNewParticipant(e.target.value)}
+                          />
+                          <Button
+                            onClick={saveNewParticipant}
+                          >
+                            <CheckIcon />
+                          </Button>
+                        </Box>
+                      ) : null
+                  }
                 </Paper>
               </Box>
             </Box>

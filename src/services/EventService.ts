@@ -10,7 +10,7 @@ let EVENTS: Array<Event> = [...Array(3)].map((_, i) => {
     end: Date.now() + 3600000,
     type: 'collaborate',
     tags: ['1', '2'],
-    contacts: [],
+    contacts: ['1', '2'],
   };
 });
 
