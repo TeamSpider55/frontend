@@ -49,11 +49,11 @@ const sidebarItems = [
     icon: <ContactsIcon />,
     to: '/contacts',
   },
-  {
-    text: 'Memos',
-    icon: <NoteIcon />,
-    to: '/memos',
-  },
+  // {
+  //   text: 'Memos',
+  //   icon: <NoteIcon />,
+  //   to: '/memos',
+  // },
 ];
 
 const SidebarContent = () => {

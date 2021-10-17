@@ -78,13 +78,15 @@ export const addEvent = (
   dispatch(addEventStarted());
 
   try {
-    const events = await EventService.addEvent({
+    const { id, events } = await EventService.addEvent({
       title, start, end,
     });
 
     dispatch(addEventSucceeded({ events }));
+    return id;
   } catch (e) {
     dispatch(addEventFailed({ err: 'Failed to add event' }));
+    return null;
   }
 };
 

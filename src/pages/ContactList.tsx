@@ -98,6 +98,10 @@ const ContactList = () => {
   const theme = useTheme();
   const history = useHistory();
 
+  const goToContact = (id: string) => {
+    history.push(`/contacts/${id}`);
+  };
+
   const onDeleteContact = (id: string) => {
     if (contacts === null) return;
     dispatch(deleteContact(id));
@@ -115,8 +119,11 @@ const ContactList = () => {
       email: 'email@email.com',
       givenName: '',
       familyName: '',
-    }));
-
+    })).then((newContactId) => {
+      if (newContactId !== null) {
+        goToContact(newContactId);
+      }
+    });
     // FIXME: auto redirect to contact detail for editing
   };
 
@@ -166,10 +173,6 @@ const ContactList = () => {
   const onChangeRowsPerPage = (event: any) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
-  };
-
-  const goToContact = (id: string) => {
-    history.push(`/contacts/${id}`);
   };
 
   let emptyRows = null;

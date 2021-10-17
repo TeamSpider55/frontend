@@ -115,6 +115,10 @@ const EventList = () => {
   const theme = useTheme();
   const history = useHistory();
 
+  const goToEvent = (id: string) => {
+    history.push(`/events/${id}`);
+  };
+
   const onDeleteEvent = (id: string) => {
     if (events === null) return;
     dispatch(deleteEvent(id));
@@ -132,7 +136,11 @@ const EventList = () => {
       title: 'new event',
       start: Date.now(),
       end: Date.now() + 3600000,
-    }));
+    })).then((newEventId) => {
+      if (newEventId !== null) {
+        goToEvent(newEventId);
+      }
+    });
   };
 
   const handleRequestSort = (event: any, property: string) => {
@@ -177,10 +185,6 @@ const EventList = () => {
   const onChangeRowsPerPage = (event: any) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
-  };
-
-  const goToEvent = (id: string) => {
-    history.push(`/events/${id}`);
   };
 
   let emptyRows = null;
@@ -252,6 +256,7 @@ const EventList = () => {
                       .map((row: Event) => {
                         const
                           {
+                            contacts,
                             eventId,
                             title,
                             start,
@@ -307,11 +312,11 @@ const EventList = () => {
                                   non-functioning sort
                               */}
                               <AvatarGroup max={4}>
-                                <Avatar alt="Remy Sharp" />
-                                <Avatar alt="Travis Howard" />
-                                <Avatar alt="Cindy Baker" />
-                                <Avatar alt="Agnes Walker" />
-                                <Avatar alt="Trevor Henderson" />
+                                {
+                                  contacts.map((c) => (
+                                    <Avatar alt={c} />
+                                  ))
+                                }
                               </AvatarGroup>
                             </TableCell>
                             <TableCell align="right">

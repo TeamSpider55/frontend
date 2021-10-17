@@ -13,7 +13,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import Button from '@mui/material/Button';
 import Input from '@mui/material/Input';
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useHistory } from 'react-router-dom';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EmailIcon from '@mui/icons-material/Email';
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -22,9 +22,8 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DesktopDateTimePicker from '@mui/lab/DateTimePicker';
 import { useAppDispatch, useAppSelector } from '../redux/store';
-import { getEvents, updateEvent } from '../redux/action/eventAction';
+import { deleteEvent, getEvents, updateEvent } from '../redux/action/eventAction';
 import { getContacts } from '../redux/action/contactAction';
-import ContactService from '../services/ContactService';
 import { Contact } from '../dto/Contact';
 import { Event } from '../dto/Event';
 
@@ -222,6 +221,7 @@ const EventDetail = () => {
     return state.event.events?.find((e) => e.eventId === eventId);
   });
   const contacts = useAppSelector((state) => state.contact.contacts);
+  const history = useHistory();
 
   // fetch data from store to initialise
   useEffect(() => {
@@ -282,6 +282,8 @@ const EventDetail = () => {
   };
   const removeEvent = () => {
     /* FIXME: functionality of cancel event button and redirect. */
+    dispatch(deleteEvent(eventId));
+    history.push('/events');
   };
 
   // const fetchParticipants = (async () => {

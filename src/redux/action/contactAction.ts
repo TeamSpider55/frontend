@@ -80,13 +80,15 @@ export const addContact = (
   dispatch(addContactStarted());
 
   try {
-    const contacts = await ContactService.addContact({
+    const { id, contacts } = await ContactService.addContact({
       email, givenName, familyName,
     });
 
     dispatch(addContactSucceeded({ contacts }));
+    return id;
   } catch (e) {
     dispatch(addContactFailed({ err: 'Failed to add contact' }));
+    return null;
   }
 };
 

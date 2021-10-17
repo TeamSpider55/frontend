@@ -67,7 +67,7 @@ class ContactService {
     email,
     givenName,
     familyName,
-  }: AddContactInput): Promise<Array<Contact>> {
+  }: AddContactInput): Promise<{ id: string, contacts: Array<Contact>}> {
     const ids = (await this.getContacts()).map((c) => c.contactId);
     const newId = String(Number(ids[ids.length - 1]) + 1);
 
@@ -89,7 +89,10 @@ class ContactService {
       },
     ];
 
-    return CONTACTS;
+    return {
+      id: newId,
+      contacts: CONTACTS,
+    };
   }
 
   static async updateContact({
