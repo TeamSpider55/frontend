@@ -19,7 +19,6 @@ import {
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import Page from '../components/Page';
-import EventService from '../services/EventService';
 import MoreMenu from '../components/MoreMenu';
 import EventListToolbar from '../components/events/EventListToolbar';
 import TableHeader from '../components/TableHeader';
@@ -27,11 +26,13 @@ import DateSearchNotFound from '../components/events/DateSearchNotFound';
 import DateSearchInvalid from '../components/events/DateSearchInvalid';
 import getComparator from '../util/comparator';
 import { Event, DateRange } from '../dto/Event';
+import { useAppDispatch, useAppSelector } from '../redux/store';
 import {
   DAYDATE_FORMAT,
   isValidDateRange,
   TIME_FORMAT,
 } from '../util/datetime';
+import { getDummyEvents, getEvents } from '../redux/action/eventAction';
 
 const StyledContainer = styled(Container)((
   {
@@ -78,13 +79,15 @@ const EventList = () => {
   // with dummy data or not, this is used for automated testing: no flakiness!
   const { search } = useLocation();
   const isDummy = new URLSearchParams(search).get('dummy');
-  const initEvents = isDummy ? EventService.getDummyEvents() : null;
 
   const [page, setPage] = useState(0);
   const [selected, setSelected] = useState<string[]>([]);
   const [order, setOrder] = useState<'asc'|'desc'>('asc');
   const [orderBy, setOrderBy] = useState('title');
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const dispatch = useAppDispatch();
+  const events = useAppSelector((state) => state.event.events);
 
   const now = new Date();
   const [dateRange, setDateRange] = useState<DateRange>(
@@ -94,15 +97,12 @@ const EventList = () => {
     },
   );
 
-  const [events, setEvents] = useState<Event[] | null>(initEvents);
-
-  const fetchEvents = async () => {
-    setEvents(await EventService.getEvents());
-  };
-
+  // initialise either synchronously if using dummy data, or asynchronously
   useEffect(() => {
-    if (!isDummy) {
-      fetchEvents();
+    if (isDummy) {
+      dispatch(getDummyEvents);
+    } else {
+      dispatch(getEvents());
     }
   }, []);
 
@@ -113,13 +113,13 @@ const EventList = () => {
   const deleteEvent = (id: string) => {
     if (events === null) return;
     const newEvents = events.filter((e) => e.eventId !== id);
-    setEvents(newEvents);
+    // setEvents(newEvents);
   };
 
   const deleteEvents = (ids: string[]) => {
     if (events === null) return;
     const newEvents = events?.filter((e) => !ids.includes(e.eventId));
-    setEvents(newEvents);
+    // setEvents(newEvents);
     setSelected([]);
   };
 

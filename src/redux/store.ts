@@ -3,6 +3,7 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import LocalStorage from './LocalStorage';
 import authReducer from './reducer/authReducer';
 import contactReducer from './reducer/contactReducer';
+import eventReducer from './reducer/eventReducer';
 
 const ONE_THREAD_LOCAL_STORAGE_NAME = 'ONE_THREAD_FE';
 
@@ -34,6 +35,7 @@ export const store = configureStore({
   reducer: {
     auth: authReducer,
     contact: contactReducer,
+    event: eventReducer,
   },
   preloadedState,
 });

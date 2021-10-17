@@ -116,6 +116,8 @@ const ContactList = () => {
       givenName: '',
       familyName: '',
     }));
+
+    // FIXME: auto redirect to contact detail for editing
   };
 
   const handleRequestSort = (event: any, property: string) => {
