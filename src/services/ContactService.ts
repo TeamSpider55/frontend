@@ -1,6 +1,6 @@
-import { AddContactInput, Contact } from '../dto/Contact';
+import { AddContactInput, Contact, UpdateContactInput } from '../dto/Contact';
 
-let CONTACTS = [...Array(3)].map((_, i) => {
+let CONTACTS: Array<Contact> = [...Array(3)].map((_, i) => {
   const idx = i.toString();
   return {
     contactId: String(idx),
@@ -55,6 +55,51 @@ class ContactService {
         note: '',
       },
     ];
+
+    return CONTACTS;
+  }
+
+  static async updateContact({
+    contactId,
+    nickName,
+    tags,
+    givenName,
+    middleName,
+    familyName,
+    email,
+    phone,
+    address,
+    description,
+    note,
+  }: UpdateContactInput): Promise<Array<Contact>> {
+    const idx = CONTACTS.findIndex((c) => c.contactId === contactId);
+
+    if (idx === -1) {
+      return CONTACTS;
+    }
+
+    const oldContact = CONTACTS[idx];
+
+    CONTACTS = CONTACTS.map((c) => {
+      if (c.contactId === oldContact.contactId) {
+        return {
+          ...c,
+          email: email || c.email,
+        };
+      }
+      return c;
+    });
+
+    // CONTACTS[idx].nickName = nickName || oldContact.nickName;
+    // CONTACTS[idx].tags = tags || oldContact.tags;
+    // CONTACTS[idx].givenName = givenName || oldContact.givenName;
+    // CONTACTS[idx].middleName = middleName || oldContact.middleName;
+    // CONTACTS[idx].familyName = familyName || oldContact.familyName;
+    // CONTACTS[idx].email = email || oldContact.email;
+    // CONTACTS[idx].phone = phone || oldContact.phone;
+    // CONTACTS[idx].address = address || oldContact.address;
+    // CONTACTS[idx].description = description || oldContact.description;
+    // CONTACTS[idx].note = note || oldContact.note;
 
     return CONTACTS;
   }

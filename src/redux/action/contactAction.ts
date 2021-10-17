@@ -1,6 +1,10 @@
 import { createAction } from '@reduxjs/toolkit';
 import { AppDispatch } from '../store';
-import { AddContactInput, Contact } from '../../dto/Contact';
+import {
+  AddContactInput,
+  Contact,
+  UpdateContactInput,
+} from '../../dto/Contact';
 import ContactService from '../../services/ContactService';
 
 export const getContactsStarted = createAction('contact/getContactsStarted');
@@ -34,10 +38,10 @@ export const deleteContactsStarted = createAction(
 );
 export const deleteContactsSucceeded = createAction<{
   contacts: Array<Contact>
-}>('auth/deleteContactsSucceeded');
+}>('contact/deleteContactsSucceeded');
 export const deleteContactsFailed = createAction<{
   err: string
-}>('auth/deleteContactsFailed');
+}>('contact/deleteContactsFailed');
 
 export const deleteContacts = (
   ids: string[],
@@ -61,10 +65,10 @@ export const addContactStarted = createAction(
 );
 export const addContactSucceeded = createAction<{
   contacts: Array<Contact>
-}>('auth/addContactSucceeded');
+}>('contact/addContactSucceeded');
 export const addContactFailed = createAction<{
   err: string
-}>('auth/addContactFailed');
+}>('contact/addContactFailed');
 
 export const addContact = (
   {
@@ -83,5 +87,30 @@ export const addContact = (
     dispatch(addContactSucceeded({ contacts }));
   } catch (e) {
     dispatch(addContactFailed({ err: 'Failed to add contact' }));
+  }
+};
+
+export const updateContactStarted = createAction(
+  'contact/updateContactStarted',
+);
+export const updateContactSucceeded = createAction<{
+  contacts: Array<Contact>
+}>('contact/updateContactSucceeded');
+export const updateContactFailed = createAction<{
+  err: string
+}>('contact/udpateContactFailed');
+
+export const updateContact = (
+  updatedContact: UpdateContactInput,
+) => async (dispatch: AppDispatch) => {
+  dispatch(updateContactStarted());
+
+  try {
+    const contacts = await ContactService.updateContact(updatedContact);
+
+    dispatch(updateContactSucceeded({ contacts }));
+  } catch (e) {
+    console.log(e);
+    dispatch(updateContactFailed({ err: 'Failed to update contact' }));
   }
 };

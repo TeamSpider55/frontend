@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import EditIcon from '@mui/icons-material/Edit';
 import DoneIcon from '@mui/icons-material/Done';
 import ClearIcon from '@mui/icons-material/Clear';
 import Button from '@mui/material/Button';
-import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
-import { Link } from 'react-router-dom';
-import { Input, TextField } from '@mui/material';
+import { Link, useParams } from 'react-router-dom';
+import { Input } from '@mui/material';
+import { useAppDispatch, useAppSelector } from '../redux/store';
+import { getContacts, updateContact } from '../redux/action/contactAction';
 
 const useStyles = makeStyles((theme: any) => ({
   contactsButtonWrapper: {
@@ -137,12 +139,14 @@ const useStyles = makeStyles((theme: any) => ({
     outline: 'none',
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
+    color: theme.palette.primary.dark,
   },
   clearIcon: {
     cursor: 'pointer',
     outline: 'none',
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
+    color: theme.palette.primary.dark,
   },
   contactTimeline: {
     display: 'inline-block',
@@ -193,10 +197,25 @@ const editModeShadow = (editModeOn: boolean) => ({
   borderRadius: editModeOn ? '3px' : '0px',
 });
 
+const LinkBackToContactList = () => {
+  const theme = useTheme();
+  const classes = useStyles(theme);
+  return (
+    <Link to="/contacts">
+      <Button className={classes.contactsButton}>
+        <ArrowLeftIcon className={classes.arrowLeftIcon} />
+        Contacts
+      </Button>
+    </Link>
+  );
+};
+
 const ContactDetail = () => {
   const theme = useTheme();
   const classes = useStyles(theme);
+
   const [editModeOn, setEditModeOn] = useState(false);
+
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -205,168 +224,189 @@ const ContactDetail = () => {
   const [organisation, setOrganisation] = useState('');
   const [description, setDescription] = useState('');
 
+  // check url for a path param indicating which contact is to be fetched
+  const { contactId } = useParams<{ contactId: string }>();
+
+  const dispatch = useAppDispatch();
+  const contact = useAppSelector((state) => {
+    return state.contact.contacts?.find((c) => c.contactId === contactId);
+  });
+
+  // fetch data from store to initialise
+  useEffect(() => {
+    dispatch(getContacts());
+  }, []);
+
   const toggleEditMode = () => {
-    // setEmail(document.getElementById('email').value);
-    // setName(document.getElementById('name').value);
-    // setPhone(document.getElementById('phone').value);
-    // setLocation(document.getElementById('location').value);
-    // setRole(document.getElementById('role').value);
-    // setOrganisation(document.getElementById('organisation').value);
-    // setDescription(document.getElementById('description').value);
     setEditModeOn(true);
+
+    if (!contact) return;
+    setEmail(contact.email);
   };
   const editModeCancel = () => {
-    // document.getElementById('email').value = email;
-    // document.getElementById('name').value = name;
-    // document.getElementById('phone').value = phone;
-    // document.getElementById('location').value = location;
-    // document.getElementById('role').value = role;
-    // document.getElementById('organisation').value = organisation;
-    // document.getElementById('description').value = description;
-
     setEditModeOn(false);
   };
   const editModeConfirm = () => {
-    // setEmail(document.getElementById('email').value);
-    // setName(document.getElementById('name').value);
-    // setPhone(document.getElementById('phone').value);
-    // setLocation(document.getElementById('location').value);
-    // setRole(document.getElementById('role').value);
-    // setOrganisation(document.getElementById('organisation').value);
-    // setDescription(document.getElementById('description').value);
     setEditModeOn(false);
+
+    dispatch(updateContact({
+      contactId,
+      email,
+    }));
   };
 
   return (
     <>
-      <div
-        className={classes.contactsButtonWrapper}
-        style={{
-          MozUserSelect: 'none',
-          WebkitUserSelect: 'none',
-          msUserSelect: 'none',
-          userSelect: 'none',
-        }}
-      >
-        <Link to="/contacts">
-          <Button className={classes.contactsButton}>
-            <ArrowLeftIcon className={classes.arrowLeftIcon} />
-            Contacts
-          </Button>
-        </Link>
-      </div>
-      <div className={classes.contactDetail}>
-        <div className={classes.editIconWrapper}>
-          {
-            !editModeOn && (
-              <Button
-                className={classes.editIcon}
-                onClick={toggleEditMode}
-              >
-                <EditIcon />
-              </Button>
-            )
-          }
-          {editModeOn && <ClearIcon component={Button} className={classes.clearIcon} onClick={editModeCancel} role="button" tabIndex={0} />}
-          {editModeOn && <DoneIcon component={Button} className={classes.doneIcon} onClick={editModeConfirm} role="button" tabIndex={0} />}
-        </div>
-
-        <div className={classes.imgNameWrapper}>
-          <div className={classes.contactImgWrapper}>
-            <img
-              src="https://images.unsplash.com/photo-1600180758890-6b94519a8ba6?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80"
-              alt="Unknown"
-              height="144px"
-              width="144px"
-            />
-          </div>
-          <div>
-            <div className={classes.contactName}>
-              <Input
-                type="text"
-                name="name"
-                id="name"
-                defaultValue="Farhan Fauzan"
-                disableUnderline={!editModeOn}
-                readOnly={!editModeOn}
-                spellCheck="false"
-              />
-
+      {
+        contact ? (
+          <>
+            <div
+              className={classes.contactsButtonWrapper}
+              style={{
+                MozUserSelect: 'none',
+                WebkitUserSelect: 'none',
+                msUserSelect: 'none',
+                userSelect: 'none',
+              }}
+            >
+              <Link to="/contacts">
+                <Button className={classes.contactsButton}>
+                  <ArrowLeftIcon className={classes.arrowLeftIcon} />
+                  Contacts
+                </Button>
+              </Link>
             </div>
-            <div className={classes.contactInfo}>
-              Available for hire
+            <div className={classes.contactDetail}>
+              <div className={classes.editIconWrapper}>
+                {
+                  !editModeOn && (
+                    <Button
+                      className={classes.editIcon}
+                      onClick={toggleEditMode}
+                    >
+                      <EditIcon />
+                    </Button>
+                  )
+                }
+                {
+                  editModeOn && (
+                    <>
+                      <Button
+                        className={classes.clearIcon}
+                        onClick={editModeCancel}
+                      >
+                        <ClearIcon />
+                      </Button>
+                      <Button
+                        className={classes.doneIcon}
+                        onClick={editModeConfirm}
+                      >
+                        <DoneIcon />
+                      </Button>
+                    </>
+                  )
+                }
+              </div>
+              <div className={classes.imgNameWrapper}>
+                <div className={classes.contactImgWrapper}>
+                  <img
+                    src="https://images.unsplash.com/photo-1600180758890-6b94519a8ba6?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80"
+                    alt="Unknown"
+                    height="144px"
+                    width="144px"
+                  />
+                </div>
+                <div>
+                  <div className={classes.contactName}>
+                    <Input
+                      type="text"
+                      name="name"
+                      id="name"
+                      defaultValue="Farhan Fauzan"
+                      disableUnderline={!editModeOn}
+                      readOnly={!editModeOn}
+                      spellCheck="false"
+                    />
+                  </div>
+                  <div className={classes.contactInfo}>
+                    Available for hire
+                  </div>
+                </div>
+              </div>
+              <div className={classes.detailWrapper}>
+                <Grid container rowSpacing={1}>
+                  <Grid item xs={5} sx={labelStyle}>Email</Grid>
+                  <Grid item xs={7}>
+                    <Input
+                      type="email"
+                      value={editModeOn ? email : contact.email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      disableUnderline
+                      readOnly={!editModeOn}
+                      spellCheck="false"
+                      sx={editModeShadow(editModeOn)}
+                    />
+                  </Grid>
+                  <Grid item xs={5} sx={labelStyle}>Phone Number</Grid>
+                  <Grid item xs={7}>
+                    <Input
+                      type="tel"
+                      // maxLength={12}
+                      value={contact.phone}
+                      disableUnderline
+                      readOnly={!editModeOn}
+                      spellCheck="false"
+                      sx={{ ...editModeShadow(editModeOn) }}
+                    />
+                  </Grid>
+                  <Grid item xs={5} sx={labelStyle}>Role</Grid>
+                  <Grid item xs={7}>
+                    <Input
+                      defaultValue="ROLE"
+                      disableUnderline
+                      readOnly={!editModeOn}
+                      spellCheck="false"
+                      sx={{ ...editModeShadow(editModeOn) }}
+                    />
+                  </Grid>
+                  <Grid item xs={5} sx={labelStyle}>Organisation</Grid>
+                  <Grid item xs={7}>
+                    <Input
+                      defaultValue="ORG"
+                      disableUnderline
+                      readOnly={!editModeOn}
+                      spellCheck="false"
+                      sx={{ ...editModeShadow(editModeOn) }}
+                    />
+                  </Grid>
+                  <Grid item xs={5} sx={labelStyle}>Location</Grid>
+                  <Grid item xs={7}>
+                    <Input
+                      defaultValue="LOCATION"
+                      disableUnderline
+                      readOnly={!editModeOn}
+                      spellCheck="false"
+                      sx={{ ...editModeShadow(editModeOn) }}
+                    />
+                  </Grid>
+                  <Grid item xs={5} sx={{ ...labelStyle, alignItems: 'start' }}>
+                    Description
+                  </Grid>
+                  <Grid item xs={7}>
+                    <textarea
+                      rows={5}
+                      readOnly={!editModeOn}
+                      spellCheck="false"
+                      style={{ ...editModeShadow(editModeOn) }}
+                    />
+                  </Grid>
+                </Grid>
+              </div>
             </div>
-          </div>
-        </div>
-        <div className={classes.detailWrapper}>
-          <Grid container rowSpacing={1}>
-            <Grid item xs={5} sx={labelStyle}>Email</Grid>
-            <Grid item xs={7}>
-              <Input
-                type="email"
-                defaultValue="Example@123.com"
-                disableUnderline
-                readOnly={!editModeOn}
-                spellCheck="false"
-                sx={editModeShadow(editModeOn)}
-              />
-            </Grid>
-            <Grid item xs={5} sx={labelStyle}>Phone Number</Grid>
-            <Grid item xs={7}>
-              <Input
-                type="tel"
-                // maxLength={12}
-                defaultValue="+61123456789"
-                disableUnderline
-                readOnly={!editModeOn}
-                spellCheck="false"
-                sx={{ ...editModeShadow(editModeOn) }}
-              />
-            </Grid>
-            <Grid item xs={5} sx={labelStyle}>Role</Grid>
-            <Grid item xs={7}>
-              <Input
-                defaultValue="ROLE"
-                disableUnderline
-                readOnly={!editModeOn}
-                spellCheck="false"
-                sx={{ ...editModeShadow(editModeOn) }}
-              />
-            </Grid>
-            <Grid item xs={5} sx={labelStyle}>Organisation</Grid>
-            <Grid item xs={7}>
-              <Input
-                defaultValue="ORG"
-                disableUnderline
-                readOnly={!editModeOn}
-                spellCheck="false"
-                sx={{ ...editModeShadow(editModeOn) }}
-              />
-            </Grid>
-            <Grid item xs={5} sx={labelStyle}>Location</Grid>
-            <Grid item xs={7}>
-              <Input
-                defaultValue="LOCATION"
-                disableUnderline
-                readOnly={!editModeOn}
-                spellCheck="false"
-                sx={{ ...editModeShadow(editModeOn) }}
-              />
-            </Grid>
-            <Grid item xs={5} sx={{ ...labelStyle, alignItems: 'start' }}>
-              Description
-            </Grid>
-            <Grid item xs={7}>
-              <textarea
-                rows={5}
-                readOnly={!editModeOn}
-                spellCheck="false"
-                style={{ ...editModeShadow(editModeOn) }}
-              />
-            </Grid>
-          </Grid>
-        </div>
-      </div>
+          </>
+        ) : <Box>asdfjasd</Box>
+        // FIXME: when contact not found?
+      }
 
       <div className={classes.contactTimeline}>
         <div>

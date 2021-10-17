@@ -16,8 +16,8 @@ export default function SearchNotFound({ searchQuery }: Props) {
         <strong>
           {`'${searchQuery}'`}
         </strong>
-        found.
-        Try checking for typos or using complete words.
+        &nbsp; found.
+        Try checking for typos.
       </Typography>
     </Box>
   );

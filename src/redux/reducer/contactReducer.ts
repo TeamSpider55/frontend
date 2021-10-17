@@ -10,6 +10,9 @@ import {
   addContactStarted,
   addContactSucceeded,
   addContactFailed,
+  updateContactStarted,
+  updateContactSucceeded,
+  updateContactFailed,
 } from '../action/contactAction';
 
 interface ContactState {
@@ -59,6 +62,18 @@ export default createReducer(initialState, (builder) => {
       state.contacts = action.payload.contacts;
     })
     .addCase(addContactFailed, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload.err;
+    })
+    .addCase(updateContactStarted, (state, _action) => {
+      state.isLoading = true;
+      state.contacts = null;
+    })
+    .addCase(updateContactSucceeded, (state, action) => {
+      state.isLoading = false;
+      state.contacts = action.payload.contacts;
+    })
+    .addCase(updateContactFailed, (state, action) => {
       state.isLoading = false;
       state.error = action.payload.err;
     });

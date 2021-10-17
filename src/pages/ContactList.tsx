@@ -32,6 +32,7 @@ import {
   deleteContacts,
   addContact,
 } from '../redux/action/contactAction';
+import Spinner from '../components/Spinner';
 
 const StyledContainer = styled(Container)((
   {
@@ -213,9 +214,7 @@ const ContactList = () => {
             deleteMany={onDeleteContacts}
           />
           {filteredContacts === null ? (
-            <Typography variant="subtitle2" noWrap>
-              Loading
-            </Typography>
+            <Spinner />
           ) : (
             <Box>
               <TableContainer>
