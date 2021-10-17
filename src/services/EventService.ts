@@ -35,7 +35,7 @@ class EventService {
     end,
   }: AddEventInput): Promise<Array<Event>> {
     const ids = (await this.getEvents()).map((e) => e.eventId);
-    const newId = ids[ids.length - 1] + 1;
+    const newId = String(Number(ids[ids.length - 1]) + 1);
 
     EVENTS = [...EVENTS,
       {

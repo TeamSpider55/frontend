@@ -69,7 +69,7 @@ class ContactService {
     familyName,
   }: AddContactInput): Promise<Array<Contact>> {
     const ids = (await this.getContacts()).map((c) => c.contactId);
-    const newId = ids[ids.length - 1] + 1;
+    const newId = String(Number(ids[ids.length - 1]) + 1);
 
     CONTACTS = [...CONTACTS,
       {

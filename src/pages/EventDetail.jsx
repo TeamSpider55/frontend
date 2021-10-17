@@ -11,14 +11,17 @@ import EditIcon from '@mui/icons-material/Edit';
 import DoneIcon from '@mui/icons-material/Done';
 import ClearIcon from '@mui/icons-material/Clear';
 import Button from '@mui/material/Button';
+import Input from '@mui/material/Input';
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EmailIcon from '@mui/icons-material/Email';
 import CancelIcon from '@mui/icons-material/Cancel';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DesktopDateTimePicker from '@mui/lab/DateTimePicker';
+import { useAppDispatch, useAppSelector } from '../redux/store';
+import { getEvents } from '../redux/action/eventAction';
 import ContactService from '../services/ContactService';
 
 const useStyles = makeStyles((theme) => ({
@@ -193,6 +196,18 @@ const EventDetail = () => {
   const [participants, setParticipants] = useState([]);
   const [newParticipants, setNewParticipants] = useState([]);
 
+  const { eventId } = useParams();
+
+  const dispatch = useAppDispatch();
+  const event = useAppSelector((state) => {
+    return state.event.events?.find((e) => e.eventId === eventId);
+  });
+
+  // fetch data from store to initialise
+  useEffect(() => {
+    dispatch(getEvents());
+  }, []);
+
   const toggleEditMode = () => {
     setDescription(document.getElementById('description').value);
     if (document.getElementById('eventStartDateTime')) {
@@ -317,100 +332,105 @@ const EventDetail = () => {
           )}
         </Box>
       </Box>
-      <Box className={classes.eventDetail}>
-        <Box>
-          <Box className={classes.eventName}>
-            <input
-              type="text"
-              name="name"
-              id="name"
-              defaultValue="Meeting with Bean and Beanz"
+      {
+      event ? (
+        <>
+          <Box className={classes.eventDetail}>
+            <Box>
+              <Box className={classes.eventName}>
+                <Input
+                  type="text"
+                  value={event.title}
+                  disableUnderline={!editModeOn}
+                  readOnly={!editModeOn}
+                  spellCheck="false"
+                />
+              </Box>
+              <Box className={classes.eventDateTime}>
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <DesktopDateTimePicker
+                    renderInput={(props) => <TextField {...props} />}
+                    label="Start"
+                    value={newStartDateTime}
+                    disabled={!editModeOn}
+                    onChange={(newValue) => {
+                      setNewStartDateTime(newValue);
+                    }}
+                    disablePast
+                    id="eventStartDateTime"
+                    inputProps={{ readOnly: true }}
+                  />
+                </LocalizationProvider>
+              </Box>
+              <Box className={classes.eventDateTime}>
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <DesktopDateTimePicker
+                    renderInput={(props) => <TextField {...props} />}
+                    label="End"
+                    value={newEndDateTime}
+                    disabled={!editModeOn}
+                    onChange={(newValue) => {
+                      setNewEndDateTime(newValue);
+                    }}
+                    disablePast
+                    id="eventEndDateTime"
+                    inputProps={{ readOnly: true }}
+                  />
+                </LocalizationProvider>
+              </Box>
+              <Box className={classes.participantTitle}>
+                Participants
+                <Button className={classes.inviteButton}>
+                  <EmailIcon className={classes.emailIcon} />
+                  Invite
+                </Button>
+              </Box>
+              <Box>
+                <Paper className={classes.participantScrollable}>
+                  {newParticipants.map((participant) => {
+                    const { email } = participant;
+                    return (
+                      <Box className={classes.participantContainer}>
+                        <Box display="flex">
+                          <Avatar className={classes.participantAvatar} alt="avatarURL" src="#FIXME: avatarURL" />
+                          <Box
+                            paddingLeft={2}
+                            noWrap
+                          >
+                            {email}
+                          </Box>
+                        </Box>
+                        {editModeOn && (
+                          <CancelIcon
+                            className={classes.cancelIcon}
+                            onClick={() => deleteParticipant(email)}
+                          />
+                        )}
+                      </Box>
+                    );
+                  })}
+                </Paper>
+              </Box>
+            </Box>
+          </Box>
+
+          <Box className={classes.eventDescription}>
+            <Box>
+              <Box className={classes.descriptionTitle}>
+                Description
+              </Box>
+            </Box>
+            <textarea
+              id="description"
+              rows="5"
               readOnly={!editModeOn}
               spellCheck="false"
+              style={{ boxShadow: editModeOn ? '0 0 0 1pt lightGrey' : 'none', borderRadius: editModeOn ? '5px' : '0px' }}
             />
           </Box>
-          <Box className={classes.eventDateTime}>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DesktopDateTimePicker
-                renderInput={(props) => <TextField {...props} />}
-                label="Start"
-                value={newStartDateTime}
-                disabled={!editModeOn}
-                onChange={(newValue) => {
-                  setNewStartDateTime(newValue);
-                }}
-                disablePast
-                id="eventStartDateTime"
-                inputProps={{ readOnly: true }}
-              />
-            </LocalizationProvider>
-          </Box>
-          <Box className={classes.eventDateTime}>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DesktopDateTimePicker
-                renderInput={(props) => <TextField {...props} />}
-                label="End"
-                value={newEndDateTime}
-                disabled={!editModeOn}
-                onChange={(newValue) => {
-                  setNewEndDateTime(newValue);
-                }}
-                disablePast
-                id="eventEndDateTime"
-                inputProps={{ readOnly: true }}
-              />
-            </LocalizationProvider>
-          </Box>
-          <Box className={classes.participantTitle}>
-            Participants
-            <Button className={classes.inviteButton}>
-              <EmailIcon className={classes.emailIcon} />
-              Invite
-            </Button>
-          </Box>
-          <Box>
-            <Paper className={classes.participantScrollable}>
-              {newParticipants.map((participant) => {
-                const { email } = participant;
-                return (
-                  <Box className={classes.participantContainer}>
-                    <Box display="flex">
-                      <Avatar className={classes.participantAvatar} alt="avatarURL" src="#FIXME: avatarURL" />
-                      <Box
-                        paddingLeft={2}
-                        noWrap
-                      >
-                        {email}
-                      </Box>
-                    </Box>
-                    {editModeOn && (
-                      <CancelIcon
-                        className={classes.cancelIcon}
-                        onClick={() => deleteParticipant(email)}
-                      />
-                    )}
-                  </Box>
-                );
-              })}
-            </Paper>
-          </Box>
-        </Box>
-      </Box>
-
-      <Box className={classes.eventDescription}>
-        <Box>
-          <Box className={classes.descriptionTitle}>
-            Description
-          </Box>
-        </Box>
-        <textarea
-          id="description"
-          rows="5"
-          readOnly={!editModeOn}
-          spellCheck="false"
-          style={{ boxShadow: editModeOn ? '0 0 0 1pt lightGrey' : 'none', borderRadius: editModeOn ? '5px' : '0px' }}
-        />
-      </Box>
+        </>
+      ) : <Box>LOADING</Box>
+      }
     </>
   );
 };

@@ -280,7 +280,7 @@ const EventList = () => {
                             <TableCell
                               component="th"
                               scope="row"
-                              onClick={() => goToEvent('1')}
+                              onClick={() => goToEvent(eventId)}
                             >
                               <Box display="flex" alignItems="center">
                                 <Box
@@ -292,7 +292,7 @@ const EventList = () => {
                                 </Box>
                               </Box>
                             </TableCell>
-                            <TableCell onClick={() => goToEvent('1')}>
+                            <TableCell onClick={() => goToEvent(eventId)}>
                               <Box>
                                 {DAYDATE_FORMAT.format(start)}
                               </Box>
@@ -302,7 +302,7 @@ const EventList = () => {
                                 {TIME_FORMAT.format(end)}
                               </Box>
                             </TableCell>
-                            <TableCell onClick={() => goToEvent('1')}>
+                            <TableCell onClick={() => goToEvent(eventId)}>
                               {/* FIXME: hardcoded avatars and
                                   non-functioning sort
                               */}

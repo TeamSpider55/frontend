@@ -473,7 +473,7 @@ const ContactDetail = () => {
               </div>
             </div>
           </>
-        ) : <Box>asdfjasd</Box>
+        ) : <Box>LOADING</Box>
         // FIXME: when contact not found?
       }
 
