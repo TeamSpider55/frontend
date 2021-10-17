@@ -1,6 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 import { AppDispatch } from '../store';
 import {
+  AddEventInput,
   Event,
 } from '../../dto/Event';
 import EventService from '../../services/EventService';
@@ -55,3 +56,33 @@ export const deleteEvents = (
 };
 
 export const deleteEvent = (id: string) => deleteEvents([id]);
+
+export const addEventStarted = createAction(
+  'event/addEventStarted',
+);
+export const addEventSucceeded = createAction<{
+  events: Array<Event>
+}>('event/addEventSucceeded');
+export const addEventFailed = createAction<{
+  err: string
+}>('event/addEventFailed');
+
+export const addEvent = (
+  {
+    title,
+    start,
+    end,
+  }: AddEventInput,
+) => async (dispatch: AppDispatch) => {
+  dispatch(addEventStarted());
+
+  try {
+    const events = await EventService.addEvent({
+      title, start, end,
+    });
+
+    dispatch(addEventSucceeded({ events }));
+  } catch (e) {
+    dispatch(addEventFailed({ err: 'Failed to add event' }));
+  }
+};

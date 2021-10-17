@@ -13,3 +13,9 @@ export interface DateRange {
   from: Date;
   to: Date
 }
+
+export interface AddEventInput {
+  title: string;
+  start: number;
+  end: number;
+}

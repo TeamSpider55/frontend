@@ -1,4 +1,4 @@
-import { Event } from '../dto/Event';
+import { AddEventInput, Event } from '../dto/Event';
 
 let EVENTS: Array<Event> = [...Array(3)].map((_, i) => {
   const idx = i.toString();
@@ -26,6 +26,30 @@ class EventService {
 
   static async deleteEvents(ids: string[]): Promise<Array<Event>> {
     EVENTS = EVENTS.filter((e) => !ids.includes(e.eventId));
+    return EVENTS;
+  }
+
+  static async addEvent({
+    title,
+    start,
+    end,
+  }: AddEventInput): Promise<Array<Event>> {
+    const ids = (await this.getEvents()).map((e) => e.eventId);
+    const newId = ids[ids.length - 1] + 1;
+
+    EVENTS = [...EVENTS,
+      {
+        eventId: newId,
+        title,
+        note: '',
+        start,
+        end,
+        type: 'collaborate',
+        tags: [],
+        contacts: [],
+      },
+    ];
+
     return EVENTS;
   }
 

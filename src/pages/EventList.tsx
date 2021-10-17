@@ -37,6 +37,7 @@ import {
   getEvents,
   deleteEvent,
   deleteEvents,
+  addEvent,
 } from '../redux/action/eventAction';
 
 const StyledContainer = styled(Container)((
@@ -116,17 +117,22 @@ const EventList = () => {
 
   const onDeleteEvent = (id: string) => {
     if (events === null) return;
-    const newEvents = events.filter((e) => e.eventId !== id);
     dispatch(deleteEvent(id));
-    // setEvents(newEvents);
   };
 
   const onDeleteEvents = (ids: string[]) => {
     if (events === null) return;
-    const newEvents = events?.filter((e) => !ids.includes(e.eventId));
-    // setEvents(newEvents);
     dispatch(deleteEvents(ids));
     setSelected([]);
+  };
+
+  const onAddEvent = () => {
+    if (events === null) return;
+    dispatch(addEvent({
+      title: 'new event',
+      start: Date.now(),
+      end: Date.now() + 3600000,
+    }));
   };
 
   const handleRequestSort = (event: any, property: string) => {
@@ -207,6 +213,7 @@ const EventList = () => {
             color="primary"
             component={RouterLink}
             to="#"
+            onClick={onAddEvent}
           >
             <AddIcon />
             ADD NEW EVENT
