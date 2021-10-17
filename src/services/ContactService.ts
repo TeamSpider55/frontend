@@ -1,23 +1,52 @@
 import { AddContactInput, Contact, UpdateContactInput } from '../dto/Contact';
 
-let CONTACTS: Array<Contact> = [...Array(3)].map((_, i) => {
-  const idx = i.toString();
-  return {
-    contactId: String(idx),
-    nickName: `nick${idx}`,
+let CONTACTS: Array<Contact> = [
+  {
+    contactId: '1',
+    nickName: 'Steve',
     tags: ['1', '2'],
-    givenName: `given${idx}`,
-    middleName: `middle${idx}`,
-    familyName: `family${idx}`,
-    email: `john.doe${idx}@gmail.com`,
-    phone: `+61234567${idx}`,
-    address: `${idx} Apple Street`,
-    description: `${idx}lorem ipsum`,
+    givenName: 'Steven',
+    middleName: 'Stevanovich',
+    familyName: 'Stevenson',
+    email: 'sss@gmail.com',
+    phone: '+612345671',
+    address: '1 Stephen Street',
+    description: 'A very cool guy',
     note: 'note',
-    role: `Developer ${idx}`,
-    organisation: `Company ${idx}`,
-  };
-});
+    role: 'Student',
+    organisation: 'University of Adelaide',
+  },
+  {
+    contactId: '2',
+    nickName: 'Jay',
+    tags: ['1', '2'],
+    givenName: 'Jake',
+    middleName: '',
+    familyName: 'Lay',
+    email: 'jlay@gmail.com',
+    phone: '+612345672',
+    address: '1 Lake Street',
+    description: 'People call him Jay',
+    note: 'note',
+    role: 'Developer',
+    organisation: 'Jaybird',
+  },
+  {
+    contactId: '3',
+    nickName: '',
+    tags: ['1', '2'],
+    givenName: 'Madeleine',
+    middleName: '',
+    familyName: '',
+    email: 'maddd@gmail.com',
+    phone: '+612345673',
+    address: '1 High Street',
+    description: 'All business, no nickname...',
+    note: 'note',
+    role: 'CEO',
+    organisation: 'Button Pushers Inc.',
+  },
+];
 
 class ContactService {
   static async getContacts(): Promise<Array<Contact>> {

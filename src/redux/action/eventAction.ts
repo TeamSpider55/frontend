@@ -29,3 +29,29 @@ export const getEvents = () => async (dispatch: AppDispatch) => {
 export const getDummyEvents = getEventsSucceeded({
   events: EventService.getDummyEvents(),
 });
+
+export const deleteEventsStarted = createAction(
+  'contact/deleteEventsStarted',
+);
+export const deleteEventsSucceeded = createAction<{
+  events: Array<Event>
+}>('contact/deleteEventsSucceeded');
+export const deleteEventsFailed = createAction<{
+  err: string
+}>('contact/deleteEventsFailed');
+
+export const deleteEvents = (
+  ids: string[],
+) => async (dispatch: AppDispatch) => {
+  dispatch(deleteEventsStarted());
+
+  try {
+    const events = await EventService.deleteEvents(ids);
+
+    dispatch(deleteEventsSucceeded({ events }));
+  } catch (e) {
+    dispatch(deleteEventsFailed({ err: 'Failed to delete events' }));
+  }
+};
+
+export const deleteEvent = (id: string) => deleteEvents([id]);

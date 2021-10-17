@@ -32,7 +32,12 @@ import {
   isValidDateRange,
   TIME_FORMAT,
 } from '../util/datetime';
-import { getDummyEvents, getEvents } from '../redux/action/eventAction';
+import {
+  getDummyEvents,
+  getEvents,
+  deleteEvent,
+  deleteEvents,
+} from '../redux/action/eventAction';
 
 const StyledContainer = styled(Container)((
   {
@@ -107,19 +112,20 @@ const EventList = () => {
   }, []);
 
   const theme = useTheme();
-
   const history = useHistory();
 
-  const deleteEvent = (id: string) => {
+  const onDeleteEvent = (id: string) => {
     if (events === null) return;
     const newEvents = events.filter((e) => e.eventId !== id);
+    dispatch(deleteEvent(id));
     // setEvents(newEvents);
   };
 
-  const deleteEvents = (ids: string[]) => {
+  const onDeleteEvents = (ids: string[]) => {
     if (events === null) return;
     const newEvents = events?.filter((e) => !ids.includes(e.eventId));
     // setEvents(newEvents);
+    dispatch(deleteEvents(ids));
     setSelected([]);
   };
 
@@ -209,7 +215,7 @@ const EventList = () => {
         <Card>
           <EventListToolbar
             selected={selected}
-            deleteMany={deleteEvents}
+            deleteMany={onDeleteEvents}
             dateRange={dateRange}
             setDateRange={setDateRange}
           />
@@ -304,7 +310,7 @@ const EventList = () => {
                             <TableCell align="right">
                               <MoreMenu
                                 id={eventId}
-                                deleteOne={deleteEvent}
+                                deleteOne={onDeleteEvent}
                               />
                             </TableCell>
                           </TableRow>

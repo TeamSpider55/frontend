@@ -4,6 +4,9 @@ import {
   getEventsStarted,
   getEventsSucceeded,
   getEventsFailed,
+  deleteEventsStarted,
+  deleteEventsSucceeded,
+  deleteEventsFailed,
 } from '../action/eventAction';
 
 interface EventState {
@@ -29,6 +32,18 @@ export default createReducer(initialState, (builder) => {
       state.events = action.payload.events;
     })
     .addCase(getEventsFailed, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload.err;
+    })
+    .addCase(deleteEventsStarted, (state, _action) => {
+      state.isLoading = true;
+      state.events = null;
+    })
+    .addCase(deleteEventsSucceeded, (state, action) => {
+      state.isLoading = false;
+      state.events = action.payload.events;
+    })
+    .addCase(deleteEventsFailed, (state, action) => {
       state.isLoading = false;
       state.error = action.payload.err;
     });

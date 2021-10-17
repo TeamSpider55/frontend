@@ -1,6 +1,6 @@
 import { Event } from '../dto/Event';
 
-const EVENTS: Array<Event> = [...Array(3)].map((_, i) => {
+let EVENTS: Array<Event> = [...Array(3)].map((_, i) => {
   const idx = i.toString();
   return {
     eventId: idx,
@@ -16,6 +16,16 @@ const EVENTS: Array<Event> = [...Array(3)].map((_, i) => {
 
 class EventService {
   static async getEvents(): Promise<Array<Event>> {
+    return EVENTS;
+  }
+
+  static async deleteEvent(id: string): Promise<Array<Event>> {
+    EVENTS = EVENTS.filter((event) => event.eventId !== id);
+    return EVENTS;
+  }
+
+  static async deleteEvents(ids: string[]): Promise<Array<Event>> {
+    EVENTS = EVENTS.filter((e) => !ids.includes(e.eventId));
     return EVENTS;
   }
 

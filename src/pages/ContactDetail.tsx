@@ -348,7 +348,7 @@ const ContactDetail = () => {
                     />
                   </div>
                   <div className={classes.contactInfo}>
-                    Available for hire
+                    {/* Available for hire */}
                   </div>
                 </div>
               </div>
