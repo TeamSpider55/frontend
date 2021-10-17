@@ -48,7 +48,7 @@ const TABLE_HEAD = [
   { id: 'givenName', label: 'Name', alignRight: false },
   { id: 'organisation', label: 'Organisation', alignRight: false },
   { id: 'role', label: 'Role', alignRight: false },
-  { id: 'dateAdded', label: 'Date Added', alignRight: false },
+  // { id: 'dateAdded', label: 'Date Added', alignRight: false },
 ];
 
 const applySortFilter = (array: any, comparator: any, query: string) => {
@@ -240,6 +240,8 @@ const ContactList = () => {
                             contactId,
                             givenName,
                             familyName,
+                            role,
+                            organisation,
                           } = row;
                         const name = `${givenName} ${familyName}`;
                         const isItemSelected = selected
@@ -278,15 +280,16 @@ const ContactList = () => {
                               </Box>
                             </TableCell>
                             <TableCell onClick={() => goToContact(contactId)}>
-                              Apple
+                              { organisation }
                             </TableCell>
                             <TableCell onClick={() => goToContact(contactId)}>
-                              Software Engineer
+                              { role }
                             </TableCell>
-                            <TableCell onClick={() => goToContact(contactId)}>
+                            {/* <TableCell onClick={() => goToContact(contactId)}>
                               17 August 2021
-                            </TableCell>
+                            </TableCell> */}
                             <TableCell align="right">
+                              {/* FIXME: ADD EDIT ONE */}
                               <MoreMenu
                                 id={contactId}
                                 deleteOne={onDeleteContact}

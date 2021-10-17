@@ -114,7 +114,6 @@ const useStyles = makeStyles((theme: any) => ({
       padding: theme.spacing(0),
       paddingLeft: theme.spacing(1),
       paddingRight: theme.spacing(1),
-      marginTop: theme.spacing(1),
       lineHeight: 'unset',
       resize: 'none',
       '&:focus': {
@@ -198,19 +197,6 @@ const editModeShadow = (editModeOn: boolean) => ({
   borderRadius: editModeOn ? '3px' : '0px',
 });
 
-const LinkBackToContactList = () => {
-  const theme = useTheme();
-  const classes = useStyles(theme);
-  return (
-    <Link to="/contacts">
-      <Button className={classes.contactsButton}>
-        <ArrowLeftIcon className={classes.arrowLeftIcon} />
-        Contacts
-      </Button>
-    </Link>
-  );
-};
-
 const ContactDetail = () => {
   const theme = useTheme();
   const classes = useStyles(theme);
@@ -252,6 +238,11 @@ const ContactDetail = () => {
     setMiddleName(contact.middleName);
     setFamilyName(contact.familyName);
     setNickName(contact.nickName);
+    setPhone(contact.phone);
+    setAddress(contact.address);
+    setRole(contact.role);
+    setOrganisation(contact.organisation);
+    setDescription(contact.description);
   };
 
   const editModeCancel = () => {
@@ -268,6 +259,11 @@ const ContactDetail = () => {
       middleName,
       familyName,
       nickName,
+      phone,
+      address,
+      role,
+      organisation,
+      description,
     }));
   };
 
@@ -372,7 +368,6 @@ const ContactDetail = () => {
                   <Grid item xs={5} sx={labelStyle}>Middle Name</Grid>
                   <Grid item xs={7}>
                     <Input
-                      type="email"
                       value={editModeOn ? middleName : contact.middleName}
                       onChange={(e) => setMiddleName(e.target.value)}
                       disableUnderline
@@ -384,7 +379,6 @@ const ContactDetail = () => {
                   <Grid item xs={5} sx={labelStyle}>Family Name</Grid>
                   <Grid item xs={7}>
                     <Input
-                      type="email"
                       value={editModeOn ? familyName : contact.familyName}
                       onChange={(e) => setFamilyName(e.target.value)}
                       disableUnderline
@@ -396,7 +390,6 @@ const ContactDetail = () => {
                   <Grid item xs={5} sx={labelStyle}>Nickname</Grid>
                   <Grid item xs={7}>
                     <Input
-                      type="email"
                       value={editModeOn ? nickName : contact.nickName}
                       onChange={(e) => setNickName(e.target.value)}
                       disableUnderline
@@ -422,8 +415,9 @@ const ContactDetail = () => {
                     <Input
                       type="tel"
                       // maxLength={12}
-                      value={contact.phone}
+                      value={editModeOn ? phone : contact.phone}
                       disableUnderline
+                      onChange={(e) => setPhone(e.target.value)}
                       readOnly={!editModeOn}
                       spellCheck="false"
                       sx={{ ...editModeShadow(editModeOn) }}
@@ -432,31 +426,34 @@ const ContactDetail = () => {
                   <Grid item xs={5} sx={labelStyle}>Role</Grid>
                   <Grid item xs={7}>
                     <Input
-                      defaultValue="ROLE"
+                      value={editModeOn ? role : contact.role}
+                      onChange={(e) => setRole(e.target.value)}
                       disableUnderline
                       readOnly={!editModeOn}
                       spellCheck="false"
-                      sx={{ ...editModeShadow(editModeOn) }}
+                      sx={editModeShadow(editModeOn)}
                     />
                   </Grid>
                   <Grid item xs={5} sx={labelStyle}>Organisation</Grid>
                   <Grid item xs={7}>
                     <Input
-                      defaultValue="ORG"
+                      value={editModeOn ? organisation : contact.organisation}
+                      onChange={(e) => setOrganisation(e.target.value)}
                       disableUnderline
                       readOnly={!editModeOn}
                       spellCheck="false"
-                      sx={{ ...editModeShadow(editModeOn) }}
+                      sx={editModeShadow(editModeOn)}
                     />
                   </Grid>
-                  <Grid item xs={5} sx={labelStyle}>Location</Grid>
+                  <Grid item xs={5} sx={labelStyle}>Address</Grid>
                   <Grid item xs={7}>
                     <Input
-                      defaultValue="LOCATION"
+                      value={editModeOn ? address : contact.address}
+                      onChange={(e) => setAddress(e.target.value)}
                       disableUnderline
                       readOnly={!editModeOn}
                       spellCheck="false"
-                      sx={{ ...editModeShadow(editModeOn) }}
+                      sx={editModeShadow(editModeOn)}
                     />
                   </Grid>
                   <Grid item xs={5} sx={{ ...labelStyle, alignItems: 'start' }}>
@@ -466,6 +463,8 @@ const ContactDetail = () => {
                     <textarea
                       rows={5}
                       readOnly={!editModeOn}
+                      value={editModeOn ? description : contact.description}
+                      onChange={(e) => setDescription(e.target.value)}
                       spellCheck="false"
                       style={{ ...editModeShadow(editModeOn) }}
                     />

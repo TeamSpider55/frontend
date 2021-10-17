@@ -14,6 +14,8 @@ let CONTACTS: Array<Contact> = [...Array(3)].map((_, i) => {
     address: `${idx} Apple Street`,
     description: `${idx}lorem ipsum`,
     note: 'note',
+    role: `Developer ${idx}`,
+    organisation: `Company ${idx}`,
   };
 });
 
@@ -53,6 +55,8 @@ class ContactService {
         address: '',
         description: '',
         note: '',
+        role: '',
+        organisation: '',
       },
     ];
 
@@ -71,6 +75,8 @@ class ContactService {
     address,
     description,
     note,
+    role,
+    organisation,
   }: UpdateContactInput): Promise<Array<Contact>> {
     const idx = CONTACTS.findIndex((c) => c.contactId === contactId);
 
@@ -94,6 +100,8 @@ class ContactService {
           address: address !== undefined ? address : c.address,
           description: description !== undefined ? description : c.description,
           note: note !== undefined ? note : c.note,
+          role: role !== undefined ? role : c.role,
+          organisation: organisation !== undefined ? organisation : c.organisation,
         };
       }
       return c;
@@ -117,6 +125,8 @@ class ContactService {
         address: `${idx} Apple Street`,
         description: `${idx}lorem ipsum`,
         note: 'note',
+        role: 'Software Engineer',
+        organisation: 'Apple',
       };
     });
   }

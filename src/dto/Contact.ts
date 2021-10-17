@@ -13,6 +13,8 @@ export interface Contact {
   address: string;
   description: string;
   note: string;
+  role: string;
+  organisation: string;
 }
 
 export interface AddContactInput {
@@ -33,4 +35,6 @@ export interface UpdateContactInput {
   address?: string;
   description?: string;
   note?: string;
+  role?: string;
+  organisation?: string;
 }
