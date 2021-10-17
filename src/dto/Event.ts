@@ -19,3 +19,14 @@ export interface AddEventInput {
   start: number;
   end: number;
 }
+
+export interface UpdateEventInput {
+  eventId: string;
+  title?: string;
+  note?: string;
+  start?: number;
+  end?: number;
+  type?: 'personal' | 'collaborate';
+  tags?: string[];
+  contacts?: string[];
+}

@@ -1,4 +1,4 @@
-import { AddEventInput, Event } from '../dto/Event';
+import { AddEventInput, Event, UpdateEventInput } from '../dto/Event';
 
 let EVENTS: Array<Event> = [...Array(3)].map((_, i) => {
   const idx = i.toString();
@@ -49,6 +49,43 @@ class EventService {
         contacts: [],
       },
     ];
+
+    return EVENTS;
+  }
+
+  static async updateEvent({
+    eventId,
+    title,
+    note,
+    start,
+    end,
+    type,
+    tags,
+    contacts,
+  }: UpdateEventInput): Promise<Array<Event>> {
+    const idx = EVENTS.findIndex((e) => e.eventId === eventId);
+
+    if (idx === -1) {
+      return EVENTS;
+    }
+
+    const oldEvent = EVENTS[idx];
+
+    EVENTS = EVENTS.map((e) => {
+      if (e.eventId === oldEvent.eventId) {
+        return {
+          ...e,
+          title: title !== undefined ? title : e.title,
+          note: note !== undefined ? note : e.note,
+          start: start !== undefined ? start : e.start,
+          end: end !== undefined ? end : e.end,
+          type: type !== undefined ? type : e.type,
+          tags: tags !== undefined ? tags : e.tags,
+          contacts: contacts !== undefined ? contacts : e.contacts,
+        };
+      }
+      return e;
+    });
 
     return EVENTS;
   }

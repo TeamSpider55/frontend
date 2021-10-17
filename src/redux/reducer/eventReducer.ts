@@ -10,6 +10,9 @@ import {
   addEventStarted,
   addEventSucceeded,
   addEventFailed,
+  updateEventStarted,
+  updateEventSucceeded,
+  updateEventFailed,
 } from '../action/eventAction';
 
 interface EventState {
@@ -59,6 +62,18 @@ export default createReducer(initialState, (builder) => {
       state.events = action.payload.events;
     })
     .addCase(addEventFailed, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload.err;
+    })
+    .addCase(updateEventStarted, (state, _action) => {
+      state.isLoading = true;
+      state.events = null;
+    })
+    .addCase(updateEventSucceeded, (state, action) => {
+      state.isLoading = false;
+      state.events = action.payload.events;
+    })
+    .addCase(updateEventFailed, (state, action) => {
       state.isLoading = false;
       state.error = action.payload.err;
     });

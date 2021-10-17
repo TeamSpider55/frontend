@@ -3,6 +3,7 @@ import { AppDispatch } from '../store';
 import {
   AddEventInput,
   Event,
+  UpdateEventInput,
 } from '../../dto/Event';
 import EventService from '../../services/EventService';
 
@@ -84,5 +85,29 @@ export const addEvent = (
     dispatch(addEventSucceeded({ events }));
   } catch (e) {
     dispatch(addEventFailed({ err: 'Failed to add event' }));
+  }
+};
+
+export const updateEventStarted = createAction(
+  'contact/updateEventStarted',
+);
+export const updateEventSucceeded = createAction<{
+  events: Array<Event>
+}>('contact/updateEventSucceeded');
+export const updateEventFailed = createAction<{
+  err: string
+}>('contact/updateEventFailed');
+
+export const updateEvent = (
+  updatedEvent: UpdateEventInput,
+) => async (dispatch: AppDispatch) => {
+  dispatch(updateEventStarted());
+
+  try {
+    const events = await EventService.updateEvent(updatedEvent);
+
+    dispatch(updateEventSucceeded({ events }));
+  } catch (e) {
+    dispatch(updateEventFailed({ err: 'Failed to update event' }));
   }
 };

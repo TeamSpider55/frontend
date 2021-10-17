@@ -21,7 +21,7 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DesktopDateTimePicker from '@mui/lab/DateTimePicker';
 import { useAppDispatch, useAppSelector } from '../redux/store';
-import { getEvents } from '../redux/action/eventAction';
+import { getEvents, updateEvent } from '../redux/action/eventAction';
 import ContactService from '../services/ContactService';
 
 const useStyles = makeStyles((theme) => ({
@@ -184,9 +184,14 @@ const useStyles = makeStyles((theme) => ({
 const EventDetail = () => {
   const time = new Date();
   const currentDateTime = `${time.getMonth() + 1}/${time.getDate()}/${time.getFullYear()} ${time.getHours() - 12}:${time.getMinutes()} ${Math.floor(time.getHours()) === 0 ? 'am' : 'pm'}`;
+
   const theme = useTheme();
   const classes = useStyles(theme);
+
   const [editModeOn, setEditModeOn] = useState(false);
+
+  const [title, setTitle] = useState('');
+
   const [startDateTime, setStartDateTime] = useState(currentDateTime);
   const [newStartDateTime, setNewStartDateTime] = useState(currentDateTime);
   const [endDateTime, setEndDateTime] = useState(currentDateTime);
@@ -209,37 +214,46 @@ const EventDetail = () => {
   }, []);
 
   const toggleEditMode = () => {
-    setDescription(document.getElementById('description').value);
-    if (document.getElementById('eventStartDateTime')) {
-      setStartDateTime(document.getElementById('eventStartDateTime').value);
-      setNewStartDateTime(document.getElementById('eventStartDateTime').value);
-    }
-    if (document.getElementById('eventEndDateTime')) {
-      setEndDateTime(document.getElementById('eventEndDateTime').value);
-      setNewEndDateTime(document.getElementById('eventEndDateTime').value);
-    }
+    if (!event) return;
+    setTitle(event.title);
+
+    // setDescription(document.getElementById('description').value);
+    // if (document.getElementById('eventStartDateTime')) {
+    //   setStartDateTime(document.getElementById('eventStartDateTime').value);
+    //   setNewStartDateTime(document.getElementById('eventStartDateTime').value);
+    // }
+    // if (document.getElementById('eventEndDateTime')) {
+    //   setEndDateTime(document.getElementById('eventEndDateTime').value);
+    //   setNewEndDateTime(document.getElementById('eventEndDateTime').value);
+    // }
     setEditModeOn(true);
   };
   const editModeCancel = () => {
-    document.getElementById('description').value = description;
-    if (document.getElementById('eventStartDateTime')) {
-      document.getElementById('eventStartDateTime').value = startDateTime;
-    }
-    if (document.getElementById('eventEndDateTime')) {
-      document.getElementById('eventEndDateTime').value = endDateTime;
-    }
-    setNewStartDateTime(startDateTime);
-    setNewEndDateTime(endDateTime);
-    setNewParticipants(participants);
+    // document.getElementById('description').value = description;
+    // if (document.getElementById('eventStartDateTime')) {
+    //   document.getElementById('eventStartDateTime').value = startDateTime;
+    // }
+    // if (document.getElementById('eventEndDateTime')) {
+    //   document.getElementById('eventEndDateTime').value = endDateTime;
+    // }
+    // setNewStartDateTime(startDateTime);
+    // setNewEndDateTime(endDateTime);
+    // setNewParticipants(participants);
 
     setEditModeOn(false);
   };
   const editModeConfirm = () => {
-    setDescription(document.getElementById('description').value);
-    setStartDateTime(newStartDateTime);
-    setEndDateTime(newEndDateTime);
-    setParticipants(newParticipants);
+    // setDescription(document.getElementById('description').value);
+    // setStartDateTime(newStartDateTime);
+    // setEndDateTime(newEndDateTime);
+    // setParticipants(newParticipants);
+
     setEditModeOn(false);
+
+    dispatch(updateEvent({
+      eventId,
+      title,
+    }));
   };
   const removeEvent = () => {
     /* FIXME: functionality of cancel event button and redirect. */
@@ -340,10 +354,11 @@ const EventDetail = () => {
               <Box className={classes.eventName}>
                 <Input
                   type="text"
-                  value={event.title}
+                  value={editModeOn ? title : event.title}
                   disableUnderline={!editModeOn}
                   readOnly={!editModeOn}
                   spellCheck="false"
+                  onChange={(e) => setTitle(e.target.value)}
                 />
               </Box>
               <Box className={classes.eventDateTime}>
