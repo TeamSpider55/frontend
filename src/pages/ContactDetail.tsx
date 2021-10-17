@@ -5,10 +5,13 @@ import EditIcon from '@mui/icons-material/Edit';
 import DoneIcon from '@mui/icons-material/Done';
 import ClearIcon from '@mui/icons-material/Clear';
 import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 import { Link } from 'react-router-dom';
+import { Input, TextField } from '@mui/material';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: any) => ({
   contactsButtonWrapper: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -90,29 +93,14 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   detailWrapper: {
-    display: 'inline-block',
-    left: 'auto',
-    right: '0',
     marginTop: theme.spacing(3),
     marginRight: theme.spacing(4),
     marginLeft: theme.spacing(2),
-    verticalAlign: 'top',
     '& input': {
-      display: 'block',
-      fontFamily: 'Cairo',
-      fontSize: '1em',
-      fontWeight: 'lighter',
       border: 'none',
       width: '100%',
-      padding: theme.spacing(0),
       paddingLeft: theme.spacing(1),
       paddingRight: theme.spacing(1),
-      marginTop: theme.spacing(1),
-      lineHeight: 'unset',
-      resize: 'none',
-      '&:focus': {
-        outline: 'none',
-      },
     },
     '& textarea': {
       fontFamily: 'Cairo',
@@ -141,6 +129,7 @@ const useStyles = makeStyles((theme) => ({
     outline: 'none',
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
+    color: theme.palette.primary.dark,
   },
   doneIcon: {
     display: 'inline-flex',
@@ -190,6 +179,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const labelStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'right',
+  fontWeight: 'bold',
+  paddingRight: '1rem',
+};
+
+const editModeShadow = (editModeOn: boolean) => ({
+  width: '100%',
+  boxShadow: editModeOn ? '0 0 0 1pt lightGrey' : 'none',
+  borderRadius: editModeOn ? '3px' : '0px',
+});
+
 const ContactDetail = () => {
   const theme = useTheme();
   const classes = useStyles(theme);
@@ -203,34 +206,34 @@ const ContactDetail = () => {
   const [description, setDescription] = useState('');
 
   const toggleEditMode = () => {
-    setEmail(document.getElementById('email').value);
-    setName(document.getElementById('name').value);
-    setPhone(document.getElementById('phone').value);
-    setLocation(document.getElementById('location').value);
-    setRole(document.getElementById('role').value);
-    setOrganisation(document.getElementById('organisation').value);
-    setDescription(document.getElementById('description').value);
+    // setEmail(document.getElementById('email').value);
+    // setName(document.getElementById('name').value);
+    // setPhone(document.getElementById('phone').value);
+    // setLocation(document.getElementById('location').value);
+    // setRole(document.getElementById('role').value);
+    // setOrganisation(document.getElementById('organisation').value);
+    // setDescription(document.getElementById('description').value);
     setEditModeOn(true);
   };
   const editModeCancel = () => {
-    document.getElementById('email').value = email;
-    document.getElementById('name').value = name;
-    document.getElementById('phone').value = phone;
-    document.getElementById('location').value = location;
-    document.getElementById('role').value = role;
-    document.getElementById('organisation').value = organisation;
-    document.getElementById('description').value = description;
+    // document.getElementById('email').value = email;
+    // document.getElementById('name').value = name;
+    // document.getElementById('phone').value = phone;
+    // document.getElementById('location').value = location;
+    // document.getElementById('role').value = role;
+    // document.getElementById('organisation').value = organisation;
+    // document.getElementById('description').value = description;
 
     setEditModeOn(false);
   };
   const editModeConfirm = () => {
-    setEmail(document.getElementById('email').value);
-    setName(document.getElementById('name').value);
-    setPhone(document.getElementById('phone').value);
-    setLocation(document.getElementById('location').value);
-    setRole(document.getElementById('role').value);
-    setOrganisation(document.getElementById('organisation').value);
-    setDescription(document.getElementById('description').value);
+    // setEmail(document.getElementById('email').value);
+    // setName(document.getElementById('name').value);
+    // setPhone(document.getElementById('phone').value);
+    // setLocation(document.getElementById('location').value);
+    // setRole(document.getElementById('role').value);
+    // setOrganisation(document.getElementById('organisation').value);
+    // setDescription(document.getElementById('description').value);
     setEditModeOn(false);
   };
 
@@ -243,7 +246,6 @@ const ContactDetail = () => {
           WebkitUserSelect: 'none',
           msUserSelect: 'none',
           userSelect: 'none',
-          OUserSelect: 'none',
         }}
       >
         <Link to="/contacts">
@@ -255,10 +257,20 @@ const ContactDetail = () => {
       </div>
       <div className={classes.contactDetail}>
         <div className={classes.editIconWrapper}>
-          {!editModeOn && <EditIcon className={classes.editIcon} onClick={toggleEditMode} onKeyDown={null} role="button" tabIndex="0" />}
-          {editModeOn && <ClearIcon className={classes.clearIcon} onClick={editModeCancel} onKeyDown={null} role="button" tabIndex="0" />}
-          {editModeOn && <DoneIcon className={classes.doneIcon} onClick={editModeConfirm} onKeyDown={null} role="button" tabIndex="0" />}
+          {
+            !editModeOn && (
+              <Button
+                className={classes.editIcon}
+                onClick={toggleEditMode}
+              >
+                <EditIcon />
+              </Button>
+            )
+          }
+          {editModeOn && <ClearIcon component={Button} className={classes.clearIcon} onClick={editModeCancel} role="button" tabIndex={0} />}
+          {editModeOn && <DoneIcon component={Button} className={classes.doneIcon} onClick={editModeConfirm} role="button" tabIndex={0} />}
         </div>
+
         <div className={classes.imgNameWrapper}>
           <div className={classes.contactImgWrapper}>
             <img
@@ -270,11 +282,12 @@ const ContactDetail = () => {
           </div>
           <div>
             <div className={classes.contactName}>
-              <input
+              <Input
                 type="text"
                 name="name"
                 id="name"
                 defaultValue="Farhan Fauzan"
+                disableUnderline={!editModeOn}
                 readOnly={!editModeOn}
                 spellCheck="false"
               />
@@ -285,75 +298,73 @@ const ContactDetail = () => {
             </div>
           </div>
         </div>
-        <div className={classes.detailLabelWrapper}>
-          <div id="detail-label-email">Email</div>
-          <div id="detail-label-phone">Phone Number</div>
-          <div id="detail-label-location">Location</div>
-          <div id="detail-label-role">Role</div>
-          <div id="detail-label-organisation">Organisation</div>
-          <div id="detail-label-description">Description</div>
-        </div>
         <div className={classes.detailWrapper}>
-          <div>
-            <input
-              type="email"
-              name="email"
-              id="email"
-              defaultValue="Example@123.com"
-              readOnly={!editModeOn}
-              spellCheck="false"
-              style={{ boxShadow: editModeOn ? '0 0 0 1pt lightGrey' : 'none', borderRadius: editModeOn ? '5px' : '0px' }}
-            />
-          </div>
-          <div>
-            <input
-              type="tel"
-              name="phone"
-              id="phone"
-              maxLength={12}
-              defaultValue="+61123456789"
-              readOnly={!editModeOn}
-              spellCheck="false"
-              style={{ boxShadow: editModeOn ? '0 0 0 1pt lightGrey' : 'none', borderRadius: editModeOn ? '5px' : '0px' }}
-            />
-          </div>
-          <div>
-            <input
-              type="text"
-              name="location"
-              id="location"
-              readOnly={!editModeOn}
-              spellCheck="false"
-              style={{ boxShadow: editModeOn ? '0 0 0 1pt lightGrey' : 'none', borderRadius: editModeOn ? '5px' : '0px' }}
-            />
-          </div>
-          <div>
-            <input
-              type="text"
-              name="role"
-              id="role"
-              readOnly={!editModeOn}
-              spellCheck="false"
-              style={{ boxShadow: editModeOn ? '0 0 0 1pt lightGrey' : 'none', borderRadius: editModeOn ? '5px' : '0px' }}
-            />
-          </div>
-          <div>
-            <input
-              type="text"
-              name="organisation"
-              id="organisation"
-              readOnly={!editModeOn}
-              spellCheck="false"
-              style={{ boxShadow: editModeOn ? '0 0 0 1pt lightGrey' : 'none', borderRadius: editModeOn ? '5px' : '0px' }}
-            />
-          </div>
-          <textarea
-            id="description"
-            rows="5"
-            readOnly={!editModeOn}
-            spellCheck="false"
-            style={{ boxShadow: editModeOn ? '0 0 0 1pt lightGrey' : 'none', borderRadius: editModeOn ? '5px' : '0px' }}
-          />
+          <Grid container rowSpacing={1}>
+            <Grid item xs={5} sx={labelStyle}>Email</Grid>
+            <Grid item xs={7}>
+              <Input
+                type="email"
+                defaultValue="Example@123.com"
+                disableUnderline
+                readOnly={!editModeOn}
+                spellCheck="false"
+                sx={editModeShadow(editModeOn)}
+              />
+            </Grid>
+            <Grid item xs={5} sx={labelStyle}>Phone Number</Grid>
+            <Grid item xs={7}>
+              <Input
+                type="tel"
+                // maxLength={12}
+                defaultValue="+61123456789"
+                disableUnderline
+                readOnly={!editModeOn}
+                spellCheck="false"
+                sx={{ ...editModeShadow(editModeOn) }}
+              />
+            </Grid>
+            <Grid item xs={5} sx={labelStyle}>Role</Grid>
+            <Grid item xs={7}>
+              <Input
+                defaultValue="ROLE"
+                disableUnderline
+                readOnly={!editModeOn}
+                spellCheck="false"
+                sx={{ ...editModeShadow(editModeOn) }}
+              />
+            </Grid>
+            <Grid item xs={5} sx={labelStyle}>Organisation</Grid>
+            <Grid item xs={7}>
+              <Input
+                defaultValue="ORG"
+                disableUnderline
+                readOnly={!editModeOn}
+                spellCheck="false"
+                sx={{ ...editModeShadow(editModeOn) }}
+              />
+            </Grid>
+            <Grid item xs={5} sx={labelStyle}>Location</Grid>
+            <Grid item xs={7}>
+              <Input
+                defaultValue="LOCATION"
+                disableUnderline
+                readOnly={!editModeOn}
+                spellCheck="false"
+                sx={{ ...editModeShadow(editModeOn) }}
+              />
+            </Grid>
+            <Grid item xs={5} sx={{ ...labelStyle, alignItems: 'start' }}>
+              Description
+            </Grid>
+            <Grid item xs={7}>
+              <textarea
+                rows={5}
+                readOnly={!editModeOn}
+                spellCheck="false"
+                style={{ ...editModeShadow(editModeOn) }}
+              />
+            </Grid>
+          </Grid>
         </div>
       </div>
 
