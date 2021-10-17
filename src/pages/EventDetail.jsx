@@ -192,10 +192,12 @@ const EventDetail = () => {
 
   const [title, setTitle] = useState('');
 
-  const [startDateTime, setStartDateTime] = useState(currentDateTime);
+  const [startDateTime, setStartDateTime] = useState('');
   const [newStartDateTime, setNewStartDateTime] = useState(currentDateTime);
-  const [endDateTime, setEndDateTime] = useState(currentDateTime);
+  const [endDateTime, setEndDateTime] = useState('');
   const [newEndDateTime, setNewEndDateTime] = useState(currentDateTime);
+
+  // assuming note in the backend is description
   const [description, setDescription] = useState('');
 
   const [participants, setParticipants] = useState([]);
@@ -216,6 +218,9 @@ const EventDetail = () => {
   const toggleEditMode = () => {
     if (!event) return;
     setTitle(event.title);
+    setStartDateTime(event.start);
+    setEndDateTime(event.end);
+    setDescription(event.description);
 
     // setDescription(document.getElementById('description').value);
     // if (document.getElementById('eventStartDateTime')) {
@@ -253,6 +258,9 @@ const EventDetail = () => {
     dispatch(updateEvent({
       eventId,
       title,
+      start: startDateTime,
+      end: endDateTime,
+      note: description,
     }));
   };
   const removeEvent = () => {
@@ -366,10 +374,10 @@ const EventDetail = () => {
                   <DesktopDateTimePicker
                     renderInput={(props) => <TextField {...props} />}
                     label="Start"
-                    value={newStartDateTime}
+                    value={editModeOn ? startDateTime : event.start}
                     disabled={!editModeOn}
                     onChange={(newValue) => {
-                      setNewStartDateTime(newValue);
+                      setStartDateTime(newValue);
                     }}
                     disablePast
                     id="eventStartDateTime"
@@ -382,10 +390,10 @@ const EventDetail = () => {
                   <DesktopDateTimePicker
                     renderInput={(props) => <TextField {...props} />}
                     label="End"
-                    value={newEndDateTime}
+                    value={editModeOn ? endDateTime : event.end}
                     disabled={!editModeOn}
                     onChange={(newValue) => {
-                      setNewEndDateTime(newValue);
+                      setEndDateTime(newValue);
                     }}
                     disablePast
                     id="eventEndDateTime"
@@ -436,9 +444,10 @@ const EventDetail = () => {
               </Box>
             </Box>
             <textarea
-              id="description"
-              rows="5"
+              rows={5}
               readOnly={!editModeOn}
+              value={editModeOn ? description : event.note}
+              onChange={(e) => setDescription(e.target.value)}
               spellCheck="false"
               style={{ boxShadow: editModeOn ? '0 0 0 1pt lightGrey' : 'none', borderRadius: editModeOn ? '5px' : '0px' }}
             />
