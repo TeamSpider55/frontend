@@ -9,7 +9,7 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 import { Link, useParams } from 'react-router-dom';
-import { Input } from '@mui/material';
+import { Avatar, Input } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../redux/store';
 import { getContacts, updateContact } from '../redux/action/contactAction';
 
@@ -98,6 +98,7 @@ const useStyles = makeStyles((theme: any) => ({
     marginTop: theme.spacing(3),
     marginRight: theme.spacing(4),
     marginLeft: theme.spacing(2),
+    marginBottom: theme.spacing(4),
     '& input': {
       border: 'none',
       width: '100%',
@@ -216,10 +217,15 @@ const ContactDetail = () => {
 
   const [editModeOn, setEditModeOn] = useState(false);
 
+  // FIXME: tags missing in FE, role/organisation missing in BE
+  // FIXME: what's the difference between note and description?
   const [email, setEmail] = useState('');
-  const [name, setName] = useState('');
+  const [givenName, setGivenName] = useState('');
+  const [middleName, setMiddleName] = useState('');
+  const [familyName, setFamilyName] = useState('');
+  const [nickName, setNickName] = useState('');
   const [phone, setPhone] = useState('');
-  const [location, setLocation] = useState('');
+  const [address, setAddress] = useState('');
   const [role, setRole] = useState('');
   const [organisation, setOrganisation] = useState('');
   const [description, setDescription] = useState('');
@@ -242,16 +248,26 @@ const ContactDetail = () => {
 
     if (!contact) return;
     setEmail(contact.email);
+    setGivenName(contact.givenName);
+    setMiddleName(contact.middleName);
+    setFamilyName(contact.familyName);
+    setNickName(contact.nickName);
   };
+
   const editModeCancel = () => {
     setEditModeOn(false);
   };
+
   const editModeConfirm = () => {
     setEditModeOn(false);
 
     dispatch(updateContact({
       contactId,
       email,
+      givenName,
+      middleName,
+      familyName,
+      nickName,
     }));
   };
 
@@ -309,11 +325,14 @@ const ContactDetail = () => {
               </div>
               <div className={classes.imgNameWrapper}>
                 <div className={classes.contactImgWrapper}>
-                  <img
-                    src="https://images.unsplash.com/photo-1600180758890-6b94519a8ba6?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80"
-                    alt="Unknown"
-                    height="144px"
-                    width="144px"
+                  <Avatar
+                    src="/fix-this-url-later.jpg"
+                    alt={contact.givenName}
+                    variant="rounded"
+                    sx={{
+                      height: '144px',
+                      width: '144px',
+                    }}
                   />
                 </div>
                 <div>
@@ -322,9 +341,13 @@ const ContactDetail = () => {
                       type="text"
                       name="name"
                       id="name"
-                      defaultValue="Farhan Fauzan"
-                      disableUnderline={!editModeOn}
-                      readOnly={!editModeOn}
+                      value={
+                        contact.nickName !== ''
+                          ? contact.nickName
+                          : `${contact.givenName} ${contact.familyName}`
+                      }
+                      disableUnderline
+                      readOnly
                       spellCheck="false"
                     />
                   </div>
@@ -335,6 +358,53 @@ const ContactDetail = () => {
               </div>
               <div className={classes.detailWrapper}>
                 <Grid container rowSpacing={1}>
+                  <Grid item xs={5} sx={labelStyle}>Given Name</Grid>
+                  <Grid item xs={7}>
+                    <Input
+                      value={editModeOn ? givenName : contact.givenName}
+                      onChange={(e) => setGivenName(e.target.value)}
+                      disableUnderline
+                      readOnly={!editModeOn}
+                      spellCheck="false"
+                      sx={editModeShadow(editModeOn)}
+                    />
+                  </Grid>
+                  <Grid item xs={5} sx={labelStyle}>Middle Name</Grid>
+                  <Grid item xs={7}>
+                    <Input
+                      type="email"
+                      value={editModeOn ? middleName : contact.middleName}
+                      onChange={(e) => setMiddleName(e.target.value)}
+                      disableUnderline
+                      readOnly={!editModeOn}
+                      spellCheck="false"
+                      sx={editModeShadow(editModeOn)}
+                    />
+                  </Grid>
+                  <Grid item xs={5} sx={labelStyle}>Family Name</Grid>
+                  <Grid item xs={7}>
+                    <Input
+                      type="email"
+                      value={editModeOn ? familyName : contact.familyName}
+                      onChange={(e) => setFamilyName(e.target.value)}
+                      disableUnderline
+                      readOnly={!editModeOn}
+                      spellCheck="false"
+                      sx={editModeShadow(editModeOn)}
+                    />
+                  </Grid>
+                  <Grid item xs={5} sx={labelStyle}>Nickname</Grid>
+                  <Grid item xs={7}>
+                    <Input
+                      type="email"
+                      value={editModeOn ? nickName : contact.nickName}
+                      onChange={(e) => setNickName(e.target.value)}
+                      disableUnderline
+                      readOnly={!editModeOn}
+                      spellCheck="false"
+                      sx={editModeShadow(editModeOn)}
+                    />
+                  </Grid>
                   <Grid item xs={5} sx={labelStyle}>Email</Grid>
                   <Grid item xs={7}>
                     <Input

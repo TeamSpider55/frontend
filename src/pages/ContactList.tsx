@@ -263,7 +263,7 @@ const ContactList = () => {
                             <TableCell
                               component="th"
                               scope="row"
-                              onClick={() => goToContact('1')}
+                              onClick={() => goToContact(contactId)}
                             >
                               <Box display="flex" alignItems="center">
                                 <Avatar alt={name} src="#FIXME: URL" />
@@ -277,13 +277,13 @@ const ContactList = () => {
                                 </Box>
                               </Box>
                             </TableCell>
-                            <TableCell onClick={() => goToContact('1')}>
+                            <TableCell onClick={() => goToContact(contactId)}>
                               Apple
                             </TableCell>
-                            <TableCell onClick={() => goToContact('1')}>
+                            <TableCell onClick={() => goToContact(contactId)}>
                               Software Engineer
                             </TableCell>
-                            <TableCell onClick={() => goToContact('1')}>
+                            <TableCell onClick={() => goToContact(contactId)}>
                               17 August 2021
                             </TableCell>
                             <TableCell align="right">

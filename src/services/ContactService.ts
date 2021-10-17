@@ -84,22 +84,20 @@ class ContactService {
       if (c.contactId === oldContact.contactId) {
         return {
           ...c,
-          email: email || c.email,
+          nickName: nickName !== undefined ? nickName : c.nickName,
+          tags: tags !== undefined ? tags : c.tags,
+          givenName: givenName !== undefined ? givenName : c.givenName,
+          middleName: middleName !== undefined ? middleName : c.middleName,
+          familyName: familyName !== undefined ? familyName : c.familyName,
+          email: email !== undefined ? email : c.email,
+          phone: phone !== undefined ? phone : c.phone,
+          address: address !== undefined ? address : c.address,
+          description: description !== undefined ? description : c.description,
+          note: note !== undefined ? note : c.note,
         };
       }
       return c;
     });
-
-    // CONTACTS[idx].nickName = nickName || oldContact.nickName;
-    // CONTACTS[idx].tags = tags || oldContact.tags;
-    // CONTACTS[idx].givenName = givenName || oldContact.givenName;
-    // CONTACTS[idx].middleName = middleName || oldContact.middleName;
-    // CONTACTS[idx].familyName = familyName || oldContact.familyName;
-    // CONTACTS[idx].email = email || oldContact.email;
-    // CONTACTS[idx].phone = phone || oldContact.phone;
-    // CONTACTS[idx].address = address || oldContact.address;
-    // CONTACTS[idx].description = description || oldContact.description;
-    // CONTACTS[idx].note = note || oldContact.note;
 
     return CONTACTS;
   }

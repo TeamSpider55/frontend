@@ -98,7 +98,7 @@ export const updateContactSucceeded = createAction<{
 }>('contact/updateContactSucceeded');
 export const updateContactFailed = createAction<{
   err: string
-}>('contact/udpateContactFailed');
+}>('contact/updateContactFailed');
 
 export const updateContact = (
   updatedContact: UpdateContactInput,
@@ -110,7 +110,6 @@ export const updateContact = (
 
     dispatch(updateContactSucceeded({ contacts }));
   } catch (e) {
-    console.log(e);
     dispatch(updateContactFailed({ err: 'Failed to update contact' }));
   }
 };
