@@ -43,9 +43,47 @@ let CONTACTS: Array<Contact> = [
     address: '1 High Street',
     description: 'All business, no nickname...',
     note: 'note',
-    role: 'CEO',
+    role: 'Ex-CEO',
     organisation: 'Button Pushers Inc.',
   },
+  ...[...Array(10)].map((_, index) => {
+    const i = index + 3;
+    const idx = i.toString();
+    return {
+      contactId: String(idx),
+      nickName: `nick${idx}`,
+      tags: ['1', '2'],
+      givenName: `Jane${idx}`,
+      middleName: '',
+      familyName: `Doe${idx}`,
+      email: `jane.doe${idx}@gmail.com`,
+      phone: `+61234567${idx}`,
+      address: `${idx} Apple Street`,
+      description: `${idx}lorem ipsum`,
+      note: 'note',
+      role: 'Product Manager',
+      organisation: 'Microsoft',
+    };
+  }),
+  ...[...Array(10)].map((_, index) => {
+    const i = index + 3;
+    const idx = i.toString();
+    return {
+      contactId: String(idx),
+      nickName: `nick${idx}`,
+      tags: ['1', '2'],
+      givenName: `John${idx}`,
+      middleName: '',
+      familyName: `Doe${idx}`,
+      email: `john.doe${idx}@gmail.com`,
+      phone: `+61234567${idx}`,
+      address: `${idx} Apple Street`,
+      description: `${idx}lorem ipsum`,
+      note: 'note',
+      role: 'Software Engineer',
+      organisation: 'Apple',
+    };
+  }),
 ];
 
 class ContactService {

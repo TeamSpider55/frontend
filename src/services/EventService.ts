@@ -1,16 +1,17 @@
 import { AddEventInput, Event, UpdateEventInput } from '../dto/Event';
 
-let EVENTS: Array<Event> = [...Array(3)].map((_, i) => {
+let EVENTS: Array<Event> = [...Array(20)].map((_, i) => {
   const idx = i.toString();
+  const start = Date.now() + i * 24 * 3600000;
   return {
     eventId: idx,
-    title: `event${idx}`,
+    title: `Daily Scrum Meeting ${idx}`,
     note: `this is event ${idx}`,
-    start: Date.now(),
-    end: Date.now() + 3600000,
+    start,
+    end: start + 3600000,
     type: 'collaborate',
     tags: ['1', '2'],
-    contacts: ['1', '2'],
+    contacts: ['1', '3  '],
   };
 });
 

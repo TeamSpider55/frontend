@@ -190,9 +190,6 @@ const getParticipants = (event: Event, contacts: Array<Contact>) => {
 };
 
 const EventDetail = () => {
-  const time = new Date();
-  const currentDateTime = `${time.getMonth() + 1}/${time.getDate()}/${time.getFullYear()} ${time.getHours() - 12}:${time.getMinutes()} ${Math.floor(time.getHours()) === 0 ? 'am' : 'pm'}`;
-
   const theme = useTheme();
   const classes = useStyles(theme);
 
@@ -300,7 +297,6 @@ const EventDetail = () => {
     if (participants === null) return;
     // setNewParticipants(participants.filter((c) => c.email !== email));
     setParticipants(participants.filter((c) => c.email !== email));
-    console.log(participants);
   };
 
   // const addParticipant = (id: string) => {
@@ -317,7 +313,6 @@ const EventDetail = () => {
   const saveNewParticipant = () => {
     if (!contacts || !newParticipant) return;
     const contact = contacts.find((c) => c.email === newParticipant);
-    console.log(contact);
     if (contact !== undefined) {
       setParticipants([...participants, contact]);
     }
