@@ -130,6 +130,11 @@ const EventList = () => {
     setSelected([]);
   };
 
+  const onEditEvent = (id: string) => {
+    if (events === null) return;
+    goToEvent(id);
+  };
+
   const onAddEvent = () => {
     if (events === null) return;
     dispatch(addEvent({
@@ -323,6 +328,7 @@ const EventList = () => {
                               <MoreMenu
                                 id={eventId}
                                 deleteOne={onDeleteEvent}
+                                editOne={onEditEvent}
                               />
                             </TableCell>
                           </TableRow>

@@ -180,36 +180,35 @@ class ContactService {
     role,
     organisation,
   }: UpdateContactInput): Promise<Array<Contact>> {
-    const idx = CONTACTS.findIndex((c) => c.contactId === contactId);
+    const user = await UserService.getUser();
+    const oldContactResult = await axios.get(
+      `/contact/getContact/${user.userName}/${contactId}`,
+    );
 
-    if (idx === -1) {
-      return CONTACTS;
+    if (oldContactResult.status !== 200) {
+      return this.getContacts();
     }
 
-    const oldContact = CONTACTS[idx];
-
-    CONTACTS = CONTACTS.map((c) => {
-      if (c.contactId === oldContact.contactId) {
-        return {
-          ...c,
-          nickName: nickName !== undefined ? nickName : c.nickName,
-          tags: tags !== undefined ? tags : c.tags,
-          givenName: givenName !== undefined ? givenName : c.givenName,
-          middleName: middleName !== undefined ? middleName : c.middleName,
-          familyName: familyName !== undefined ? familyName : c.familyName,
-          email: email !== undefined ? email : c.email,
-          phone: phone !== undefined ? phone : c.phone,
-          address: address !== undefined ? address : c.address,
-          description: description !== undefined ? description : c.description,
-          note: note !== undefined ? note : c.note,
-          role: role !== undefined ? role : c.role,
-          organisation: organisation !== undefined ? organisation : c.organisation,
-        };
-      }
-      return c;
+    const c = oldContactResult.data.data as Contact & { _id: string };
+    await axios.post('/contact/updateContact', {
+      ...c,
+      contactId: c._id,
+      nickName: nickName !== undefined ? nickName : c.nickName,
+      tags: tags !== undefined ? tags : c.tags,
+      givenName: givenName !== undefined ? givenName : c.givenName,
+      middleName: middleName !== undefined ? middleName : c.middleName,
+      familyName: familyName !== undefined ? familyName : c.familyName,
+      email: email !== undefined ? email : c.email,
+      phone: phone !== undefined ? phone : c.phone,
+      address: address !== undefined ? address : c.address,
+      description: description !== undefined ? description : c.description,
+      note: note !== undefined ? note : c.note,
+      role: role !== undefined ? role : c.role,
+      organisation: organisation !== undefined ? organisation : c.organisation,
     });
 
-    return CONTACTS;
+    const contacts = await this.getContacts();
+    return contacts;
   }
 
   // asynchronously get dummy contacts
@@ -257,6 +256,53 @@ class ContactService {
       id: newId,
       contacts: CONTACTS,
     };
+  }
+
+  static async updateContactDummy({
+    contactId,
+    nickName,
+    tags,
+    givenName,
+    middleName,
+    familyName,
+    email,
+    phone,
+    address,
+    description,
+    note,
+    role,
+    organisation,
+  }: UpdateContactInput): Promise<Array<Contact>> {
+    const idx = CONTACTS.findIndex((c) => c.contactId === contactId);
+
+    if (idx === -1) {
+      return CONTACTS;
+    }
+
+    const oldContact = CONTACTS[idx];
+
+    CONTACTS = CONTACTS.map((c) => {
+      if (c.contactId === oldContact.contactId) {
+        return {
+          ...c,
+          nickName: nickName !== undefined ? nickName : c.nickName,
+          tags: tags !== undefined ? tags : c.tags,
+          givenName: givenName !== undefined ? givenName : c.givenName,
+          middleName: middleName !== undefined ? middleName : c.middleName,
+          familyName: familyName !== undefined ? familyName : c.familyName,
+          email: email !== undefined ? email : c.email,
+          phone: phone !== undefined ? phone : c.phone,
+          address: address !== undefined ? address : c.address,
+          description: description !== undefined ? description : c.description,
+          note: note !== undefined ? note : c.note,
+          role: role !== undefined ? role : c.role,
+          organisation: organisation !== undefined ? organisation : c.organisation,
+        };
+      }
+      return c;
+    });
+
+    return CONTACTS;
   }
 
   // synchronously get dummy contacts, this is strictly for UI integration

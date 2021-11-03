@@ -14,9 +14,10 @@ import DeleteIcon from '@mui/icons-material/Delete';
 interface Props {
   id: string;
   deleteOne(id: string): void;
+  editOne(id: string): void;
 }
 
-const MoreMenu = ({ id, deleteOne }: Props) => {
+const MoreMenu = ({ id, deleteOne, editOne }: Props) => {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -58,6 +59,7 @@ const MoreMenu = ({ id, deleteOne }: Props) => {
           <ListItemText
             primary="Edit"
             primaryTypographyProps={{ variant: 'body2' }}
+            onClick={() => editOne(id)}
           />
         </MenuItem>
       </Menu>

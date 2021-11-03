@@ -114,6 +114,11 @@ const ContactList = () => {
     setSelected([]);
   };
 
+  const onEditContact = (id: string) => {
+    if (contacts === null) return;
+    goToContact(id);
+  };
+
   const onAddContact = () => {
     if (contacts === null) return;
     dispatch(addContact({
@@ -299,6 +304,7 @@ const ContactList = () => {
                               <MoreMenu
                                 id={contactId}
                                 deleteOne={onDeleteContact}
+                                editOne={onEditContact}
                               />
                             </TableCell>
                           </TableRow>
