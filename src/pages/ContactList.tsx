@@ -273,7 +273,7 @@ const ContactList = () => {
                               onClick={() => goToContact(contactId)}
                             >
                               <Box display="flex" alignItems="center">
-                                <Avatar alt={name} src="#FIXME: URL" />
+                                <Avatar alt={name} src="" />
                                 <Box
                                   component={Typography}
                                   paddingLeft={2}

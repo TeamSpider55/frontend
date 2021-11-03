@@ -1,5 +1,8 @@
+import axios from 'axios';
 import { AddContactInput, Contact, UpdateContactInput } from '../dto/Contact';
+import UserService from './UserService';
 
+// dummy data
 let CONTACTS: Array<Contact> = [
   {
     contactId: '1',
@@ -88,6 +91,37 @@ let CONTACTS: Array<Contact> = [
 
 class ContactService {
   static async getContacts(): Promise<Array<Contact>> {
+    const user = await UserService.getUser();
+
+    const result = await axios.get(
+      `/contact/getAllContacts/${user.userName}`,
+    );
+
+    // map default values as backend does not provide them
+    const contacts = result.data.data.map(
+      (contact: Contact & {_id: string}) => {
+        return {
+          // eslint-disable-next-line no-underscore-dangle
+          contactId: contact._id,
+          nickName: contact.nickName || '',
+          tags: contact.tags || [],
+          givenName: contact.givenName,
+          middleName: contact.middleName || '',
+          familyName: contact.familyName,
+          email: contact.email,
+          phone: contact.phone || '',
+          address: contact.address || '',
+          description: contact.description || '',
+          note: contact.note || '',
+          role: contact.role || '',
+          organisation: contact.organisation || '',
+        };
+      },
+    );
+    return contacts;
+  }
+
+  static async getContactsDummy(): Promise<Array<Contact>> {
     return CONTACTS;
   }
 

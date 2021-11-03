@@ -21,6 +21,7 @@ class AuthService {
     }: LoginInput,
   ): Promise<LoginResponse> {
     const response: LoginResponse = await axios.post(
+      // 'http://localhost:8080/auth/login/', {
       '/auth/login/', {
         id,
         password,
