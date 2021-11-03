@@ -121,18 +121,27 @@ class ContactService {
     return contacts;
   }
 
-  static async getContactsDummy(): Promise<Array<Contact>> {
-    return CONTACTS;
-  }
-
   static async deleteContact(id: string): Promise<Array<Contact>> {
-    CONTACTS = CONTACTS.filter((contact) => contact.contactId !== id);
-    return CONTACTS;
+    const user = await UserService.getUser();
+    await axios.delete('/contact/deleteContact', {
+      data: {
+        userName: user.userName,
+        contactId: id,
+      },
+    });
+    const contacts = await this.getContacts();
+    return contacts;
   }
 
   static async deleteContacts(ids: string[]): Promise<Array<Contact>> {
-    CONTACTS = CONTACTS.filter((c) => !ids.includes(c.contactId));
-    return CONTACTS;
+    // eslint-disable-next-line no-restricted-syntax
+    for (const id of ids) {
+      // eslint-disable-next-line no-await-in-loop
+      await this.deleteContact(id);
+    }
+
+    const contacts = await this.getContacts();
+    return contacts;
   }
 
   static async addContact({
@@ -140,30 +149,19 @@ class ContactService {
     givenName,
     familyName,
   }: AddContactInput): Promise<{ id: string, contacts: Array<Contact>}> {
-    const ids = (await this.getContacts()).map((c) => c.contactId);
-    const newId = String(Number(ids[ids.length - 1]) + 1);
+    const user = await UserService.getUser();
+    const result = await axios.post('/contact/addContact', {
+      userName: user.userName,
+      email,
+      familyName,
+      givenName,
+    });
 
-    CONTACTS = [...CONTACTS,
-      {
-        contactId: newId,
-        nickName: '',
-        tags: [],
-        givenName,
-        middleName: '',
-        familyName,
-        email,
-        phone: '',
-        address: '',
-        description: '',
-        note: '',
-        role: '',
-        organisation: '',
-      },
-    ];
+    const contacts = await this.getContacts();
 
     return {
-      id: newId,
-      contacts: CONTACTS,
+      id: result.data.data._id,
+      contacts,
     };
   }
 
@@ -214,6 +212,55 @@ class ContactService {
     return CONTACTS;
   }
 
+  // asynchronously get dummy contacts
+  static async getContactsDummy(): Promise<Array<Contact>> {
+    return CONTACTS;
+  }
+
+  static async deleteContactDummy(id: string): Promise<Array<Contact>> {
+    CONTACTS = CONTACTS.filter((contact) => contact.contactId !== id);
+    return CONTACTS;
+  }
+
+  static async deleteContactsDummy(ids: string[]): Promise<Array<Contact>> {
+    CONTACTS = CONTACTS.filter((c) => !ids.includes(c.contactId));
+    return CONTACTS;
+  }
+
+  static async addContactDummy({
+    email,
+    givenName,
+    familyName,
+  }: AddContactInput): Promise<{ id: string, contacts: Array<Contact>}> {
+    const ids = (await this.getContacts()).map((c) => c.contactId);
+    const newId = String(Number(ids[ids.length - 1]) + 1);
+
+    CONTACTS = [...CONTACTS,
+      {
+        contactId: newId,
+        nickName: '',
+        tags: [],
+        givenName,
+        middleName: '',
+        familyName,
+        email,
+        phone: '',
+        address: '',
+        description: '',
+        note: '',
+        role: '',
+        organisation: '',
+      },
+    ];
+
+    return {
+      id: newId,
+      contacts: CONTACTS,
+    };
+  }
+
+  // synchronously get dummy contacts, this is strictly for UI integration
+  // tests to provide guarantees for the tests
   static getDummyContacts(n: number = 24): Array<Contact> {
     return [...Array(n)].map((_, i) => {
       const idx = i.toString();

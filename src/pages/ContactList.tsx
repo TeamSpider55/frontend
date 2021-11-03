@@ -85,6 +85,7 @@ const ContactList = () => {
 
   const dispatch = useAppDispatch();
   const contacts = useAppSelector((state) => state.contact.contacts);
+  const isLoading = useAppSelector((state) => state.contact.isLoading);
 
   // initialise either synchronously if using dummy data, or asynchronously
   useEffect(() => {
@@ -117,8 +118,8 @@ const ContactList = () => {
     if (contacts === null) return;
     dispatch(addContact({
       email: 'email@email.com',
-      givenName: '',
-      familyName: '',
+      givenName: 'John',
+      familyName: 'Doe',
     })).then((newContactId) => {
       if (newContactId !== null) {
         goToContact(newContactId);
@@ -218,7 +219,7 @@ const ContactList = () => {
             onFilter={onFilterByName}
             deleteMany={onDeleteContacts}
           />
-          {filteredContacts === null ? (
+          {filteredContacts === null || isLoading ? (
             <Spinner />
           ) : (
             <Box>
