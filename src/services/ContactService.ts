@@ -1,6 +1,7 @@
 import axios from 'axios';
-import { AddContactInput, Contact, UpdateContactInput } from '../dto/Contact';
-import UserService from './UserService';
+import {
+  AddContactInput, Contact, ContactApiResult, UpdateContactInput,
+} from '../dto/Contact';
 
 // dummy data
 let CONTACTS: Array<Contact> = [
@@ -91,15 +92,14 @@ let CONTACTS: Array<Contact> = [
 
 class ContactService {
   static async getContacts(): Promise<Array<Contact>> {
-    const user = await UserService.getUser();
-
     const result = await axios.get(
-      `/contact/getAllContacts/${user.userName}`,
+      '/contact/getAllContacts/',
+      { withCredentials: true },
     );
 
     // map default values as backend does not provide them
     const contacts = result.data.data.map(
-      (contact: Contact & {_id: string}) => {
+      (contact: ContactApiResult & {_id: string}) => {
         return {
           // eslint-disable-next-line no-underscore-dangle
           contactId: contact._id,
@@ -113,8 +113,8 @@ class ContactService {
           address: contact.address || '',
           description: contact.description || '',
           note: contact.note || '',
-          role: contact.role || '',
-          organisation: contact.organisation || '',
+          role: contact.jobTitle || '',
+          organisation: contact.organization || '',
         };
       },
     );
@@ -122,13 +122,9 @@ class ContactService {
   }
 
   static async deleteContact(id: string): Promise<Array<Contact>> {
-    const user = await UserService.getUser();
-    await axios.delete('/contact/deleteContact', {
-      data: {
-        userName: user.userName,
-        contactId: id,
-      },
-    });
+    await axios.post('/contact/deleteContact', {
+      contactId: id,
+    }, { withCredentials: true });
     const contacts = await this.getContacts();
     return contacts;
   }
@@ -149,13 +145,11 @@ class ContactService {
     givenName,
     familyName,
   }: AddContactInput): Promise<{ id: string, contacts: Array<Contact>}> {
-    const user = await UserService.getUser();
     const result = await axios.post('/contact/addContact', {
-      userName: user.userName,
       email,
       familyName,
       givenName,
-    });
+    }, { withCredentials: true });
 
     const contacts = await this.getContacts();
 
@@ -180,16 +174,16 @@ class ContactService {
     role,
     organisation,
   }: UpdateContactInput): Promise<Array<Contact>> {
-    const user = await UserService.getUser();
     const oldContactResult = await axios.get(
-      `/contact/getContact/${user.userName}/${contactId}`,
+      `/contact/getContact/${contactId}`,
+      { withCredentials: true },
     );
 
     if (oldContactResult.status !== 200) {
       return this.getContacts();
     }
 
-    const c = oldContactResult.data.data as Contact & { _id: string };
+    const c = oldContactResult.data.data as ContactApiResult & { _id: string };
     await axios.post('/contact/updateContact', {
       ...c,
       contactId: c._id,
@@ -203,9 +197,9 @@ class ContactService {
       address: address !== undefined ? address : c.address,
       description: description !== undefined ? description : c.description,
       note: note !== undefined ? note : c.note,
-      role: role !== undefined ? role : c.role,
-      organisation: organisation !== undefined ? organisation : c.organisation,
-    });
+      jobTitle: role !== undefined ? role : c.jobTitle,
+      organization: organisation !== undefined ? organisation : c.organization,
+    }, { withCredentials: true });
 
     const contacts = await this.getContacts();
     return contacts;
