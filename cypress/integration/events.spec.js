@@ -88,7 +88,7 @@ describe('Events List', () => {
 
     // user selects the 13th of the current month
     cy.contains('To').parent().find('button').click();
-    cy.get('.MuiCalendarPicker-root').contains('13').click();
+    cy.get('.MuiCalendarPicker-root').contains('14').click();
 
     cy.contains('Invalid Date Range!');
   });

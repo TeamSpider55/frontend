@@ -20,6 +20,7 @@ import Register from './pages/Register';
 import ThemeConfig from './theme';
 import { useAppSelector } from './redux/store';
 
+// Route that checks for logged in user and redirects to login if not found
 const PrivateRoute = ({
   children, ...rest
 }: any) => {
@@ -100,11 +101,6 @@ function App() {
               <PageNotFound />
             </DashboardLayout>
           </Route>
-          <PrivateRoute path="/momo">
-            <DashboardLayout showHeaderBar showSideBar>
-              ASDJSALKDj
-            </DashboardLayout>
-          </PrivateRoute>
           <PrivateRoute path="/account">
             <DashboardLayout showHeaderBar showSideBar={false}>
               <Account />

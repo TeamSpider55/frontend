@@ -18,13 +18,21 @@ import {
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import Page from '../components/Page';
-import ContactService from '../services/ContactService';
 import MoreMenu from '../components/MoreMenu';
 import ContactListToolbar from '../components/contacts/ContactListToolbar';
 import TableHeader from '../components/TableHeader';
 import SearchNotFound from '../components/contacts/SearchNotFound';
 import getComparator from '../util/comparator';
 import { Contact } from '../dto/Contact';
+import { useAppDispatch, useAppSelector } from '../redux/store';
+import {
+  getContacts,
+  getDummyContacts,
+  deleteContact,
+  deleteContacts,
+  addContact,
+} from '../redux/action/contactAction';
+import Spinner from '../components/Spinner';
 
 const StyledContainer = styled(Container)((
   {
@@ -66,42 +74,63 @@ const ContactList = () => {
   // with dummy data or not, this is used for automated testing: no flakiness!
   const { search } = useLocation();
   const isDummy = new URLSearchParams(search).get('dummy');
-  const initContacts = isDummy ? ContactService.getDummyContacts() : null;
 
+  // pagination, filtering, batch select and ordering config as local state
   const [page, setPage] = useState(0);
   const [selected, setSelected] = useState<string[]>([]);
   const [order, setOrder] = useState<'asc'|'desc'>('asc');
   const [orderBy, setOrderBy] = useState('givenName');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
-  const [contacts, setContacts] = useState<Contact[] | null>(initContacts);
   const [filterName, setFilterName] = useState('');
 
-  const fetchContacts = async () => {
-    setContacts(await ContactService.getContacts());
-  };
+  const dispatch = useAppDispatch();
+  const contacts = useAppSelector((state) => state.contact.contacts);
+  const isLoading = useAppSelector((state) => state.contact.isLoading);
 
+  // initialise either synchronously if using dummy data, or asynchronously
   useEffect(() => {
-    if (!isDummy) {
-      fetchContacts();
+    if (isDummy) {
+      dispatch(getDummyContacts);
+    } else {
+      dispatch(getContacts());
     }
   }, []);
 
   const theme = useTheme();
-
   const history = useHistory();
 
-  const deleteContact = (id: string) => {
-    if (contacts === null) return;
-    const newContacts = contacts.filter((c) => c.contactId !== id);
-    setContacts(newContacts);
+  const goToContact = (id: string) => {
+    history.push(`/contacts/${id}`);
   };
 
-  const deleteContacts = (ids: string[]) => {
+  const onDeleteContact = (id: string) => {
     if (contacts === null) return;
-    const newContacts = contacts?.filter((c) => !ids.includes(c.contactId));
-    setContacts(newContacts);
+    dispatch(deleteContact(id));
+  };
+
+  const onDeleteContacts = (ids: string[]) => {
+    if (contacts === null) return;
+    dispatch(deleteContacts(ids));
     setSelected([]);
+  };
+
+  const onEditContact = (id: string) => {
+    if (contacts === null) return;
+    goToContact(id);
+  };
+
+  const onAddContact = () => {
+    if (contacts === null) return;
+    dispatch(addContact({
+      email: 'email@email.com',
+      givenName: 'John',
+      familyName: 'Doe',
+    })).then((newContactId) => {
+      if (newContactId !== null) {
+        goToContact(newContactId);
+      }
+    });
+    // FIXME: auto redirect to contact detail for editing
   };
 
   const handleRequestSort = (event: any, property: string) => {
@@ -152,10 +181,6 @@ const ContactList = () => {
     setPage(0);
   };
 
-  const goToContact = (id: string) => {
-    history.push(`/contacts/${id}`);
-  };
-
   let emptyRows = null;
   let filteredContacts = null;
   if (contacts !== null) {
@@ -185,6 +210,7 @@ const ContactList = () => {
             variant="contained"
             color="primary"
             component={RouterLink}
+            onClick={onAddContact}
             to="#"
           >
             <AddIcon />
@@ -196,12 +222,10 @@ const ContactList = () => {
             selected={selected}
             filter={filterName}
             onFilter={onFilterByName}
-            deleteMany={deleteContacts}
+            deleteMany={onDeleteContacts}
           />
-          {filteredContacts === null ? (
-            <Typography variant="subtitle2" noWrap>
-              Loading
-            </Typography>
+          {filteredContacts === null || isLoading ? (
+            <Spinner />
           ) : (
             <Box>
               <TableContainer>
@@ -227,6 +251,8 @@ const ContactList = () => {
                             contactId,
                             givenName,
                             familyName,
+                            role,
+                            organisation,
                           } = row;
                         const name = `${givenName} ${familyName}`;
                         const isItemSelected = selected
@@ -250,10 +276,10 @@ const ContactList = () => {
                             <TableCell
                               component="th"
                               scope="row"
-                              onClick={() => goToContact('1')}
+                              onClick={() => goToContact(contactId)}
                             >
                               <Box display="flex" alignItems="center">
-                                <Avatar alt={name} src="#FIXME: URL" />
+                                <Avatar alt={name} src="" />
                                 <Box
                                   component={Typography}
                                   paddingLeft={2}
@@ -264,19 +290,21 @@ const ContactList = () => {
                                 </Box>
                               </Box>
                             </TableCell>
-                            <TableCell onClick={() => goToContact('1')}>
-                              Apple
+                            <TableCell onClick={() => goToContact(contactId)}>
+                              { organisation }
                             </TableCell>
-                            <TableCell onClick={() => goToContact('1')}>
-                              Software Engineer
+                            <TableCell onClick={() => goToContact(contactId)}>
+                              { role }
                             </TableCell>
-                            <TableCell onClick={() => goToContact('1')}>
+                            {/* <TableCell onClick={() => goToContact(contactId)}>
                               17 August 2021
-                            </TableCell>
+                            </TableCell> */}
                             <TableCell align="right">
+                              {/* FIXME: ADD EDIT ONE */}
                               <MoreMenu
                                 id={contactId}
-                                deleteOne={deleteContact}
+                                deleteOne={onDeleteContact}
+                                editOne={onEditContact}
                               />
                             </TableCell>
                           </TableRow>

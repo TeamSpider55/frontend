@@ -19,7 +19,6 @@ import {
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import Page from '../components/Page';
-import EventService from '../services/EventService';
 import MoreMenu from '../components/MoreMenu';
 import EventListToolbar from '../components/events/EventListToolbar';
 import TableHeader from '../components/TableHeader';
@@ -27,11 +26,19 @@ import DateSearchNotFound from '../components/events/DateSearchNotFound';
 import DateSearchInvalid from '../components/events/DateSearchInvalid';
 import getComparator from '../util/comparator';
 import { Event, DateRange } from '../dto/Event';
+import { useAppDispatch, useAppSelector } from '../redux/store';
 import {
   DAYDATE_FORMAT,
   isValidDateRange,
   TIME_FORMAT,
 } from '../util/datetime';
+import {
+  getDummyEvents,
+  getEvents,
+  deleteEvent,
+  deleteEvents,
+  addEvent,
+} from '../redux/action/eventAction';
 
 const StyledContainer = styled(Container)((
   {
@@ -78,13 +85,15 @@ const EventList = () => {
   // with dummy data or not, this is used for automated testing: no flakiness!
   const { search } = useLocation();
   const isDummy = new URLSearchParams(search).get('dummy');
-  const initEvents = isDummy ? EventService.getDummyEvents() : null;
 
   const [page, setPage] = useState(0);
   const [selected, setSelected] = useState<string[]>([]);
   const [order, setOrder] = useState<'asc'|'desc'>('asc');
   const [orderBy, setOrderBy] = useState('title');
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const dispatch = useAppDispatch();
+  const events = useAppSelector((state) => state.event.events);
 
   const now = new Date();
   const [dateRange, setDateRange] = useState<DateRange>(
@@ -94,33 +103,49 @@ const EventList = () => {
     },
   );
 
-  const [events, setEvents] = useState<Event[] | null>(initEvents);
-
-  const fetchEvents = async () => {
-    setEvents(await EventService.getEvents());
-  };
-
+  // initialise either synchronously if using dummy data, or asynchronously
   useEffect(() => {
-    if (!isDummy) {
-      fetchEvents();
+    if (isDummy) {
+      dispatch(getDummyEvents);
+    } else {
+      dispatch(getEvents());
     }
   }, []);
 
   const theme = useTheme();
-
   const history = useHistory();
 
-  const deleteEvent = (id: string) => {
-    if (events === null) return;
-    const newEvents = events.filter((e) => e.eventId !== id);
-    setEvents(newEvents);
+  const goToEvent = (id: string) => {
+    history.push(`/events/${id}`);
   };
 
-  const deleteEvents = (ids: string[]) => {
+  const onDeleteEvent = (id: string) => {
     if (events === null) return;
-    const newEvents = events?.filter((e) => !ids.includes(e.eventId));
-    setEvents(newEvents);
+    dispatch(deleteEvent(id));
+  };
+
+  const onDeleteEvents = (ids: string[]) => {
+    if (events === null) return;
+    dispatch(deleteEvents(ids));
     setSelected([]);
+  };
+
+  const onEditEvent = (id: string) => {
+    if (events === null) return;
+    goToEvent(id);
+  };
+
+  const onAddEvent = () => {
+    if (events === null) return;
+    dispatch(addEvent({
+      title: 'new event',
+      start: Date.now(),
+      end: Date.now() + 3600000,
+    })).then((newEventId) => {
+      if (newEventId !== null) {
+        goToEvent(newEventId);
+      }
+    });
   };
 
   const handleRequestSort = (event: any, property: string) => {
@@ -167,10 +192,6 @@ const EventList = () => {
     setPage(0);
   };
 
-  const goToEvent = (id: string) => {
-    history.push(`/events/${id}`);
-  };
-
   let emptyRows = null;
   let filteredEvents = null;
   if (events !== null) {
@@ -201,6 +222,7 @@ const EventList = () => {
             color="primary"
             component={RouterLink}
             to="#"
+            onClick={onAddEvent}
           >
             <AddIcon />
             ADD NEW EVENT
@@ -209,7 +231,7 @@ const EventList = () => {
         <Card>
           <EventListToolbar
             selected={selected}
-            deleteMany={deleteEvents}
+            deleteMany={onDeleteEvents}
             dateRange={dateRange}
             setDateRange={setDateRange}
           />
@@ -239,6 +261,7 @@ const EventList = () => {
                       .map((row: Event) => {
                         const
                           {
+                            contacts,
                             eventId,
                             title,
                             start,
@@ -267,7 +290,7 @@ const EventList = () => {
                             <TableCell
                               component="th"
                               scope="row"
-                              onClick={() => goToEvent('1')}
+                              onClick={() => goToEvent(eventId)}
                             >
                               <Box display="flex" alignItems="center">
                                 <Box
@@ -279,7 +302,7 @@ const EventList = () => {
                                 </Box>
                               </Box>
                             </TableCell>
-                            <TableCell onClick={() => goToEvent('1')}>
+                            <TableCell onClick={() => goToEvent(eventId)}>
                               <Box>
                                 {DAYDATE_FORMAT.format(start)}
                               </Box>
@@ -289,22 +312,23 @@ const EventList = () => {
                                 {TIME_FORMAT.format(end)}
                               </Box>
                             </TableCell>
-                            <TableCell onClick={() => goToEvent('1')}>
+                            <TableCell onClick={() => goToEvent(eventId)}>
                               {/* FIXME: hardcoded avatars and
                                   non-functioning sort
                               */}
                               <AvatarGroup max={4}>
-                                <Avatar alt="Remy Sharp" />
-                                <Avatar alt="Travis Howard" />
-                                <Avatar alt="Cindy Baker" />
-                                <Avatar alt="Agnes Walker" />
-                                <Avatar alt="Trevor Henderson" />
+                                {
+                                  contacts.map((c) => (
+                                    <Avatar alt={c} />
+                                  ))
+                                }
                               </AvatarGroup>
                             </TableCell>
                             <TableCell align="right">
                               <MoreMenu
                                 id={eventId}
-                                deleteOne={deleteEvent}
+                                deleteOne={onDeleteEvent}
+                                editOne={onEditEvent}
                               />
                             </TableCell>
                           </TableRow>

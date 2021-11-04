@@ -8,7 +8,10 @@ export interface LogoutResponse {
 class UserService {
   static async getUser() {
     const response = await axios.get(
-      '/user/profile/',
+      // 'http://localhost:8080/user/profile/',
+      // `${API_URL}/user/profile/`,
+      'https://spider55-api.herokuapp.com/user/profile/',
+      // '/user/profile/',
       {
         withCredentials: true,
       },
