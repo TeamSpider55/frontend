@@ -2,6 +2,7 @@ import axios from 'axios';
 import {
   AddContactInput, Contact, ContactApiResult, UpdateContactInput,
 } from '../dto/Contact';
+import API_URL from '../util/constants';
 
 // dummy data
 let CONTACTS: Array<Contact> = [
@@ -122,7 +123,7 @@ class ContactService {
   }
 
   static async deleteContact(id: string): Promise<Array<Contact>> {
-    await axios.post('/contact/deleteContact', {
+    await axios.post(`${API_URL}/contact/deleteContact`, {
       contactId: id,
     }, { withCredentials: true });
     const contacts = await this.getContacts();
@@ -145,7 +146,7 @@ class ContactService {
     givenName,
     familyName,
   }: AddContactInput): Promise<{ id: string, contacts: Array<Contact>}> {
-    const result = await axios.post('/contact/addContact', {
+    const result = await axios.post(`${API_URL}/contact/addContact`, {
       email,
       familyName,
       givenName,
@@ -175,7 +176,7 @@ class ContactService {
     organisation,
   }: UpdateContactInput): Promise<Array<Contact>> {
     const oldContactResult = await axios.get(
-      `/contact/getContact/${contactId}`,
+      `${API_URL}/contact/getContact/${contactId}`,
       { withCredentials: true },
     );
 
@@ -184,7 +185,7 @@ class ContactService {
     }
 
     const c = oldContactResult.data.data as ContactApiResult & { _id: string };
-    await axios.post('/contact/updateContact', {
+    await axios.post(`${API_URL}/contact/updateContact`, {
       ...c,
       contactId: c._id,
       nickName: nickName !== undefined ? nickName : c.nickName,
