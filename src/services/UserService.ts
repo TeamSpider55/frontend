@@ -1,4 +1,5 @@
 import axios from 'axios';
+import API_URL from '../util/constants';
 
 export interface LogoutResponse {
   success: boolean;
@@ -9,7 +10,9 @@ class UserService {
   static async getUser() {
     const response = await axios.get(
       // 'http://localhost:8080/user/profile/',
-      '/user/profile/',
+      // `${API_URL}/user/profile/`,
+      `${API_URL}/user/profile/`,
+      // '/user/profile/',
       {
         withCredentials: true,
       },
@@ -20,7 +23,7 @@ class UserService {
 
   static async logout(): Promise<LogoutResponse> {
     const response: LogoutResponse = await axios.post(
-      '/user/logout/',
+      `${API_URL}/user/logout/`,
       {},
       { withCredentials: true },
     );

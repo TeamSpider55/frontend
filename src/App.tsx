@@ -83,16 +83,16 @@ function App() {
             path="/login"
             render={() => <Login />}
           />
-          <PrivateRoute exact path="/contacts">
+          <Route exact path="/contacts">
             <DashboardLayout showHeaderBar showSideBar>
               <ContactList />
             </DashboardLayout>
-          </PrivateRoute>
-          <PrivateRoute exact path="/contacts/:contactId">
+          </Route>
+          <Route exact path="/contacts/:contactId">
             <DashboardLayout showHeaderBar showSideBar>
               <ContactDetail />
             </DashboardLayout>
-          </PrivateRoute>
+          </Route>
           <Route path="/forgot-password">
             <ForgotPassword />
           </Route>
