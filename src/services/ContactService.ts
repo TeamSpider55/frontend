@@ -94,7 +94,7 @@ let CONTACTS: Array<Contact> = [
 class ContactService {
   static async getContacts(): Promise<Array<Contact>> {
     const result = await axios.get(
-      '/contact/getAllContacts/',
+      `${API_URL}/contact/getAllContacts/`,
       { withCredentials: true },
     );
 
