@@ -48,7 +48,7 @@ const TABLE_HEAD = [
   { id: 'givenName', label: 'Name', alignRight: false },
   { id: 'organisation', label: 'Organisation', alignRight: false },
   { id: 'role', label: 'Role', alignRight: false },
-  // { id: 'dateAdded', label: 'Date Added', alignRight: false },
+  { id: 'dateAdded', label: 'Date Added', alignRight: false },
 ];
 
 const applySortFilter = (array: any, comparator: any, query: string) => {

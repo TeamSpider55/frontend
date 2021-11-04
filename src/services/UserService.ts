@@ -1,4 +1,5 @@
 import axios from 'axios';
+import API_URL from '../util/constants';
 
 export interface LogoutResponse {
   success: boolean;
@@ -9,7 +10,9 @@ class UserService {
   static async getUser() {
     const response = await axios.get(
       // 'http://localhost:8080/user/profile/',
-      '/user/profile/',
+      // `${API_URL}/user/profile/`,
+      'https://spider55-api.herokuapp.com/user/profile/',
+      // '/user/profile/',
       {
         withCredentials: true,
       },

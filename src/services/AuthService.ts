@@ -1,4 +1,5 @@
 import axios from 'axios';
+import API_URL from '../util/constants';
 
 export interface LoginInput {
   id: string;
@@ -22,7 +23,8 @@ class AuthService {
   ): Promise<LoginResponse> {
     const response: LoginResponse = await axios.post(
       // 'http://localhost:8080/auth/login/', {
-      '/auth/login/', {
+      /// '/auth/login/', {
+      'https://spider55-api.herokuapp.com/auth/login/', {
         id,
         password,
       },
