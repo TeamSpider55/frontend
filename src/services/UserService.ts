@@ -1,5 +1,4 @@
 import axios from 'axios';
-import API_URL from '../util/constants';
 
 export interface LogoutResponse {
   success: boolean;
