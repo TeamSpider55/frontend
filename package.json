@@ -1,7 +1,7 @@
 {
   "name": "onethread-fe",
   "version": "0.1.0",
-  "proxy": "https://spider55-api.herokuapp.com/",
+  "proxy": "http://localhost:8080",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.4.1",

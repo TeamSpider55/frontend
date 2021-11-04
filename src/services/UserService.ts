@@ -8,6 +8,7 @@ export interface LogoutResponse {
 class UserService {
   static async getUser() {
     const response = await axios.get(
+      // 'http://localhost:8080/user/profile/',
       '/user/profile/',
       {
         withCredentials: true,
