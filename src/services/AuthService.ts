@@ -27,6 +27,7 @@ class AuthService {
         id,
         password,
       },
+      { withCredentials: true },
     );
 
     return response;
