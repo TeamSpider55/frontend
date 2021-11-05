@@ -21,8 +21,6 @@ class UserService {
   }
 
   static async updatePassword(newPassword: string) {
-    console.log(newPassword);
-
     const response = await axios.post(
       // 'http://localhost:8080/user/profile/',
       '/user/change-password/',
@@ -32,7 +30,6 @@ class UserService {
         withCredentials: true,
       },
     );
-    console.log(response);
 
     return (response.data as any).data;
   }

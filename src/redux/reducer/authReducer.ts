@@ -60,7 +60,6 @@ export default createReducer(initialState, (builder) => {
     })
     .addCase(passwordChangeSucceeded, (state, _action) => {
       state.isLoading = false;
-      state.user = null;
     })
     .addCase(passwordChangeFailed, (state, action) => {
       state.isLoading = false;

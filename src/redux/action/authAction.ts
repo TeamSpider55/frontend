@@ -56,7 +56,8 @@ export const passwordChangeFailed = createAction<{
 
 export const updatePassword = (newPassword: string) => async (dispatch: AppDispatch) => {
   dispatch(passwordChangeStarted());
-  if (newPassword.length >= 0) {
+  const minimalLength = 8;
+  if (newPassword.length >= minimalLength) {
     try {
       await UserService.updatePassword(newPassword);
       dispatch(passwordChangeSucceeded());
