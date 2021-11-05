@@ -90,7 +90,7 @@ export const register = ({
     address,
   });
 
-  dispatch(passwordChangeStarted());
+  dispatch(registerStarted());
   try {
     await AuthService.register({
       email,
@@ -101,9 +101,9 @@ export const register = ({
       phone,
       address,
     });
-    dispatch(passwordChangeSucceeded());
+    dispatch(registerSucceeded());
   } catch (e) {
-    dispatch(passwordChangeFailed({ err: 'Register failed' }));
+    dispatch(registerFailed({ err: 'Register failed' }));
   }
 };
 

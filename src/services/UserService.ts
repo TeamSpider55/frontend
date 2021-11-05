@@ -29,7 +29,7 @@ class UserService {
     const response = await axios.post(
       // 'http://localhost:8080/user/profile/',
       // '/user/change-password/',
-      `${API_URL}/user/profile/`,
+      `${API_URL}/user/change-password/`,
       { password: newPassword },
       {
         withCredentials: true,
