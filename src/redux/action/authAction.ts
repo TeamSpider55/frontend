@@ -1,5 +1,6 @@
+import { useHistory } from 'react-router-dom';
 import { createAction } from '@reduxjs/toolkit';
-import AuthService, { LoginInput } from '../../services/AuthService';
+import AuthService, { LoginInput, RegisterInput } from '../../services/AuthService';
 import UserService from '../../services/UserService';
 import { AppDispatch } from '../store';
 import { User } from '../../dto/User';
@@ -56,15 +57,54 @@ export const passwordChangeFailed = createAction<{
 
 export const updatePassword = (newPassword: string) => async (dispatch: AppDispatch) => {
   dispatch(passwordChangeStarted());
-  const minimalLength = 8;
-  if (newPassword.length >= minimalLength) {
-    try {
-      await UserService.updatePassword(newPassword);
-      dispatch(passwordChangeSucceeded());
-    } catch (e) {
-      dispatch(passwordChangeFailed({ err: 'Failed to update password' }));
-    }
-  } else {
-    dispatch(passwordChangeFailed({ err: 'Failed to update password' }));
+  try {
+    await UserService.updatePassword(newPassword);
+    dispatch(passwordChangeSucceeded());
+  } catch (e) {
+    dispatch(passwordChangeFailed({ err: 'Failed to update password due to error' }));
   }
 };
+
+export const registerStarted = createAction('auth/registerStarted');
+export const registerSucceeded = createAction('auth/registerSucceeded');
+export const registerFailed = createAction<{
+  err: string
+}>('auth/registerFailed');
+
+export const register = ({
+  email,
+  userName,
+  familyName,
+  givenName,
+  password,
+  phone,
+  address,
+}: RegisterInput) => async (dispatch: AppDispatch) => {
+  console.log({
+    email,
+    userName,
+    familyName,
+    givenName,
+    password,
+    phone,
+    address,
+  });
+
+  dispatch(passwordChangeStarted());
+  try {
+    await AuthService.register({
+      email,
+      userName,
+      familyName,
+      givenName,
+      password,
+      phone,
+      address,
+    });
+    dispatch(passwordChangeSucceeded());
+  } catch (e) {
+    dispatch(passwordChangeFailed({ err: 'Register failed' }));
+  }
+};
+
+export const cleanupError = createAction('auth/cleanupError');

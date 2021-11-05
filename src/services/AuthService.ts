@@ -14,6 +14,24 @@ export interface LoginResponse {
   error?: string;
 }
 
+export interface RegisterInput {
+  email: string,
+  userName: string,
+  familyName: string,
+  givenName: string,
+  password: string,
+  phone: string,
+  address: string,
+}
+
+export interface RegisterResponse {
+  token?: string
+  expiresIn?: number;
+  success: boolean;
+  msg: string;
+  error?: string;
+}
+
 class AuthService {
   static async login(
     {
@@ -32,6 +50,35 @@ class AuthService {
     );
 
     return response;
+  }
+
+  static async register(
+    {
+      email,
+      userName,
+      familyName,
+      givenName,
+      password,
+      phone,
+      address,
+    }: RegisterInput,
+  ): Promise<RegisterResponse> {
+    const response = await axios.post(
+      // 'http://localhost:8080/auth/login/', {
+      '/auth/register/', {
+      // `${API_URL}/auth/login/`, {
+        email,
+        userName,
+        familyName,
+        givenName,
+        password,
+        phone,
+        address,
+      },
+      { withCredentials: true },
+    );
+
+    return (response.data as any).data;
   }
 }
 

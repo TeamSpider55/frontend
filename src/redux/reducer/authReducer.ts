@@ -1,4 +1,5 @@
 import { createReducer } from '@reduxjs/toolkit';
+import { cleanup } from '@testing-library/react';
 import { User } from '../../dto/User';
 import {
   loginStarted,
@@ -10,6 +11,10 @@ import {
   passwordChangeStarted,
   passwordChangeSucceeded,
   passwordChangeFailed,
+  registerStarted,
+  registerSucceeded,
+  registerFailed,
+  cleanupError,
 } from '../action/authAction';
 
 // equivalently, the state and reducers can be bundled up in a 'slice'
@@ -64,5 +69,18 @@ export default createReducer(initialState, (builder) => {
     .addCase(passwordChangeFailed, (state, action) => {
       state.isLoading = false;
       state.error = action.payload.err;
+    })
+    .addCase(registerStarted, (state, _action) => {
+      state.isLoading = true;
+    })
+    .addCase(registerSucceeded, (state, _action) => {
+      state.isLoading = false;
+    })
+    .addCase(registerFailed, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload.err;
+    })
+    .addCase(cleanupError, (state) => {
+      state.error = null;
     });
 });

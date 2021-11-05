@@ -6,6 +6,11 @@ export interface LogoutResponse {
   redirect: boolean;
 }
 
+export interface UpdatePasswordResponse {
+  success: boolean;
+  redirect: boolean;
+}
+
 class UserService {
   static async getUser() {
     const response = await axios.get(
@@ -20,7 +25,7 @@ class UserService {
     return (response.data as any).data;
   }
 
-  static async updatePassword(newPassword: string) {
+  static async updatePassword(newPassword: string): Promise<UpdatePasswordResponse> {
     const response = await axios.post(
       // 'http://localhost:8080/user/profile/',
       '/user/change-password/',

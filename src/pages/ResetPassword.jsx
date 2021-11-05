@@ -7,10 +7,11 @@ import { makeStyles } from '@mui/styles';
 import { useTheme, styled } from '@mui/material/styles';
 import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import Logo from '../components/Logo';
+import Spinner from '../components/Spinner';
 import Page from '../components/Page';
 import SpiderIcon from '../assets/spider1.png';
 import { useAppDispatch, useAppSelector } from '../redux/store';
-import { updatePassword, passwordChangeFailed } from '../redux/action/authAction';
+import { updatePassword, passwordChangeFailed, cleanupError } from '../redux/action/authAction';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -53,14 +54,18 @@ const ResetPassword = () => {
   const user = useAppSelector((state) => state.auth.user);
   const isLoading = useAppSelector((state) => state.auth.isLoading);
 
-  const passwordUpdate = () => {
+  const onPasswordUpdate = () => {
     const password = document.getElementById('password').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
-    if (password === confirmPassword) {
+    const minLength = 8;
+    if (password === confirmPassword && password.length >= minLength) {
       dispatch(updatePassword(password));
-      history.push('/');
+      // dispatch(cleanupError());
+      // if (user) {
+      //   history.push('/');
+      // }
     } else {
-      dispatch(passwordChangeFailed({ err: 'Failed to update password' }));
+      dispatch(passwordChangeFailed({ err: 'Please ensure passwords are 7 characters and identical' }));
     }
   };
 
@@ -87,14 +92,14 @@ const ResetPassword = () => {
               label="Password"
               variant="outlined"
               type="password"
-              // FIXME: required field
+              required
             />
             <FormTextField
               id="confirmPassword"
               label="Confirm Password"
               variant="outlined"
               type="password"
-              // FIXME: required field
+              required
             />
             {
             error
@@ -111,10 +116,18 @@ const ResetPassword = () => {
             <FormButton
               variant="contained"
               color="primary"
-              onClick={passwordUpdate}
+              onClick={onPasswordUpdate}
             >
-              <VpnKeyIcon />
-              Reset Password
+              {
+                isLoading
+                  ? <Spinner />
+                  : (
+                    <>
+                      <VpnKeyIcon />
+                      Reset Password
+                    </>
+                  )
+              }
             </FormButton>
           </Box>
         </Box>
