@@ -154,7 +154,7 @@ const Account = () => {
             </Box>
             <Box className={classes.changePasswordLink}>
               {' '}
-              <Link component={RouterLink} to="/forgot-password">
+              <Link component={RouterLink} to="/reset-password">
                 <Box
                   display="inline"
                   sx={{ textDecoration: 'underline' }}

@@ -1,14 +1,16 @@
 import React from 'react';
 import {
-  Button, Box, TextField, Link,
+  Button, Box, TextField, Link, Alert,
 } from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useHistory } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
 import { useTheme, styled } from '@mui/material/styles';
 import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import Logo from '../components/Logo';
 import Page from '../components/Page';
 import SpiderIcon from '../assets/spider1.png';
+import { useAppDispatch, useAppSelector } from '../redux/store';
+import { updatePassword, passwordChangeFailed } from '../redux/action/authAction';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,16 +47,32 @@ const FormButton = styled(Button)(({ theme }) => ({
 const ResetPassword = () => {
   const theme = useTheme();
   const classes = useStyles(theme);
+  const history = useHistory();
+  const dispatch = useAppDispatch();
+  const error = useAppSelector((state) => state.auth.error);
+  const user = useAppSelector((state) => state.auth.user);
+  const isLoading = useAppSelector((state) => state.auth.isLoading);
+
+  const passwordUpdate = () => {
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    if (password === confirmPassword) {
+      dispatch(updatePassword(password));
+      history.push('/');
+    } else {
+      dispatch(passwordChangeFailed({ err: 'Failed to update password' }));
+    }
+  };
 
   return (
     <Page title="Reset Password - OneThread">
       <Box className={classes.root}>
         <Box className={classes.signInLink}>
-          Remember the password?
+          Go Back?
           {' '}
-          <Link component={RouterLink} to="/login">
+          <Link component={RouterLink} to="/account">
             <Box display="inline" fontWeight={theme.typography.fontWeightBold}>
-              Sign in
+              Yes
             </Box>
           </Link>
         </Box>
@@ -65,20 +83,35 @@ const ResetPassword = () => {
               <Logo dark />
             </Box>
             <FormTextField
+              id="password"
               label="Password"
               variant="outlined"
               type="password"
               // FIXME: required field
             />
             <FormTextField
+              id="confirmPassword"
               label="Confirm Password"
               variant="outlined"
               type="password"
               // FIXME: required field
             />
+            {
+            error
+              ? (
+                <Alert
+                  severity="error"
+                  sx={{ marginBottom: theme.spacing(4) }}
+                >
+                  { error }
+                </Alert>
+              )
+              : null
+            }
             <FormButton
               variant="contained"
               color="primary"
+              onClick={passwordUpdate}
             >
               <VpnKeyIcon />
               Reset Password

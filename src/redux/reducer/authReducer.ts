@@ -7,6 +7,9 @@ import {
   logoutStarted,
   logoutSucceeded,
   logoutFailed,
+  passwordChangeStarted,
+  passwordChangeSucceeded,
+  passwordChangeFailed,
 } from '../action/authAction';
 
 // equivalently, the state and reducers can be bundled up in a 'slice'
@@ -49,6 +52,17 @@ export default createReducer(initialState, (builder) => {
       state.user = null;
     })
     .addCase(logoutFailed, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload.err;
+    })
+    .addCase(passwordChangeStarted, (state, _action) => {
+      state.isLoading = true;
+    })
+    .addCase(passwordChangeSucceeded, (state, _action) => {
+      state.isLoading = false;
+      state.user = null;
+    })
+    .addCase(passwordChangeFailed, (state, action) => {
       state.isLoading = false;
       state.error = action.payload.err;
     });

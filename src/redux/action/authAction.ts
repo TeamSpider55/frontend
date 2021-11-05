@@ -47,3 +47,23 @@ export const logout = () => async (dispatch: AppDispatch) => {
     dispatch(logoutFailed({ err: 'Failed to logout' }));
   }
 };
+
+export const passwordChangeStarted = createAction('auth/passwordChangeStarted');
+export const passwordChangeSucceeded = createAction('auth/passwordChangeSucceeded');
+export const passwordChangeFailed = createAction<{
+  err: string
+}>('auth/passwordChangeFailed');
+
+export const updatePassword = (newPassword: string) => async (dispatch: AppDispatch) => {
+  dispatch(passwordChangeStarted());
+  if (newPassword.length >= 0) {
+    try {
+      await UserService.updatePassword(newPassword);
+      dispatch(passwordChangeSucceeded());
+    } catch (e) {
+      dispatch(passwordChangeFailed({ err: 'Failed to update password' }));
+    }
+  } else {
+    dispatch(passwordChangeFailed({ err: 'Failed to update password' }));
+  }
+};
