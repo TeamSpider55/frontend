@@ -15,8 +15,8 @@ class UserService {
   static async getUser() {
     const response = await axios.get(
       // 'http://localhost:8080/user/profile/',
-      '/user/profile/',
-      // `${API_URL}/user/profile/`,
+      // '/user/profile/',
+      `${API_URL}/user/profile/`,
       {
         withCredentials: true,
       },
@@ -28,8 +28,8 @@ class UserService {
   static async updatePassword(newPassword: string): Promise<UpdatePasswordResponse> {
     const response = await axios.post(
       // 'http://localhost:8080/user/profile/',
-      '/user/change-password/',
-      // `${API_URL}/user/profile/`,
+      // '/user/change-password/',
+      `${API_URL}/user/profile/`,
       { password: newPassword },
       {
         withCredentials: true,
@@ -41,8 +41,8 @@ class UserService {
 
   static async logout(): Promise<LogoutResponse> {
     const response: LogoutResponse = await axios.post(
-      '/user/logout/',
-      // `${API_URL}/user/logout/`,
+      // '/user/logout/',
+      `${API_URL}/user/logout/`,
       {},
       { withCredentials: true },
     );
