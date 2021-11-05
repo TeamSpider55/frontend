@@ -41,8 +41,8 @@ class AuthService {
   ): Promise<LoginResponse> {
     const response: LoginResponse = await axios.post(
       // 'http://localhost:8080/auth/login/', {
-      '/auth/login/', {
-      // `${API_URL}/auth/login/`, {
+      // '/auth/login/', {
+      `${API_URL}/auth/login/`, {
         id,
         password,
       },
@@ -64,9 +64,9 @@ class AuthService {
     }: RegisterInput,
   ): Promise<RegisterResponse> {
     const response = await axios.post(
-      // 'http://localhost:8080/auth/login/', {
-      '/auth/register/', {
-      // `${API_URL}/auth/login/`, {
+      // 'http://localhost:8080/auth/register/', {
+      // '/auth/register/', {
+      `${API_URL}/auth/register/`, {
         email,
         userName,
         familyName,

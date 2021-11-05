@@ -108,8 +108,8 @@ export interface contactUpdate {
 class ContactService {
   static async getContacts(): Promise<Array<Contact>> {
     const result = await axios.get(
-      '/contact/getAllContacts/',
-      // `${API_URL}/contact/getAllContacts/`,
+      // '/contact/getAllContacts/',
+      `${API_URL}/contact/getAllContacts/`,
       { withCredentials: true },
     );
 
@@ -138,8 +138,8 @@ class ContactService {
   }
 
   static async deleteContact(id: string): Promise<Array<Contact>> {
-    await axios.post('/contact/deleteContact', {
-    // await axios.post(`${API_URL}/contact/deleteContact`, {
+    // await axios.post('/contact/deleteContact', {
+    await axios.post(`${API_URL}/contact/deleteContact`, {
       contactId: id,
     }, { withCredentials: true });
     const contacts = await this.getContacts();
@@ -162,8 +162,8 @@ class ContactService {
     givenName,
     familyName,
   }: AddContactInput): Promise<{ id: string, contacts: Array<Contact>}> {
-    const result = await axios.post('/contact/addContact', {
-    // const result = await axios.post(`${API_URL}/contact/addContact`, {
+    // const result = await axios.post('/contact/addContact', {
+    const result = await axios.post(`${API_URL}/contact/addContact`, {
       email,
       familyName,
       givenName,
@@ -193,8 +193,8 @@ class ContactService {
     organisation,
   }: UpdateContactInput): Promise<Array<Contact>> {
     const oldContactResult = await axios.get(
-      `/contact/getContact/${contactId}`,
-      // `${API_URL}/contact/getContact/${contactId}`,
+      // `/contact/getContact/${contactId}`,
+      `${API_URL}/contact/getContact/${contactId}`,
       { withCredentials: true },
     );
 
@@ -202,10 +202,10 @@ class ContactService {
       return this.getContacts();
     }
 
-    const c = (oldContactResult.data as any).data as ContactApiResult & { _id: string };
-    await axios.post('/contact/updateContact', {
     // const c = (oldContactResult.data as any).data as ContactApiResult & { _id: string };
-    // await axios.post(`${API_URL}/contact/updateContact`, {
+    // await axios.post('/contact/updateContact', {
+    const c = (oldContactResult.data as any).data as ContactApiResult & { _id: string };
+    await axios.post(`${API_URL}/contact/updateContact`, {
       ...c,
       contactId: c._id,
       nickName: nickName !== undefined ? nickName : c.nickName,
