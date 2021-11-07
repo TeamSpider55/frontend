@@ -17,6 +17,7 @@ import {
   Box,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import formatISO from 'date-fns/formatISO';
 import Page from '../components/Page';
 import MoreMenu from '../components/MoreMenu';
 import ContactListToolbar from '../components/contacts/ContactListToolbar';
@@ -130,7 +131,6 @@ const ContactList = () => {
         goToContact(newContactId);
       }
     });
-    // FIXME: auto redirect to contact detail for editing
   };
 
   const handleRequestSort = (event: any, property: string) => {
@@ -253,6 +253,7 @@ const ContactList = () => {
                             familyName,
                             role,
                             organisation,
+                            dateAdded,
                           } = row;
                         const name = `${givenName} ${familyName}`;
                         const isItemSelected = selected
@@ -296,11 +297,17 @@ const ContactList = () => {
                             <TableCell onClick={() => goToContact(contactId)}>
                               { role }
                             </TableCell>
-                            {/* <TableCell onClick={() => goToContact(contactId)}>
-                              17 August 2021
-                            </TableCell> */}
+                            <TableCell onClick={() => goToContact(contactId)}>
+                              {
+                                dateAdded !== ''
+                                  ? formatISO(
+                                    new Date(dateAdded),
+                                    { representation: 'date' },
+                                  )
+                                  : '-'
+                              }
+                            </TableCell>
                             <TableCell align="right">
-                              {/* FIXME: ADD EDIT ONE */}
                               <MoreMenu
                                 id={contactId}
                                 deleteOne={onDeleteContact}

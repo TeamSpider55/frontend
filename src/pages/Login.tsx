@@ -67,9 +67,9 @@ const Login = () => {
     dispatch(login({ id: username, password }));
   };
 
-  if (user) {
+  if (!isLoading && user) {
     // user already logged in: redirect
-    // dispatch(cleanupError());
+    dispatch(cleanupError());
     history.push('/');
   }
 

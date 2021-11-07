@@ -1,6 +1,3 @@
-// TODO: add organisation, role, date added, imageURL, once backend
-// accomodates
-
 // backend uses different names for two attributes
 export interface ContactApiResult extends Contact {
   jobTitle: string;
@@ -21,6 +18,12 @@ export interface Contact {
   note: string;
   role: string;
   organisation: string;
+  dateAdded: string;
+}
+
+export interface Note {
+  time: string;
+  content: string;
 }
 
 export interface AddContactInput {

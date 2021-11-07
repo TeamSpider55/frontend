@@ -3,6 +3,7 @@ import {
   AddContactInput, Contact, ContactApiResult, UpdateContactInput,
 } from '../dto/Contact';
 import API_URL from '../util/constants';
+import { DATETIME_FORMAT } from '../util/datetime';
 
 // dummy data
 let CONTACTS: Array<Contact> = [
@@ -20,6 +21,7 @@ let CONTACTS: Array<Contact> = [
     note: 'note',
     role: 'Student',
     organisation: 'University of Adelaide',
+    dateAdded: DATETIME_FORMAT.format(Date.now()),
   },
   {
     contactId: '2',
@@ -35,6 +37,7 @@ let CONTACTS: Array<Contact> = [
     note: 'note',
     role: 'Developer',
     organisation: 'Jaybird',
+    dateAdded: DATETIME_FORMAT.format(Date.now()),
   },
   {
     contactId: '3',
@@ -50,6 +53,7 @@ let CONTACTS: Array<Contact> = [
     note: 'note',
     role: 'Ex-CEO',
     organisation: 'Button Pushers Inc.',
+    dateAdded: DATETIME_FORMAT.format(Date.now()),
   },
   ...[...Array(10)].map((_, index) => {
     const i = index + 3;
@@ -68,6 +72,7 @@ let CONTACTS: Array<Contact> = [
       note: 'note',
       role: 'Product Manager',
       organisation: 'Microsoft',
+      dateAdded: DATETIME_FORMAT.format(Date.now()),
     };
   }),
   ...[...Array(10)].map((_, index) => {
@@ -87,6 +92,7 @@ let CONTACTS: Array<Contact> = [
       note: 'note',
       role: 'Software Engineer',
       organisation: 'Apple',
+      dateAdded: DATETIME_FORMAT.format(Date.now()),
     };
   }),
 ];
@@ -131,6 +137,7 @@ class ContactService {
           note: contact.note || '',
           role: contact.jobTitle || '',
           organisation: contact.organization || '',
+          dateAdded: contact.dateAdded || '',
         };
       },
     );
@@ -264,6 +271,7 @@ class ContactService {
         note: '',
         role: '',
         organisation: '',
+        dateAdded: DATETIME_FORMAT.format(Date.now()),
       },
     ];
 
@@ -339,6 +347,7 @@ class ContactService {
         note: 'note',
         role: 'Software Engineer',
         organisation: 'Apple',
+        dateAdded: DATETIME_FORMAT.format(Date.now()),
       };
     });
   }
