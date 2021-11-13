@@ -49,23 +49,16 @@ function App() {
     <ThemeConfig>
       <Router>
         <Switch>
-          <Route
-            exact
-            path="/"
-            render={() => (
-              <DashboardLayout showHeaderBar showSideBar>
-                <Dashboard />
-              </DashboardLayout>
-            )}
-          />
-          <Route
-            path="/dashboard"
-            render={() => (
-              <DashboardLayout showHeaderBar showSideBar>
-                <Dashboard />
-              </DashboardLayout>
-            )}
-          />
+          <PrivateRoute exact path="/">
+            <DashboardLayout showHeaderBar showSideBar>
+              <Dashboard />
+            </DashboardLayout>
+          </PrivateRoute>
+          <PrivateRoute path="/dashboard">
+            <DashboardLayout showHeaderBar showSideBar>
+              <Dashboard />
+            </DashboardLayout>
+          </PrivateRoute>
           <Route path="/register">
             <Register />
           </Route>
@@ -87,6 +80,12 @@ function App() {
             <DashboardLayout showHeaderBar showSideBar>
               <ContactList />
             </DashboardLayout>
+          </Route>
+          <Route exact path="/contactsDummy">
+            <Redirect to={{
+              pathname: '/contacts?dummy=true',
+            }}
+            />
           </Route>
           <Route exact path="/contacts/:contactId">
             <DashboardLayout showHeaderBar showSideBar>

@@ -5,7 +5,6 @@ describe('Events List', () => {
   });
 
   it('can be navigated to via the sidebar', () => {
-    cy.visit('/');
     cy.get('ul').find('a').contains('Schedule').click();
   });
 
@@ -82,13 +81,9 @@ describe('Events List', () => {
   });
 
   it('can search by invalid date by selecting', () => {
-    // user selects the 15th of the current month
-    cy.contains('From').parent().find('button').click();
-    cy.get('.MuiCalendarPicker-root').contains('15').click();
-
-    // user selects the 13th of the current month
-    cy.contains('To').parent().find('button').click();
-    cy.get('.MuiCalendarPicker-root').contains('14').click();
+    // from the 1st january of 2063 to 29 February of 2064
+    cy.contains('From').parent().find('input').clear().type('02012063');
+    cy.contains('To').parent().find('input').clear().type('01012063');
 
     cy.contains('Invalid Date Range!');
   });

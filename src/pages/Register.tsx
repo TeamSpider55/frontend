@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Button, Box, TextField, Link, Alert,
 } from '@mui/material';
@@ -9,11 +9,12 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import Logo from '../components/Logo';
 import Page from '../components/Page';
 import Spinner from '../components/Spinner';
+import MessageModal from '../components/MessageModal';
 import SpiderIcon from '../assets/spider1.png';
 import { useAppDispatch, useAppSelector } from '../redux/store';
 import { register, registerFailed, cleanupError } from '../redux/action/authAction';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: any) => ({
   root: {
     minHeight: '100vh',
     backgroundColor: theme.palette.background.neutral,
@@ -39,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const FormTextField = styled(TextField)(({ theme }) => ({
+const FormTextField = styled(TextField)(({ theme }: any) => ({
   marginTop: theme.spacing(1.25),
   marginBottom: theme.spacing(1.25),
   backgroundColor: theme.palette.grey[0],
@@ -53,44 +54,77 @@ const FormButton = styled(Button)(({ theme }) => ({
 const Register = () => {
   const theme = useTheme();
   const classes = useStyles(theme);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [userName, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [givenName, setGivenName] = useState('');
+  const [familyName, setFamilyName] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
   const history = useHistory();
   const dispatch = useAppDispatch();
   const error = useAppSelector((state) => state.auth.error);
-  const user = useAppSelector((state) => state.auth.user);
   const isLoading = useAppSelector((state) => state.auth.isLoading);
-  const alphanumeric = '/((^[0-9]+[a-z]+)|(^[a-z]+[0-9]+))+[0-9a-z]+$/i';
+  const alphanumeric = /[a-zA-Z0-9]+/g;
 
-  // FIXME: make sure username is alphanumeric
   const onRegister = () => {
-    const userName = document.getElementById('username').value;
-    const email = document.getElementById('email').value;
-    const givenName = document.getElementById('givenName').value;
-    const familyName = document.getElementById('familyName').value;
-    const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
-    const minLength = 8;
-    if (password === confirmPassword && password.length >= minLength) {
-      dispatch(register({
-        email,
-        userName,
-        familyName,
-        givenName,
-        password,
-        phone: '-',
-        address: '-',
-      }));
-      // dispatch(cleanupError());
-      // if (user) {
-      //   history.push('/login');
-      // }
-    } else {
-      dispatch(registerFailed({ err: 'Please ensure passwords are 7 characters and identical' }));
+    if (userName === '' || givenName === '' || familyName === '') {
+      dispatch(registerFailed(
+        { err: 'Ensure all fields are filled in.' },
+      ));
+      return;
     }
+
+    const minLength = 8;
+    if (password.length < minLength) {
+      dispatch(registerFailed(
+        { err: 'Passwords must be at least 8 characters' },
+      ));
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      dispatch(registerFailed(
+        { err: 'Ensure the passwords are identical.' },
+      ));
+      return;
+    }
+
+    if (!alphanumeric.test(userName)) {
+      dispatch(registerFailed(
+        { err: 'Ensure username is alphanumeric.' },
+      ));
+      return;
+    }
+
+    dispatch(cleanupError());
+
+    dispatch(register({
+      email,
+      userName,
+      familyName,
+      givenName,
+      password,
+      phone: '-',
+      address: '-',
+    })).then(() => {
+      setIsModalOpen(true);
+    });
   };
 
   return (
     <Page title="Register - OneThread">
       <Box className={classes.root}>
+        <MessageModal
+          isModalOpen={isModalOpen}
+          setIsModalOpen={setIsModalOpen}
+          title="Confirm registration"
+          message={`If your username was available
+            a registration confirmation link will be sent to ${email}.`}
+          buttonText="Go to Login page"
+          buttonOnClick={() => history.push('/login')}
+        />
         <Box className={classes.signInLink}>
           Already have an account?
           {' '}
@@ -104,18 +138,20 @@ const Register = () => {
           <Box className={classes.form}>
             <Box textAlign="center" paddingBottom={theme.spacing(1)}>
               <img src={SpiderIcon} alt="spider" width="100" height="100" />
-              <Logo dark />
+              <Logo darktext />
             </Box>
             <FormTextField
               id="username"
               label="Username"
               variant="outlined"
+              onChange={(e: any) => setUsername(e.target.value)}
               required
             />
             <FormTextField
               id="email"
               label="Email Address"
               variant="outlined"
+              onChange={(e: any) => setEmail(e.target.value)}
               type="email"
               required
             />
@@ -126,6 +162,7 @@ const Register = () => {
                   id="givenName"
                   label="Given Name"
                   variant="outlined"
+                  onChange={(e: any) => setGivenName(e.target.value)}
                   required
                 />
               </Box>
@@ -135,6 +172,7 @@ const Register = () => {
                   id="familyName"
                   label="Family Name"
                   variant="outlined"
+                  onChange={(e: any) => setFamilyName(e.target.value)}
                   required
                 />
               </Box>
@@ -143,6 +181,7 @@ const Register = () => {
               id="password"
               label="Password"
               variant="outlined"
+              onChange={(e: any) => setPassword(e.target.value)}
               type="password"
               required
             />
@@ -150,6 +189,7 @@ const Register = () => {
               id="confirmPassword"
               label="Confirm Password"
               variant="outlined"
+              onChange={(e: any) => setConfirmPassword(e.target.value)}
               type="password"
               required
             />

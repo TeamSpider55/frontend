@@ -1,4 +1,3 @@
-import { useHistory } from 'react-router-dom';
 import { createAction } from '@reduxjs/toolkit';
 import AuthService, { LoginInput, RegisterInput } from '../../services/AuthService';
 import UserService from '../../services/UserService';
@@ -80,16 +79,6 @@ export const register = ({
   phone,
   address,
 }: RegisterInput) => async (dispatch: AppDispatch) => {
-  console.log({
-    email,
-    userName,
-    familyName,
-    givenName,
-    password,
-    phone,
-    address,
-  });
-
   dispatch(registerStarted());
   try {
     await AuthService.register({

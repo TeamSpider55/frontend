@@ -21,7 +21,7 @@ let CONTACTS: Array<Contact> = [
     note: 'note',
     role: 'Student',
     organisation: 'University of Adelaide',
-    dateAdded: DATETIME_FORMAT.format(Date.now()),
+    dateAdded: new Date().toISOString(),
   },
   {
     contactId: '2',
@@ -37,7 +37,7 @@ let CONTACTS: Array<Contact> = [
     note: 'note',
     role: 'Developer',
     organisation: 'Jaybird',
-    dateAdded: DATETIME_FORMAT.format(Date.now()),
+    dateAdded: new Date().toISOString(),
   },
   {
     contactId: '3',
@@ -53,7 +53,7 @@ let CONTACTS: Array<Contact> = [
     note: 'note',
     role: 'Ex-CEO',
     organisation: 'Button Pushers Inc.',
-    dateAdded: DATETIME_FORMAT.format(Date.now()),
+    dateAdded: new Date().toISOString(),
   },
   ...[...Array(10)].map((_, index) => {
     const i = index + 3;
@@ -72,7 +72,7 @@ let CONTACTS: Array<Contact> = [
       note: 'note',
       role: 'Product Manager',
       organisation: 'Microsoft',
-      dateAdded: DATETIME_FORMAT.format(Date.now()),
+      dateAdded: new Date().toISOString(),
     };
   }),
   ...[...Array(10)].map((_, index) => {
@@ -92,7 +92,7 @@ let CONTACTS: Array<Contact> = [
       note: 'note',
       role: 'Software Engineer',
       organisation: 'Apple',
-      dateAdded: DATETIME_FORMAT.format(Date.now()),
+      dateAdded: new Date().toISOString(),
     };
   }),
 ];
@@ -347,7 +347,7 @@ class ContactService {
         note: 'note',
         role: 'Software Engineer',
         organisation: 'Apple',
-        dateAdded: DATETIME_FORMAT.format(Date.now()),
+        dateAdded: new Date().toISOString(),
       };
     });
   }

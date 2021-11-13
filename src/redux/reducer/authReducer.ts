@@ -1,5 +1,4 @@
 import { createReducer } from '@reduxjs/toolkit';
-import { cleanup } from '@testing-library/react';
 import { User } from '../../dto/User';
 import {
   loginStarted,

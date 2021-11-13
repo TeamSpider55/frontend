@@ -5,7 +5,6 @@ describe('Contacts List', () => {
   });
 
   it('can be navigated to via the sidebar', () => {
-    cy.visit('/');
     cy.get('ul').find('a').contains('Contacts').click();
   });
 
