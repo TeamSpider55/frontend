@@ -225,7 +225,16 @@ const ContactList = () => {
             deleteMany={onDeleteContacts}
           />
           {filteredContacts === null || isLoading ? (
-            <Spinner />
+            <Box sx={{
+              display: 'flex',
+              height: '100%',
+              justifyContent: 'center',
+              alignItems: 'center',
+              paddingY: theme.spacing(5),
+            }}
+            >
+              <Spinner dark />
+            </Box>
           ) : (
             <Box>
               <TableContainer>

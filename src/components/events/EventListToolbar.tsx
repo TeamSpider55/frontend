@@ -77,15 +77,14 @@ const EventListToolbar = (
       )}
 
       {selected.length > 0 ? (
-        // FIXME: label this button Cancel event and change the icon
         <Box>
-          <Tooltip title="Delete">
+          {/* <Tooltip title="Delete">
             <IconButton
               onClick={() => deleteMany(selected)}
             >
               <DeleteIcon />
             </IconButton>
-          </Tooltip>
+          </Tooltip> */}
         </Box>
       ) : null}
     </Box>

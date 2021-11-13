@@ -21,6 +21,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DesktopDateTimePicker from '@mui/lab/DateTimePicker';
+import Spinner from '../components/Spinner';
 import { useAppDispatch, useAppSelector } from '../redux/store';
 import { deleteEvent, getEvents, updateEvent } from '../redux/action/eventAction';
 import { getContacts } from '../redux/action/contactAction';
@@ -186,7 +187,8 @@ const useStyles = makeStyles((theme: any) => ({
 }));
 
 const getParticipants = (event: Event, contacts: Array<Contact>) => {
-  return contacts.filter((c) => event.contacts.includes(c.contactId));
+  return contacts
+    .filter((c) => event.contacts.map((x) => x.id).includes(c.contactId));
 };
 
 const EventDetail = () => {
@@ -274,7 +276,10 @@ const EventDetail = () => {
       start: startDateTime,
       end: endDateTime,
       note: description,
-      contacts: participants.map((p) => p.contactId),
+      contacts: participants.map((p) => ({
+        id: p.contactId,
+        status: 'confirmed',
+      })),
     }));
   };
   const removeEvent = () => {
@@ -510,7 +515,17 @@ const EventDetail = () => {
             />
           </Box>
         </>
-      ) : <Box>LOADING</Box>
+      ) : (
+        <Box sx={{
+          display: 'flex',
+          height: '100%',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+        >
+          <Spinner dark />
+        </Box>
+      )
       }
     </>
   );

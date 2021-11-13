@@ -1,4 +1,8 @@
-import { AddEventInput, Event, UpdateEventInput } from '../dto/Event';
+import axios from 'axios';
+import API_URL from '../util/constants';
+import {
+  AddEventInput, Event, EventApiResult, UpdateEventInput,
+} from '../dto/Event';
 
 let EVENTS: Array<Event> = [...Array(20)].map((_, i) => {
   const idx = i.toString();
@@ -11,12 +15,84 @@ let EVENTS: Array<Event> = [...Array(20)].map((_, i) => {
     end: start + 3600000,
     type: 'collaborate',
     tags: ['1', '2'],
-    contacts: ['1', '3  '],
+    contacts: [
+      { id: '1', status: 'confirmed' },
+      { id: '3', status: 'pending' },
+    ],
   };
 });
 
 class EventService {
   static async getEvents(): Promise<Array<Event>> {
+    const today = Date.now();
+
+    const result = [...Array(100 * 2)].flatMap(async (_, d) => {
+      const dayIdx = d - 100;
+      const time = today + dayIdx * 24 * 3600000;
+
+      const eventResult = await axios.get(
+        `${API_URL}/event/retrieve/many/${time}`,
+        { withCredentials: true },
+      );
+      if (eventResult.data.data.statusCode === false) {
+        return [];
+      }
+
+      return (eventResult.data.data.data as any).map(
+        (e: EventApiResult & {_id : string}) => {
+          return {
+            eventId: e._id,
+            title: e.title,
+            note: e.note,
+            start: e.start,
+            end: e.end,
+            type: e.type,
+            tags: e.tags,
+            contacts: [
+              ...e.contacts.confirm.map((id) => ({ id, status: 'confirmed' })),
+              ...e.contacts.pending.map((id) => ({ id, status: 'pending' })),
+            ],
+          };
+        },
+      );
+    });
+
+    return (await Promise.all(result) as Array<Array<Event>>).flat(1);
+  }
+
+  static async addEvent({
+    title,
+    start,
+    end,
+  }: AddEventInput): Promise<{ id: string, events: Array<Event>}> {
+    const result = await axios.post(`${API_URL}/event/add`, {
+      title,
+      note: '',
+      start,
+      end,
+      contacts: {
+        confirm: [],
+        pending: [],
+      },
+      type: 'personal',
+    }, { withCredentials: true });
+
+    const events = await this.getEvents();
+
+    if ((result.data as any).status.statusCode === 400) {
+      return {
+        id: '',
+        events,
+      };
+    }
+
+    return {
+      id: (result.data as any).status.data,
+      events,
+    };
+  }
+
+  static async getEventsDummy(): Promise<Array<Event>> {
     return EVENTS;
   }
 
@@ -30,7 +106,7 @@ class EventService {
     return EVENTS;
   }
 
-  static async addEvent({
+  static async addEventDummy({
     title,
     start,
     end,

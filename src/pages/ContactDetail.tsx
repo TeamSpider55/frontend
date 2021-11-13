@@ -638,7 +638,7 @@ const ContactDetail = () => {
                 }
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                   <Button
-                    sx={{ marginTop: theme.spacing(1) }}
+                    sx={{ marginY: theme.spacing(2) }}
                     variant="contained"
                     color="primary"
                     disabled={!editModeOn}
@@ -652,7 +652,17 @@ const ContactDetail = () => {
               </div>
             </div>
           </>
-        ) : <Box><Spinner /></Box>
+        ) : (
+          <Box sx={{
+            display: 'flex',
+            height: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+          >
+            <Spinner dark />
+          </Box>
+        )
       }
     </>
   );

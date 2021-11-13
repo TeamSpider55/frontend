@@ -7,7 +7,6 @@ import {
   Card,
   Table,
   Button,
-  Checkbox,
   TableRow,
   TableBody,
   TableCell,
@@ -18,12 +17,16 @@ import {
   Box,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import addHours from 'date-fns/addHours';
 import Page from '../components/Page';
 import MoreMenu from '../components/MoreMenu';
 import EventListToolbar from '../components/events/EventListToolbar';
-import TableHeader from '../components/TableHeader';
+import PlainTableHeader from '../components/PlainTableHeader';
+import Spinner from '../components/Spinner';
 import DateSearchNotFound from '../components/events/DateSearchNotFound';
 import DateSearchInvalid from '../components/events/DateSearchInvalid';
+import AddEventModal from '../components/events/AddEventModal';
+import MessageModal from '../components/MessageModal';
 import getComparator from '../util/comparator';
 import { Event, DateRange } from '../dto/Event';
 import { useAppDispatch, useAppSelector } from '../redux/store';
@@ -91,6 +94,8 @@ const EventList = () => {
   const [order, setOrder] = useState<'asc'|'desc'>('asc');
   const [orderBy, setOrderBy] = useState('title');
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
 
   const dispatch = useAppDispatch();
   const events = useAppSelector((state) => state.event.events);
@@ -100,6 +105,13 @@ const EventList = () => {
     {
       from: new Date(now.getFullYear(), now.getMonth(), now.getDate()),
       to: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 14),
+    },
+  );
+
+  const [newEventDateTime, setNewEventDateTime] = useState<DateRange>(
+    {
+      from: new Date(),
+      to: addHours(new Date(), 1),
     },
   );
 
@@ -139,11 +151,15 @@ const EventList = () => {
     if (events === null) return;
     dispatch(addEvent({
       title: 'new event',
-      start: Date.now(),
-      end: Date.now() + 3600000,
+      start: newEventDateTime.from.getTime(),
+      end: newEventDateTime.to.getTime(),
     })).then((newEventId) => {
       if (newEventId !== null) {
-        goToEvent(newEventId);
+        if (newEventId === '') {
+          setIsErrorModalOpen(true);
+        } else {
+          goToEvent(newEventId);
+        }
       }
     });
   };
@@ -207,6 +223,25 @@ const EventList = () => {
   return (
     <Page title="Events - OneThread">
       <StyledContainer theme={theme}>
+        <MessageModal
+          isModalOpen={isErrorModalOpen}
+          setIsModalOpen={setIsErrorModalOpen}
+          title="Failed to add event"
+          message="Ensure events do not overlap!"
+          buttonText="OK"
+          buttonOnClick={() => setIsErrorModalOpen(false)}
+        />
+        <AddEventModal
+          isModalOpen={isModalOpen}
+          setIsModalOpen={setIsModalOpen}
+          newEventDateTime={newEventDateTime}
+          setNewEventDateTime={setNewEventDateTime}
+          buttonOnClick={() => {
+            if (events === null) return;
+            onAddEvent();
+            setIsModalOpen(false);
+          }}
+        />
         <Box
           display="flex"
           justifyContent="space-between"
@@ -222,11 +257,15 @@ const EventList = () => {
             color="primary"
             component={RouterLink}
             to="#"
-            onClick={onAddEvent}
+            onClick={() => setIsModalOpen(true)}
           >
             <AddIcon />
             ADD NEW EVENT
           </Button>
+        </Box>
+        <Box marginBottom={theme.spacing(2)}>
+          Only events stored 100 days before and after today will be
+          accessible through this interface.
         </Box>
         <Card>
           <EventListToolbar
@@ -236,14 +275,21 @@ const EventList = () => {
             setDateRange={setDateRange}
           />
           {filteredEvents === null ? (
-            <Typography variant="subtitle2" noWrap>
-              Loading
-            </Typography>
+            <Box sx={{
+              display: 'flex',
+              height: '100%',
+              justifyContent: 'center',
+              alignItems: 'center',
+              paddingY: theme.spacing(5),
+            }}
+            >
+              <Spinner dark />
+            </Box>
           ) : (
             <Box>
               <TableContainer>
                 <Table>
-                  <TableHeader
+                  <PlainTableHeader
                     order={order}
                     orderBy={orderBy}
                     headLabel={TABLE_HEAD}
@@ -279,14 +325,7 @@ const EventList = () => {
                             selected={isItemSelected}
                             aria-checked={isItemSelected}
                           >
-                            <TableCell padding="checkbox">
-                              <Checkbox
-                                checked={isItemSelected}
-                                onChange={
-                                  (event) => handleClick(event, eventId)
-                                }
-                              />
-                            </TableCell>
+                            <TableCell padding="checkbox" />
                             <TableCell
                               component="th"
                               scope="row"
@@ -319,7 +358,7 @@ const EventList = () => {
                               <AvatarGroup max={4}>
                                 {
                                   contacts.map((c) => (
-                                    <Avatar alt={c} />
+                                    <Avatar alt={c.id} />
                                   ))
                                 }
                               </AvatarGroup>

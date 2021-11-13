@@ -40,10 +40,10 @@ const MessageModal = ({
         <Typography id="modal-modal-title" variant="h6" component="h2">
           {title}
         </Typography>
-        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+        <Typography id="modal-modal-description" sx={{ my: 2 }}>
           {message}
         </Typography>
-        <Button onClick={buttonOnClick}>
+        <Button onClick={buttonOnClick} variant="contained">
           {buttonText}
         </Button>
       </Box>
