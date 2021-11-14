@@ -67,11 +67,11 @@ class EventService {
         `${API_URL}/event/retrieve/many/${time}`,
         { withCredentials: true },
       );
-      if (eventResult.data.data.statusCode === false) {
+      if ((eventResult.data as any).data.statusCode === false) {
         return [];
       }
 
-      return (eventResult.data.data.data as any).map(
+      return (eventResult.data as any).data.data.map(
         (e: EventApiResult & {_id : string}) => {
           return {
             eventId: e._id,
