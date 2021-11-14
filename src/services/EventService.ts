@@ -52,7 +52,7 @@ class EventService {
           ],
         };
       },
-    );
+    ));
     return res;
   }
 
