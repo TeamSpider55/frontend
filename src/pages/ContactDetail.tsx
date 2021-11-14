@@ -263,6 +263,7 @@ const ContactDetail = () => {
   const { contactId } = useParams<{ contactId: string }>();
 
   const dispatch = useAppDispatch();
+  const isLoading = useAppSelector((state) => state.auth.isLoading);
   const contact = useAppSelector((state) => {
     return state.contact.contacts?.find((c) => c.contactId === contactId);
   });
@@ -371,6 +372,7 @@ const ContactDetail = () => {
                     marginRight: theme.spacing(1),
                     backgroundColor: theme.palette.error.dark,
                   }}
+                  disabled={isLoading}
                 >
                   <ClearIcon />
                   CANCEL
@@ -382,6 +384,7 @@ const ContactDetail = () => {
                   color="primary"
                   onClick={editModeConfirm}
                   style={{ backgroundColor: theme.palette.success.dark }}
+                  disabled={isLoading}
                 >
                   <DoneIcon />
                   CONFIRM

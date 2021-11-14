@@ -13,7 +13,6 @@ interface Props {
   rowCount: number;
   headLabel: any[];
   numSelected: number;
-  onRequestSort: any;
   onSelectAllClick: any;
 }
 
@@ -23,12 +22,11 @@ const PlainTableHeader = ({
   rowCount,
   headLabel,
   numSelected,
-  onRequestSort,
   onSelectAllClick,
 }: Props) => {
-  const createSortHandler = (property: any) => (event: any) => {
-    onRequestSort(event, property);
-  };
+  // const createSortHandler = (property: any) => (event: any) => {
+  //   onRequestSort(event, property);
+  // };
 
   return (
     <TableHead>

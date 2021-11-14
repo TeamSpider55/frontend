@@ -26,8 +26,8 @@ class EventService {
   static async getEvents(): Promise<Array<Event>> {
     const today = Date.now();
 
-    const result = [...Array(100 * 2)].flatMap(async (_, d) => {
-      const dayIdx = d - 100;
+    const result = [...Array(30 * 2)].flatMap(async (_, d) => {
+      const dayIdx = d - 30;
       const time = today + dayIdx * 24 * 3600000;
 
       const eventResult = await axios.get(
@@ -57,7 +57,8 @@ class EventService {
       );
     });
 
-    return (await Promise.all(result) as Array<Array<Event>>).flat(1);
+    const res = (await Promise.all(result) as Array<Array<Event>>).flat(1);
+    return res;
   }
 
   static async addEvent({
@@ -97,11 +98,36 @@ class EventService {
   }
 
   static async deleteEvent(id: string): Promise<Array<Event>> {
+    // await axios.post('/contact/deleteContact', {
+    const oldEvents = await this.getEvents();
+    const toDelete = oldEvents.find((e) => e.eventId === id);
+    if (toDelete === undefined) return oldEvents;
+
+    await axios.post(`${API_URL}/event/remove`, {
+      start: toDelete.start,
+      end: toDelete.end,
+    }, { withCredentials: true });
+
+    return oldEvents.filter((e) => e.eventId !== toDelete.eventId);
+  }
+
+  static async deleteEvents(ids: string[]): Promise<Array<Event>> {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const id of ids) {
+      // eslint-disable-next-line no-await-in-loop
+      await this.deleteEvent(id);
+    }
+
+    const events = await this.getEvents();
+    return events;
+  }
+
+  static async deleteEventDummy(id: string): Promise<Array<Event>> {
     EVENTS = EVENTS.filter((event) => event.eventId !== id);
     return EVENTS;
   }
 
-  static async deleteEvents(ids: string[]): Promise<Array<Event>> {
+  static async deleteEventsDummy(ids: string[]): Promise<Array<Event>> {
     EVENTS = EVENTS.filter((e) => !ids.includes(e.eventId));
     return EVENTS;
   }
@@ -134,6 +160,50 @@ class EventService {
   }
 
   static async updateEvent({
+    eventId: _eventId,
+    title,
+    note,
+    start,
+    end,
+    type,
+    tags: _tags,
+    contacts,
+  }: UpdateEventInput): Promise<Array<Event>> {
+    const oldEventResult = await axios.get(
+      `${API_URL}/event/retrieve/single/${start}/${end}`,
+      { withCredentials: true },
+    );
+
+    if (oldEventResult.status !== 200) {
+      return this.getEvents();
+    }
+
+    const e = (oldEventResult.data as any).data as EventApiResult & { _id: string };
+    await axios.post(`${API_URL}/event/modify/content`, {
+      title: title !== undefined ? title : e.title,
+      note: note !== undefined ? note : e.note,
+      start: start !== undefined ? start : e.start,
+      end: end !== undefined ? end : e.end,
+      type: type !== undefined ? type : e.type,
+    }, { withCredentials: true });
+
+    if (contacts !== undefined) {
+      // eslint-disable-next-line no-restricted-syntax
+      for (const contact of contacts) {
+        // eslint-disable-next-line no-await-in-loop
+        await axios.post(`${API_URL}/participant/pending/`, {
+          start,
+          end,
+          email: contact.id,
+        }, { withCredentials: true });
+      }
+    }
+
+    const events = await this.getEvents();
+    return events;
+  }
+
+  static async updateEventDummy({
     eventId,
     title,
     note,

@@ -212,6 +212,7 @@ const ContactList = () => {
             component={RouterLink}
             onClick={onAddContact}
             to="#"
+            disabled={contacts === null}
           >
             <AddIcon />
             ADD NEW CONTACT

@@ -78,13 +78,13 @@ const EventListToolbar = (
 
       {selected.length > 0 ? (
         <Box>
-          {/* <Tooltip title="Delete">
+          <Tooltip title="Delete">
             <IconButton
               onClick={() => deleteMany(selected)}
             >
               <DeleteIcon />
             </IconButton>
-          </Tooltip> */}
+          </Tooltip>
         </Box>
       ) : null}
     </Box>

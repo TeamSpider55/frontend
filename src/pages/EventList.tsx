@@ -15,6 +15,7 @@ import {
   TableContainer,
   TablePagination,
   Box,
+  Checkbox,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import addHours from 'date-fns/addHours';
@@ -91,8 +92,8 @@ const EventList = () => {
 
   const [page, setPage] = useState(0);
   const [selected, setSelected] = useState<string[]>([]);
-  const [order, setOrder] = useState<'asc'|'desc'>('asc');
-  const [orderBy, setOrderBy] = useState('title');
+  const [order] = useState<'asc'|'desc'>('asc');
+  const [orderBy] = useState('title');
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
@@ -162,12 +163,6 @@ const EventList = () => {
         }
       }
     });
-  };
-
-  const handleRequestSort = (event: any, property: string) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(property);
   };
 
   const handleSelectAllClick = () => {
@@ -258,6 +253,7 @@ const EventList = () => {
             component={RouterLink}
             to="#"
             onClick={() => setIsModalOpen(true)}
+            disabled={events === null}
           >
             <AddIcon />
             ADD NEW EVENT
@@ -295,7 +291,6 @@ const EventList = () => {
                     headLabel={TABLE_HEAD}
                     rowCount={filteredEvents.length}
                     numSelected={selected.length}
-                    onRequestSort={handleRequestSort}
                     onSelectAllClick={handleSelectAllClick}
                   />
                   <TableBody>
@@ -325,7 +320,12 @@ const EventList = () => {
                             selected={isItemSelected}
                             aria-checked={isItemSelected}
                           >
-                            <TableCell padding="checkbox" />
+                            <TableCell padding="checkbox">
+                              <Checkbox
+                                checked={isItemSelected}
+                                onChange={(event) => handleClick(event, eventId)}
+                              />
+                            </TableCell>
                             <TableCell
                               component="th"
                               scope="row"
