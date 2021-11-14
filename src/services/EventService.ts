@@ -32,11 +32,11 @@ class EventService {
       `${API_URL}/event/retrieve/range/${start}/${end}`,
       { withCredentials: true },
     );
-    if (eventResult.data.data.statusCode === false) {
+    if ((eventResult.data as any).data.statusCode === false) {
       return [];
     }
 
-    const res = (eventResult.data.data as any).map(
+    const res = ((eventResult.data as any).data.map(
       (e: EventApiResult & {_id : string}) => {
         return {
           eventId: e._id,
