@@ -25,6 +25,39 @@ let EVENTS: Array<Event> = [...Array(20)].map((_, i) => {
 class EventService {
   static async getEvents(): Promise<Array<Event>> {
     const today = Date.now();
+    const start = today - 100 * 24 * 3600000;
+    const end = today + 100 * 24 * 3600000;
+
+    const eventResult = await axios.get(
+      `${API_URL}/event/retrieve/range/${start}/${end}`,
+      { withCredentials: true },
+    );
+    if (eventResult.data.data.statusCode === false) {
+      return [];
+    }
+
+    const res = (eventResult.data.data as any).map(
+      (e: EventApiResult & {_id : string}) => {
+        return {
+          eventId: e._id,
+          title: e.title,
+          note: e.note,
+          start: e.start,
+          end: e.end,
+          type: e.type,
+          tags: e.tags,
+          contacts: [
+            ...e.contacts.confirm.map((id) => ({ id, status: 'confirmed' })),
+            ...e.contacts.pending.map((id) => ({ id, status: 'pending' })),
+          ],
+        };
+      },
+    );
+    return res;
+  }
+
+  static async getEventsSlow(): Promise<Array<Event>> {
+    const today = Date.now();
 
     const result = [...Array(30 * 2)].flatMap(async (_, d) => {
       const dayIdx = d - 30;

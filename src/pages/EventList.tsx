@@ -352,13 +352,10 @@ const EventList = () => {
                               </Box>
                             </TableCell>
                             <TableCell onClick={() => goToEvent(eventId)}>
-                              {/* FIXME: hardcoded avatars and
-                                  non-functioning sort
-                              */}
                               <AvatarGroup max={4}>
                                 {
                                   contacts.map((c) => (
-                                    <Avatar alt={c.id} />
+                                    <Avatar alt={c.id} key={c.id} />
                                   ))
                                 }
                               </AvatarGroup>

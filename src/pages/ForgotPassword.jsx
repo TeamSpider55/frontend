@@ -68,7 +68,6 @@ const ForgotPassword = () => {
               label="Email Address"
               variant="outlined"
               type="email"
-              // FIXME: required field
             />
             <FormButton
               variant="contained"
