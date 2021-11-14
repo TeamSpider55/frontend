@@ -25,7 +25,7 @@ let EVENTS: Array<Event> = [...Array(20)].map((_, i) => {
 class EventService {
   static async getEvents(): Promise<Array<Event>> {
     const today = Date.now();
-    const start = today - 100 * 24 * 3600000;
+    const start = today - 30 * 24 * 3600000;
     const end = today + 100 * 24 * 3600000;
 
     const eventResult = await axios.get(
