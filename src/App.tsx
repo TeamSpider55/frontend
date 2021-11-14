@@ -11,6 +11,7 @@ import ContactDetail from './pages/ContactDetail';
 import ForgotPassword from './pages/ForgotPassword';
 import ContactList from './pages/ContactList';
 import EventList from './pages/EventList';
+import NotesList from './pages/NotesList';
 import EventDetail from './pages/EventDetail';
 import Login from './pages/Login';
 import PageNotFound from './pages/PageNotFound';
@@ -67,11 +68,11 @@ function App() {
               <EventList />
             </DashboardLayout>
           </Route>
-          <Route exact path="/events/:eventId">
+          <PrivateRoute exact path="/events/:eventId">
             <DashboardLayout showHeaderBar showSideBar>
               <EventDetail />
             </DashboardLayout>
-          </Route>
+          </PrivateRoute>
           <Route
             path="/login"
             render={() => <Login />}
@@ -87,19 +88,19 @@ function App() {
             }}
             />
           </Route>
-          <Route exact path="/contacts/:contactId">
+          <PrivateRoute exact path="/contacts/:contactId">
             <DashboardLayout showHeaderBar showSideBar>
               <ContactDetail />
             </DashboardLayout>
-          </Route>
+          </PrivateRoute>
           <Route path="/forgot-password">
             <ForgotPassword />
           </Route>
-          <Route path="/memos">
+          <PrivateRoute path="/notes">
             <DashboardLayout showHeaderBar showSideBar>
-              <PageNotFound />
+              <NotesList />
             </DashboardLayout>
-          </Route>
+          </PrivateRoute>
           <PrivateRoute path="/account">
             <DashboardLayout showHeaderBar showSideBar={false}>
               <Account />
@@ -110,7 +111,9 @@ function App() {
           </Route>
           <Route>
             {/* matches any other route: page for 404 error */}
-            <PageNotFound />
+            <DashboardLayout showHeaderBar showSideBar={false}>
+              <PageNotFound />
+            </DashboardLayout>
           </Route>
         </Switch>
       </Router>

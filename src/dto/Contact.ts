@@ -24,6 +24,8 @@ export interface Contact {
 export interface Note {
   time: string;
   content: string;
+  contactId: string;
+  relatedTo?: string;
 }
 
 export interface AddContactInput {

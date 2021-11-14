@@ -232,6 +232,9 @@ const ContactDetail = () => {
   const [description, setDescription] = useState('');
   const [notes, setNotes] = useState<Array<Note>>([]);
 
+  // check url for a path param indicating which contact is to be fetched
+  const { contactId } = useParams<{ contactId: string }>();
+
   const addNote = () => {
     const time = formatISO9075(new Date());
     const idx = notes.findIndex((n: Note) => n.time === time);
@@ -239,6 +242,7 @@ const ContactDetail = () => {
     setNotes([...notes, {
       time,
       content: ' ',
+      contactId,
     }]);
   };
 
@@ -249,6 +253,7 @@ const ContactDetail = () => {
         return {
           time,
           content,
+          contactId,
         };
       }
       return note;
@@ -258,9 +263,6 @@ const ContactDetail = () => {
   const deleteNote = (time: string) => {
     setNotes([...notes.filter((note) => note.time !== time)]);
   };
-
-  // check url for a path param indicating which contact is to be fetched
-  const { contactId } = useParams<{ contactId: string }>();
 
   const dispatch = useAppDispatch();
   const isLoading = useAppSelector((state) => state.auth.isLoading);

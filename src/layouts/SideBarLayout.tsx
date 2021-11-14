@@ -9,6 +9,7 @@ import ListItemText from '@mui/material/ListItemText';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import ContactsIcon from '@mui/icons-material/Contacts';
+import NoteIcon from '@mui/icons-material/Note';
 import { useTheme, Theme } from '@mui/material';
 
 const DRAWER_WIDTH = 240;
@@ -48,11 +49,11 @@ const sidebarItems = [
     icon: <ContactsIcon />,
     to: '/contacts',
   },
-  // {
-  //   text: 'Memos',
-  //   icon: <NoteIcon />,
-  //   to: '/memos',
-  // },
+  {
+    text: 'Notes',
+    icon: <NoteIcon />,
+    to: '/notes',
+  },
 ];
 
 const SidebarContent = () => {
