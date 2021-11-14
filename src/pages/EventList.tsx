@@ -260,7 +260,7 @@ const EventList = () => {
           </Button>
         </Box>
         <Box marginBottom={theme.spacing(2)}>
-          Only events stored 30 days before and 100 days after today will be
+          Only events stored 14 days before and 70 days after today will be
           accessible through this interface.
         </Box>
         <Card>
