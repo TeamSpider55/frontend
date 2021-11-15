@@ -1,0 +1,80 @@
+import { createReducer } from '@reduxjs/toolkit';
+import { Contact } from '../../dto/Contact';
+import {
+  getContactsStarted,
+  getContactsSucceeded,
+  getContactsFailed,
+  deleteContactsStarted,
+  deleteContactsSucceeded,
+  deleteContactsFailed,
+  addContactStarted,
+  addContactSucceeded,
+  addContactFailed,
+  updateContactStarted,
+  updateContactSucceeded,
+  updateContactFailed,
+} from '../action/contactAction';
+
+interface ContactState {
+  isLoading: boolean;
+  contacts: Array<Contact> | null;
+  error: string | null;
+}
+
+const initialState: ContactState = {
+  isLoading: true,
+  contacts: null,
+  error: null,
+};
+
+export default createReducer(initialState, (builder) => {
+  builder
+    .addCase(getContactsStarted, (state, _action) => {
+      state.isLoading = true;
+      state.contacts = null;
+    })
+    .addCase(getContactsSucceeded, (state, action) => {
+      state.isLoading = false;
+      state.contacts = action.payload.contacts;
+    })
+    .addCase(getContactsFailed, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload.err;
+    })
+    .addCase(deleteContactsStarted, (state, _action) => {
+      state.isLoading = true;
+      state.contacts = null;
+    })
+    .addCase(deleteContactsSucceeded, (state, action) => {
+      state.isLoading = false;
+      state.contacts = action.payload.contacts;
+    })
+    .addCase(deleteContactsFailed, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload.err;
+    })
+    .addCase(addContactStarted, (state, _action) => {
+      state.isLoading = true;
+      state.contacts = null;
+    })
+    .addCase(addContactSucceeded, (state, action) => {
+      state.isLoading = false;
+      state.contacts = action.payload.contacts;
+    })
+    .addCase(addContactFailed, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload.err;
+    })
+    .addCase(updateContactStarted, (state, _action) => {
+      state.isLoading = true;
+      state.contacts = null;
+    })
+    .addCase(updateContactSucceeded, (state, action) => {
+      state.isLoading = false;
+      state.contacts = action.payload.contacts;
+    })
+    .addCase(updateContactFailed, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload.err;
+    });
+});

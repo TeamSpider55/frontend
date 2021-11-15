@@ -1,16 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  Button, Box, TextField, Link,
+  Button, Box, TextField, Link, Alert,
 } from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
+import { useHistory, Link as RouterLink } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
 import { styled, useTheme } from '@mui/material/styles';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import Logo from '../components/Logo';
+import Spinner from '../components/Spinner';
 import Page from '../components/Page';
 import SpiderIcon from '../assets/spider1.png';
+import { login, cleanupError } from '../redux/action/authAction';
+import { useAppDispatch, useAppSelector } from '../redux/store';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: any) => ({
   root: {
     minHeight: '100vh',
     backgroundColor: theme.palette.background.neutral,
@@ -41,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const FormTextField = styled(TextField)(({ theme }) => ({
+const FormTextField = styled(TextField)(({ theme }: any) => ({
   marginTop: theme.spacing(1.25),
   marginBottom: theme.spacing(1.25),
   backgroundColor: theme.palette.grey[0],
@@ -50,6 +53,25 @@ const FormTextField = styled(TextField)(({ theme }) => ({
 const Login = () => {
   const theme = useTheme();
   const classes = useStyles(theme);
+  const history = useHistory();
+
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const error = useAppSelector((state) => state.auth.error);
+  const user = useAppSelector((state) => state.auth.user);
+  const isLoading = useAppSelector((state) => state.auth.isLoading);
+
+  const dispatch = useAppDispatch();
+
+  const submitLogin = () => {
+    dispatch(login({ id: username, password }));
+  };
+
+  if (!isLoading && user) {
+    // user already logged in: redirect
+    dispatch(cleanupError());
+    history.push('/');
+  }
 
   return (
     <Page title="Login - OneThread">
@@ -67,26 +89,25 @@ const Login = () => {
           <Box className={classes.form}>
             <Box textAlign="center" paddingBottom={theme.spacing(1)}>
               <img src={SpiderIcon} alt="spider" width="100" height="100" />
-              <Logo dark />
+              <Logo darktext />
             </Box>
             <FormTextField
-              label="Email Address"
+              label="Username"
               variant="outlined"
-              type="email"
-              // FIXME: required field
+              onChange={(e: any) => setUsername(e.target.value)}
             />
             <FormTextField
               label="Password"
               variant="outlined"
               type="password"
-              // FIXME: required field
+              onChange={(e: any) => setPassword(e.target.value)}
             />
             <Box className={classes.forgotPasswordLink}>
               {' '}
               <Link component={RouterLink} to="/forgot-password">
                 <Box
                   display="inline"
-                  style={{ 'text-decoration': 'underline' }}
+                  // style={{ 'text-decoration': 'underline' }}
                   fontWeight={theme.typography.fontWeightRegular}
                   fontSize={theme.typography.caption.fontSize}
                   color={theme.palette.common.black}
@@ -95,13 +116,34 @@ const Login = () => {
                 </Box>
               </Link>
             </Box>
+            {
+              error
+                ? (
+                  <Alert
+                    severity="error"
+                    sx={{ marginBottom: theme.spacing(4) }}
+                  >
+                    { error }
+                  </Alert>
+                )
+                : null
+            }
             <Button
               className={classes.formButton}
               variant="contained"
               color="primary"
+              onClick={submitLogin}
             >
-              <ExitToAppIcon />
-              Login
+              {
+                isLoading
+                  ? <Spinner />
+                  : (
+                    <>
+                      <ExitToAppIcon />
+                      Login
+                    </>
+                  )
+              }
             </Button>
           </Box>
         </Box>

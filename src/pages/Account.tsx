@@ -3,13 +3,16 @@ import {
   Button, Box, TextField, Link,
 } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useHistory } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import LogoutIcon from '@mui/icons-material/Logout';
-import EditIcon from '@mui/icons-material/Edit';
 import Page from '../components/Page';
+import { useAppDispatch, useAppSelector } from '../redux/store';
+import { User } from '../dto/User';
+import { logout } from '../redux/action/authAction';
+import Spinner from '../components/Spinner';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: any) => ({
   root: {
     minHeight: '100vh',
     backgroundColor: theme.palette.grey[200],
@@ -67,28 +70,36 @@ const Account = () => {
   const theme = useTheme();
   const classes = useStyles(theme);
 
+  const history = useHistory();
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.auth.user) as User;
+  const isLoading = useAppSelector((state) => state.auth.isLoading);
+
+  const onLogout = () => {
+    dispatch(logout());
+  };
+
+  if (!user) {
+    history.push('/login');
+  }
+
   return (
     <Page title="Account - OneThread">
       <Box className={classes.root}>
         <Box textAlign="center" paddingTop={theme.spacing(10)}>
-          <img
-            className={classes.img}
-            src=""
-            alt="profile"
-            width="144"
-            height="144"
-          />
-          <h2>User full name</h2>
+          Currently logged in as:
+          <h2>
+            {user.userName}
+          </h2>
         </Box>
         <Box className={classes.formContainer}>
           <Box className={classes.form}>
             <Box className={classes.splitRow}>
-              <Box className={classes.formLabel}>Email</Box>
+              <Box className={classes.formLabel}>ID</Box>
               <TextField
                 className={classes.textField}
-                variant="standard"
-                defaultValue="e.male@gmail.com"
-                style={{ 'background-color': theme.palette.grey[200] }}
+                variant="outlined"
+                value={user.email}
                 inputProps={
                   {
                     readOnly: true,
@@ -97,32 +108,12 @@ const Account = () => {
               />
             </Box>
             <Box className={classes.splitRow}>
-              <Box className={classes.formLabel}>Phone Number</Box>
-              <TextField
-                className={classes.textField}
-                variant="outlined"
-                inputProps={{ maxLength: 12 }}
-              />
-            </Box>
-            <Box className={classes.splitRow}>
-              <Box className={classes.formLabel}>Location</Box>
-              <TextField
-                className={classes.textField}
-                variant="outlined"
-              />
-            </Box>
-            <Box className={classes.splitRow}>
               <Box className={classes.formLabel}>Given Name</Box>
               <TextField
                 className={classes.textField}
                 variant="outlined"
-              />
-            </Box>
-            <Box className={classes.splitRow}>
-              <Box className={classes.formLabel}>Middle Name</Box>
-              <TextField
-                className={classes.textField}
-                variant="outlined"
+                value={user.givenName}
+                inputProps={{ readOnly: true }}
               />
             </Box>
             <Box className={classes.splitRow}>
@@ -130,21 +121,16 @@ const Account = () => {
               <TextField
                 className={classes.textField}
                 variant="outlined"
-              />
-            </Box>
-            <Box className={classes.splitRow}>
-              <Box className={classes.formLabel}>Nickname</Box>
-              <TextField
-                className={classes.textField}
-                variant="outlined"
+                value={user.familyName}
+                inputProps={{ readOnly: true }}
               />
             </Box>
             <Box className={classes.changePasswordLink}>
               {' '}
-              <Link component={RouterLink} to="/forgot-password">
+              <Link component={RouterLink} to="/reset-password">
                 <Box
                   display="inline"
-                  style={{ 'text-decoration': 'underline' }}
+                  sx={{ textDecoration: 'underline' }}
                   fontWeight={theme.typography.fontWeightRegular}
                   fontSize={theme.typography.caption.fontSize}
                   color={theme.palette.common.black}
@@ -157,17 +143,18 @@ const Account = () => {
               className={classes.formButton}
               variant="contained"
               color="primary"
+              onClick={onLogout}
             >
-              <EditIcon />
-              Update
-            </Button>
-            <Button
-              className={classes.formButton}
-              variant="contained"
-              color="primary"
-            >
-              <LogoutIcon />
-              Sign out
+              {
+                isLoading
+                  ? <Spinner />
+                  : (
+                    <>
+                      <LogoutIcon />
+                      Sign out
+                    </>
+                  )
+              }
             </Button>
           </Box>
         </Box>

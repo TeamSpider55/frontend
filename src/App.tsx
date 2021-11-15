@@ -1,79 +1,119 @@
 import React from 'react';
-import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
+import {
+  Redirect,
+  Route,
+  BrowserRouter as Router,
+  Switch,
+} from 'react-router-dom';
 import DashboardLayout from './layouts/DashboardLayout';
 import Account from './pages/Account';
 import ContactDetail from './pages/ContactDetail';
 import ForgotPassword from './pages/ForgotPassword';
 import ContactList from './pages/ContactList';
 import EventList from './pages/EventList';
+import NotesList from './pages/NotesList';
 import EventDetail from './pages/EventDetail';
 import Login from './pages/Login';
 import PageNotFound from './pages/PageNotFound';
+import Dashboard from './pages/Dashboard';
 import ResetPassword from './pages/ResetPassword';
 import Register from './pages/Register';
-import Dashboard from './pages/Dashboard';
 import ThemeConfig from './theme';
+import { useAppSelector } from './redux/store';
+
+// Route that checks for logged in user and redirects to login if not found
+const PrivateRoute = ({
+  children, ...rest
+}: any) => {
+  const user = useAppSelector((state) => state.auth.user);
+
+  return (
+    <Route
+      {...rest}
+      render={({ location }) => {
+        return user
+          ? children
+          : (
+            <Redirect to={{
+              pathname: '/login',
+              state: { from: location },
+            }}
+            />
+          );
+      }}
+    />
+  );
+};
 
 function App() {
   return (
     <ThemeConfig>
       <Router>
         <Switch>
-          <Route exact path="/">
-            <DashboardLayout showHeaderBar showSideBar>
-              <PageNotFound />
-            </DashboardLayout>
-          </Route>
-          <Route path="/dashboard">
+          <PrivateRoute exact path="/">
             <DashboardLayout showHeaderBar showSideBar>
               <Dashboard />
             </DashboardLayout>
-          </Route>
+          </PrivateRoute>
+          <PrivateRoute path="/dashboard">
+            <DashboardLayout showHeaderBar showSideBar>
+              <Dashboard />
+            </DashboardLayout>
+          </PrivateRoute>
           <Route path="/register">
             <Register />
           </Route>
-          <Route path="/events">
+          <Route exact path="/events">
             <DashboardLayout showHeaderBar showSideBar>
               <EventList />
             </DashboardLayout>
           </Route>
-          <Route path="/event/1">
+          <PrivateRoute exact path="/events/:eventId">
             <DashboardLayout showHeaderBar showSideBar>
               <EventDetail />
             </DashboardLayout>
-          </Route>
-          <Route path="/login">
-            <Login />
-          </Route>
+          </PrivateRoute>
+          <Route
+            path="/login"
+            render={() => <Login />}
+          />
           <Route exact path="/contacts">
             <DashboardLayout showHeaderBar showSideBar>
               <ContactList />
             </DashboardLayout>
           </Route>
-          <Route exact path="/contacts/:contactId">
+          <Route exact path="/contactsDummy">
+            <Redirect to={{
+              pathname: '/contacts?dummy=true',
+            }}
+            />
+          </Route>
+          <PrivateRoute exact path="/contacts/:contactId">
             <DashboardLayout showHeaderBar showSideBar>
               <ContactDetail />
             </DashboardLayout>
-          </Route>
+          </PrivateRoute>
           <Route path="/forgot-password">
             <ForgotPassword />
           </Route>
-          <Route path="/memos">
+          <PrivateRoute path="/notes">
             <DashboardLayout showHeaderBar showSideBar>
-              <PageNotFound />
+              <NotesList />
             </DashboardLayout>
-          </Route>
-          <Route path="/account">
+          </PrivateRoute>
+          <PrivateRoute path="/account">
             <DashboardLayout showHeaderBar showSideBar={false}>
               <Account />
             </DashboardLayout>
-          </Route>
+          </PrivateRoute>
           <Route path="/reset-password">
             <ResetPassword />
           </Route>
           <Route>
             {/* matches any other route: page for 404 error */}
-            <PageNotFound />
+            <DashboardLayout showHeaderBar showSideBar={false}>
+              <PageNotFound />
+            </DashboardLayout>
           </Route>
         </Switch>
       </Router>

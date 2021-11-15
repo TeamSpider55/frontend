@@ -50,9 +50,9 @@ const sidebarItems = [
     to: '/contacts',
   },
   {
-    text: 'Memos',
+    text: 'Notes',
     icon: <NoteIcon />,
-    to: '/memos',
+    to: '/notes',
   },
 ];
 

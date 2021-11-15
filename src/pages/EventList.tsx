@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { styled, useTheme, Theme } from '@mui/material/styles';
-import { Link as RouterLink, useHistory } from 'react-router-dom';
+import { Link as RouterLink, useHistory, useLocation } from 'react-router-dom';
 import {
   Avatar,
   AvatarGroup,
   Card,
   Table,
   Button,
-  Checkbox,
   TableRow,
   TableBody,
   TableCell,
@@ -16,22 +15,34 @@ import {
   TableContainer,
   TablePagination,
   Box,
+  Checkbox,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import addHours from 'date-fns/addHours';
 import Page from '../components/Page';
-import EventService from '../services/EventService';
 import MoreMenu from '../components/MoreMenu';
 import EventListToolbar from '../components/events/EventListToolbar';
-import TableHeader from '../components/TableHeader';
+import PlainTableHeader from '../components/PlainTableHeader';
+import Spinner from '../components/Spinner';
 import DateSearchNotFound from '../components/events/DateSearchNotFound';
 import DateSearchInvalid from '../components/events/DateSearchInvalid';
+import AddEventModal from '../components/events/AddEventModal';
+import MessageModal from '../components/MessageModal';
 import getComparator from '../util/comparator';
 import { Event, DateRange } from '../dto/Event';
+import { useAppDispatch, useAppSelector } from '../redux/store';
 import {
   DAYDATE_FORMAT,
   isValidDateRange,
   TIME_FORMAT,
 } from '../util/datetime';
+import {
+  getDummyEvents,
+  getEvents,
+  deleteEvent,
+  deleteEvents,
+  addEvent,
+} from '../redux/action/eventAction';
 
 const StyledContainer = styled(Container)((
   {
@@ -74,11 +85,21 @@ const applySortFilter = (
 };
 
 const EventList = () => {
+  // check url for a query param indicating whether list is to be populated
+  // with dummy data or not, this is used for automated testing: no flakiness!
+  const { search } = useLocation();
+  const isDummy = new URLSearchParams(search).get('dummy');
+
   const [page, setPage] = useState(0);
   const [selected, setSelected] = useState<string[]>([]);
-  const [order, setOrder] = useState<'asc'|'desc'>('asc');
-  const [orderBy, setOrderBy] = useState('title');
+  const [order] = useState<'asc'|'desc'>('asc');
+  const [orderBy] = useState('title');
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+
+  const dispatch = useAppDispatch();
+  const events = useAppSelector((state) => state.event.events);
 
   const now = new Date();
   const [dateRange, setDateRange] = useState<DateRange>(
@@ -88,37 +109,60 @@ const EventList = () => {
     },
   );
 
-  const [events, setEvents] = useState<Event[] | null>(null);
+  const [newEventDateTime, setNewEventDateTime] = useState<DateRange>(
+    {
+      from: new Date(),
+      to: addHours(new Date(), 1),
+    },
+  );
 
-  const fetchEvents = async () => {
-    setEvents(await EventService.getEvents());
-  };
-
+  // initialise either synchronously if using dummy data, or asynchronously
   useEffect(() => {
-    fetchEvents();
+    if (isDummy) {
+      dispatch(getDummyEvents);
+    } else {
+      dispatch(getEvents());
+    }
   }, []);
 
   const theme = useTheme();
-
   const history = useHistory();
 
-  const deleteEvent = (id: string) => {
-    if (events === null) return;
-    const newEvents = events.filter((e) => e.eventId !== id);
-    setEvents(newEvents);
+  const goToEvent = (id: string) => {
+    history.push(`/events/${id}`);
   };
 
-  const deleteEvents = (ids: string[]) => {
+  const onDeleteEvent = (id: string) => {
     if (events === null) return;
-    const newEvents = events?.filter((e) => !ids.includes(e.eventId));
-    setEvents(newEvents);
+    dispatch(deleteEvent(id));
+  };
+
+  const onDeleteEvents = (ids: string[]) => {
+    if (events === null) return;
+    dispatch(deleteEvents(ids));
     setSelected([]);
   };
 
-  const handleRequestSort = (event: any, property: string) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(property);
+  const onEditEvent = (id: string) => {
+    if (events === null) return;
+    goToEvent(id);
+  };
+
+  const onAddEvent = () => {
+    if (events === null) return;
+    dispatch(addEvent({
+      title: 'new event',
+      start: newEventDateTime.from.getTime(),
+      end: newEventDateTime.to.getTime(),
+    })).then((newEventId) => {
+      if (newEventId !== null) {
+        if (newEventId === '') {
+          setIsErrorModalOpen(true);
+        } else {
+          goToEvent(newEventId);
+        }
+      }
+    });
   };
 
   const handleSelectAllClick = () => {
@@ -159,10 +203,6 @@ const EventList = () => {
     setPage(0);
   };
 
-  const goToEvent = (id: string) => {
-    history.push(`/event/${id}`);
-  };
-
   let emptyRows = null;
   let filteredEvents = null;
   if (events !== null) {
@@ -178,6 +218,25 @@ const EventList = () => {
   return (
     <Page title="Events - OneThread">
       <StyledContainer theme={theme}>
+        <MessageModal
+          isModalOpen={isErrorModalOpen}
+          setIsModalOpen={setIsErrorModalOpen}
+          title="Failed to add event"
+          message="Ensure events do not overlap!"
+          buttonText="OK"
+          buttonOnClick={() => setIsErrorModalOpen(false)}
+        />
+        <AddEventModal
+          isModalOpen={isModalOpen}
+          setIsModalOpen={setIsModalOpen}
+          newEventDateTime={newEventDateTime}
+          setNewEventDateTime={setNewEventDateTime}
+          buttonOnClick={() => {
+            if (events === null) return;
+            onAddEvent();
+            setIsModalOpen(false);
+          }}
+        />
         <Box
           display="flex"
           justifyContent="space-between"
@@ -193,33 +252,45 @@ const EventList = () => {
             color="primary"
             component={RouterLink}
             to="#"
+            onClick={() => setIsModalOpen(true)}
+            disabled={events === null}
           >
             <AddIcon />
             ADD NEW EVENT
           </Button>
         </Box>
+        <Box marginBottom={theme.spacing(2)}>
+          Only events stored 14 days before and 70 days after today will be
+          accessible through this interface.
+        </Box>
         <Card>
           <EventListToolbar
             selected={selected}
-            deleteMany={deleteEvents}
+            deleteMany={onDeleteEvents}
             dateRange={dateRange}
             setDateRange={setDateRange}
           />
           {filteredEvents === null ? (
-            <Typography variant="subtitle2" noWrap>
-              Loading
-            </Typography>
+            <Box sx={{
+              display: 'flex',
+              height: '100%',
+              justifyContent: 'center',
+              alignItems: 'center',
+              paddingY: theme.spacing(5),
+            }}
+            >
+              <Spinner dark />
+            </Box>
           ) : (
             <Box>
               <TableContainer>
                 <Table>
-                  <TableHeader
+                  <PlainTableHeader
                     order={order}
                     orderBy={orderBy}
                     headLabel={TABLE_HEAD}
                     rowCount={filteredEvents.length}
                     numSelected={selected.length}
-                    onRequestSort={handleRequestSort}
                     onSelectAllClick={handleSelectAllClick}
                   />
                   <TableBody>
@@ -231,6 +302,7 @@ const EventList = () => {
                       .map((row: Event) => {
                         const
                           {
+                            contacts,
                             eventId,
                             title,
                             start,
@@ -251,15 +323,13 @@ const EventList = () => {
                             <TableCell padding="checkbox">
                               <Checkbox
                                 checked={isItemSelected}
-                                onChange={
-                                  (event) => handleClick(event, eventId)
-                                }
+                                onChange={(event) => handleClick(event, eventId)}
                               />
                             </TableCell>
                             <TableCell
                               component="th"
                               scope="row"
-                              onClick={() => goToEvent('1')}
+                              onClick={() => goToEvent(eventId)}
                             >
                               <Box display="flex" alignItems="center">
                                 <Box
@@ -271,7 +341,7 @@ const EventList = () => {
                                 </Box>
                               </Box>
                             </TableCell>
-                            <TableCell onClick={() => goToEvent('1')}>
+                            <TableCell onClick={() => goToEvent(eventId)}>
                               <Box>
                                 {DAYDATE_FORMAT.format(start)}
                               </Box>
@@ -281,22 +351,20 @@ const EventList = () => {
                                 {TIME_FORMAT.format(end)}
                               </Box>
                             </TableCell>
-                            <TableCell onClick={() => goToEvent('1')}>
-                              {/* FIXME: hardcoded avatars and
-                                  non-functioning sort
-                              */}
+                            <TableCell onClick={() => goToEvent(eventId)}>
                               <AvatarGroup max={4}>
-                                <Avatar alt="Remy Sharp" />
-                                <Avatar alt="Travis Howard" />
-                                <Avatar alt="Cindy Baker" />
-                                <Avatar alt="Agnes Walker" />
-                                <Avatar alt="Trevor Henderson" />
+                                {
+                                  contacts.map((c) => (
+                                    <Avatar alt={c.id} key={c.id} />
+                                  ))
+                                }
                               </AvatarGroup>
                             </TableCell>
                             <TableCell align="right">
                               <MoreMenu
                                 id={eventId}
-                                deleteOne={deleteEvent}
+                                deleteOne={onDeleteEvent}
+                                editOne={onEditEvent}
                               />
                             </TableCell>
                           </TableRow>
