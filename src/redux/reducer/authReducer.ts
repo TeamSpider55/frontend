@@ -22,6 +22,7 @@ interface AuthState {
   isLoading: boolean;
   user: User | null;
   error: string | null;
+  date: number | null;
 }
 
 // state for the reducer to update (immutably)
@@ -29,6 +30,7 @@ const initialState: AuthState = {
   isLoading: true,
   user: null,
   error: null,
+  date: null,
 };
 
 // create well-typed reducer to act on the associated state
@@ -39,10 +41,12 @@ export default createReducer(initialState, (builder) => {
     .addCase(loginStarted, (state, _action) => {
       state.isLoading = true;
       state.user = null;
+      state.date = null;
     })
     .addCase(loginSucceeded, (state, action) => {
       state.isLoading = false;
       state.user = action.payload.user;
+      state.date = Date.now();
     })
     .addCase(loginFailed, (state, action) => {
       state.isLoading = false;
@@ -54,6 +58,7 @@ export default createReducer(initialState, (builder) => {
     .addCase(logoutSucceeded, (state, _action) => {
       state.isLoading = false;
       state.user = null;
+      state.date = null;
     })
     .addCase(logoutFailed, (state, action) => {
       state.isLoading = false;
