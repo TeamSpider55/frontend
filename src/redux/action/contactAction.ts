@@ -10,10 +10,10 @@ import ContactService from '../../services/ContactService';
 export const getContactsStarted = createAction('contact/getContactsStarted');
 export const getContactsSucceeded = createAction<{
   contacts: Array<Contact>
-}>('auth/getContactsSucceeded');
+}>('contact/getContactsSucceeded');
 export const getContactsFailed = createAction<{
   err: string
-}>('auth/getContactsFailed');
+}>('contact/getContactsFailed');
 
 export const getContacts = () => async (dispatch: AppDispatch) => {
   dispatch(getContactsStarted());

@@ -1,6 +1,12 @@
 import axios from 'axios';
+import API_URL from '../util/constants';
 
 export interface LogoutResponse {
+  success: boolean;
+  redirect: boolean;
+}
+
+export interface UpdatePasswordResponse {
   success: boolean;
   redirect: boolean;
 }
@@ -9,20 +15,34 @@ class UserService {
   static async getUser() {
     const response = await axios.get(
       // 'http://localhost:8080/user/profile/',
-      // `${API_URL}/user/profile/`,
-      'https://spider55-api.herokuapp.com/user/profile/',
       // '/user/profile/',
+      `${API_URL}/user/profile/`,
       {
         withCredentials: true,
       },
     );
 
-    return response.data.data;
+    return (response.data as any).data;
+  }
+
+  static async updatePassword(newPassword: string): Promise<UpdatePasswordResponse> {
+    const response = await axios.post(
+      // 'http://localhost:8080/user/profile/',
+      // '/user/change-password/',
+      `${API_URL}/user/change-password/`,
+      { password: newPassword },
+      {
+        withCredentials: true,
+      },
+    );
+
+    return (response.data as any).data;
   }
 
   static async logout(): Promise<LogoutResponse> {
     const response: LogoutResponse = await axios.post(
-      '/user/logout/',
+      // '/user/logout/',
+      `${API_URL}/user/logout/`,
       {},
       { withCredentials: true },
     );

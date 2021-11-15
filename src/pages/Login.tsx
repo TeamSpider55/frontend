@@ -10,7 +10,7 @@ import Logo from '../components/Logo';
 import Spinner from '../components/Spinner';
 import Page from '../components/Page';
 import SpiderIcon from '../assets/spider1.png';
-import { login } from '../redux/action/authAction';
+import { login, cleanupError } from '../redux/action/authAction';
 import { useAppDispatch, useAppSelector } from '../redux/store';
 
 const useStyles = makeStyles((theme: any) => ({
@@ -67,8 +67,9 @@ const Login = () => {
     dispatch(login({ id: username, password }));
   };
 
-  if (user) {
+  if (!isLoading && user) {
     // user already logged in: redirect
+    dispatch(cleanupError());
     history.push('/');
   }
 

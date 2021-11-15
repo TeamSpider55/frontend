@@ -7,7 +7,6 @@ import {
   Card,
   Table,
   Button,
-  Checkbox,
   TableRow,
   TableBody,
   TableCell,
@@ -16,14 +15,19 @@ import {
   TableContainer,
   TablePagination,
   Box,
+  Checkbox,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import addHours from 'date-fns/addHours';
 import Page from '../components/Page';
 import MoreMenu from '../components/MoreMenu';
 import EventListToolbar from '../components/events/EventListToolbar';
-import TableHeader from '../components/TableHeader';
+import PlainTableHeader from '../components/PlainTableHeader';
+import Spinner from '../components/Spinner';
 import DateSearchNotFound from '../components/events/DateSearchNotFound';
 import DateSearchInvalid from '../components/events/DateSearchInvalid';
+import AddEventModal from '../components/events/AddEventModal';
+import MessageModal from '../components/MessageModal';
 import getComparator from '../util/comparator';
 import { Event, DateRange } from '../dto/Event';
 import { useAppDispatch, useAppSelector } from '../redux/store';
@@ -88,9 +92,11 @@ const EventList = () => {
 
   const [page, setPage] = useState(0);
   const [selected, setSelected] = useState<string[]>([]);
-  const [order, setOrder] = useState<'asc'|'desc'>('asc');
-  const [orderBy, setOrderBy] = useState('title');
+  const [order] = useState<'asc'|'desc'>('asc');
+  const [orderBy] = useState('title');
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
 
   const dispatch = useAppDispatch();
   const events = useAppSelector((state) => state.event.events);
@@ -100,6 +106,13 @@ const EventList = () => {
     {
       from: new Date(now.getFullYear(), now.getMonth(), now.getDate()),
       to: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 14),
+    },
+  );
+
+  const [newEventDateTime, setNewEventDateTime] = useState<DateRange>(
+    {
+      from: new Date(),
+      to: addHours(new Date(), 1),
     },
   );
 
@@ -139,19 +152,17 @@ const EventList = () => {
     if (events === null) return;
     dispatch(addEvent({
       title: 'new event',
-      start: Date.now(),
-      end: Date.now() + 3600000,
+      start: newEventDateTime.from.getTime(),
+      end: newEventDateTime.to.getTime(),
     })).then((newEventId) => {
       if (newEventId !== null) {
-        goToEvent(newEventId);
+        if (newEventId === '') {
+          setIsErrorModalOpen(true);
+        } else {
+          goToEvent(newEventId);
+        }
       }
     });
-  };
-
-  const handleRequestSort = (event: any, property: string) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(property);
   };
 
   const handleSelectAllClick = () => {
@@ -207,6 +218,25 @@ const EventList = () => {
   return (
     <Page title="Events - OneThread">
       <StyledContainer theme={theme}>
+        <MessageModal
+          isModalOpen={isErrorModalOpen}
+          setIsModalOpen={setIsErrorModalOpen}
+          title="Failed to add event"
+          message="Ensure events do not overlap!"
+          buttonText="OK"
+          buttonOnClick={() => setIsErrorModalOpen(false)}
+        />
+        <AddEventModal
+          isModalOpen={isModalOpen}
+          setIsModalOpen={setIsModalOpen}
+          newEventDateTime={newEventDateTime}
+          setNewEventDateTime={setNewEventDateTime}
+          buttonOnClick={() => {
+            if (events === null) return;
+            onAddEvent();
+            setIsModalOpen(false);
+          }}
+        />
         <Box
           display="flex"
           justifyContent="space-between"
@@ -222,11 +252,16 @@ const EventList = () => {
             color="primary"
             component={RouterLink}
             to="#"
-            onClick={onAddEvent}
+            onClick={() => setIsModalOpen(true)}
+            disabled={events === null}
           >
             <AddIcon />
             ADD NEW EVENT
           </Button>
+        </Box>
+        <Box marginBottom={theme.spacing(2)}>
+          Only events stored 14 days before and 70 days after today will be
+          accessible through this interface.
         </Box>
         <Card>
           <EventListToolbar
@@ -236,20 +271,26 @@ const EventList = () => {
             setDateRange={setDateRange}
           />
           {filteredEvents === null ? (
-            <Typography variant="subtitle2" noWrap>
-              Loading
-            </Typography>
+            <Box sx={{
+              display: 'flex',
+              height: '100%',
+              justifyContent: 'center',
+              alignItems: 'center',
+              paddingY: theme.spacing(5),
+            }}
+            >
+              <Spinner dark />
+            </Box>
           ) : (
             <Box>
               <TableContainer>
                 <Table>
-                  <TableHeader
+                  <PlainTableHeader
                     order={order}
                     orderBy={orderBy}
                     headLabel={TABLE_HEAD}
                     rowCount={filteredEvents.length}
                     numSelected={selected.length}
-                    onRequestSort={handleRequestSort}
                     onSelectAllClick={handleSelectAllClick}
                   />
                   <TableBody>
@@ -282,9 +323,7 @@ const EventList = () => {
                             <TableCell padding="checkbox">
                               <Checkbox
                                 checked={isItemSelected}
-                                onChange={
-                                  (event) => handleClick(event, eventId)
-                                }
+                                onChange={(event) => handleClick(event, eventId)}
                               />
                             </TableCell>
                             <TableCell
@@ -313,13 +352,10 @@ const EventList = () => {
                               </Box>
                             </TableCell>
                             <TableCell onClick={() => goToEvent(eventId)}>
-                              {/* FIXME: hardcoded avatars and
-                                  non-functioning sort
-                              */}
                               <AvatarGroup max={4}>
                                 {
                                   contacts.map((c) => (
-                                    <Avatar alt={c} />
+                                    <Avatar alt={c.id} key={c.id} />
                                   ))
                                 }
                               </AvatarGroup>

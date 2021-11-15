@@ -7,6 +7,13 @@ import {
   logoutStarted,
   logoutSucceeded,
   logoutFailed,
+  passwordChangeStarted,
+  passwordChangeSucceeded,
+  passwordChangeFailed,
+  registerStarted,
+  registerSucceeded,
+  registerFailed,
+  cleanupError,
 } from '../action/authAction';
 
 // equivalently, the state and reducers can be bundled up in a 'slice'
@@ -15,6 +22,7 @@ interface AuthState {
   isLoading: boolean;
   user: User | null;
   error: string | null;
+  date: number | null;
 }
 
 // state for the reducer to update (immutably)
@@ -22,6 +30,7 @@ const initialState: AuthState = {
   isLoading: true,
   user: null,
   error: null,
+  date: null,
 };
 
 // create well-typed reducer to act on the associated state
@@ -32,10 +41,12 @@ export default createReducer(initialState, (builder) => {
     .addCase(loginStarted, (state, _action) => {
       state.isLoading = true;
       state.user = null;
+      state.date = null;
     })
     .addCase(loginSucceeded, (state, action) => {
       state.isLoading = false;
       state.user = action.payload.user;
+      state.date = Date.now();
     })
     .addCase(loginFailed, (state, action) => {
       state.isLoading = false;
@@ -47,9 +58,33 @@ export default createReducer(initialState, (builder) => {
     .addCase(logoutSucceeded, (state, _action) => {
       state.isLoading = false;
       state.user = null;
+      state.date = null;
     })
     .addCase(logoutFailed, (state, action) => {
       state.isLoading = false;
       state.error = action.payload.err;
+    })
+    .addCase(passwordChangeStarted, (state, _action) => {
+      state.isLoading = true;
+    })
+    .addCase(passwordChangeSucceeded, (state, _action) => {
+      state.isLoading = false;
+    })
+    .addCase(passwordChangeFailed, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload.err;
+    })
+    .addCase(registerStarted, (state, _action) => {
+      state.isLoading = true;
+    })
+    .addCase(registerSucceeded, (state, _action) => {
+      state.isLoading = false;
+    })
+    .addCase(registerFailed, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload.err;
+    })
+    .addCase(cleanupError, (state) => {
+      state.error = null;
     });
 });

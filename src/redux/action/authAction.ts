@@ -1,5 +1,5 @@
 import { createAction } from '@reduxjs/toolkit';
-import AuthService, { LoginInput } from '../../services/AuthService';
+import AuthService, { LoginInput, RegisterInput } from '../../services/AuthService';
 import UserService from '../../services/UserService';
 import { AppDispatch } from '../store';
 import { User } from '../../dto/User';
@@ -47,3 +47,53 @@ export const logout = () => async (dispatch: AppDispatch) => {
     dispatch(logoutFailed({ err: 'Failed to logout' }));
   }
 };
+
+export const passwordChangeStarted = createAction('auth/passwordChangeStarted');
+export const passwordChangeSucceeded = createAction('auth/passwordChangeSucceeded');
+export const passwordChangeFailed = createAction<{
+  err: string
+}>('auth/passwordChangeFailed');
+
+export const updatePassword = (newPassword: string) => async (dispatch: AppDispatch) => {
+  dispatch(passwordChangeStarted());
+  try {
+    await UserService.updatePassword(newPassword);
+    dispatch(passwordChangeSucceeded());
+  } catch (e) {
+    dispatch(passwordChangeFailed({ err: 'Failed to update password due to error' }));
+  }
+};
+
+export const registerStarted = createAction('auth/registerStarted');
+export const registerSucceeded = createAction('auth/registerSucceeded');
+export const registerFailed = createAction<{
+  err: string
+}>('auth/registerFailed');
+
+export const register = ({
+  email,
+  userName,
+  familyName,
+  givenName,
+  password,
+  phone,
+  address,
+}: RegisterInput) => async (dispatch: AppDispatch) => {
+  dispatch(registerStarted());
+  try {
+    await AuthService.register({
+      email,
+      userName,
+      familyName,
+      givenName,
+      password,
+      phone,
+      address,
+    });
+    dispatch(registerSucceeded());
+  } catch (e) {
+    dispatch(registerFailed({ err: 'Register failed' }));
+  }
+};
+
+export const cleanupError = createAction('auth/cleanupError');

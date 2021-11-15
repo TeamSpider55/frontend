@@ -5,6 +5,7 @@ import {
   TextField,
   Paper,
   Avatar,
+  Badge,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import EditIcon from '@mui/icons-material/Edit';
@@ -16,16 +17,18 @@ import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 import { Link, useParams, useHistory } from 'react-router-dom';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EmailIcon from '@mui/icons-material/Email';
-import CancelIcon from '@mui/icons-material/Cancel';
 import CheckIcon from '@mui/icons-material/Check';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import PendingIcon from '@mui/icons-material/Pending';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DesktopDateTimePicker from '@mui/lab/DateTimePicker';
+import Spinner from '../components/Spinner';
+import ConfirmEditEventModal from '../components/events/ConfirmEditEventModal';
 import { useAppDispatch, useAppSelector } from '../redux/store';
 import { deleteEvent, getEvents, updateEvent } from '../redux/action/eventAction';
 import { getContacts } from '../redux/action/contactAction';
-import { Contact } from '../dto/Contact';
-import { Event } from '../dto/Event';
+import { EventParticipant } from '../dto/Event';
 
 const useStyles = makeStyles((theme: any) => ({
   eventButtonsContainer: {
@@ -141,6 +144,15 @@ const useStyles = makeStyles((theme: any) => ({
     fontSize: '16px',
     color: theme.palette.common.black,
   },
+  participantSubTitle: {
+    display: 'flex',
+    flexDirection: 'column',
+    marginLeft: theme.spacing(7),
+    marginRight: theme.spacing(6),
+    marginBottom: theme.spacing(2),
+    fontSize: '12px',
+    color: theme.palette.common.black,
+  },
   inviteButton: {
     color: theme.palette.common.black,
     '&:hover': {
@@ -185,9 +197,10 @@ const useStyles = makeStyles((theme: any) => ({
 
 }));
 
-const getParticipants = (event: Event, contacts: Array<Contact>) => {
-  return contacts.filter((c) => event.contacts.includes(c.contactId));
-};
+// const getParticipants = (event: Event, contacts: Array<Contact>) => {
+//   return contacts
+//     .filter((c) => event.contacts.map((x) => x.id).includes(c.contactId));
+// };
 
 const EventDetail = () => {
   const theme = useTheme();
@@ -198,22 +211,25 @@ const EventDetail = () => {
   const [title, setTitle] = useState('');
 
   const [startDateTime, setStartDateTime] = useState(0);
-  // const [newStartDateTime, setNewStartDateTime] = useState(currentDateTime);
   const [endDateTime, setEndDateTime] = useState(0);
-  // const [newEndDateTime, setNewEndDateTime] = useState(currentDateTime);
 
-  // assuming note in the backend is description
   const [description, setDescription] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [participants, setParticipants] = useState<Contact[]>([]);
-  // const [newParticipants, setNewParticipants] = useState<Contact[]>([]);
+  const [participants, setParticipants] = useState<EventParticipant[]>([]);
 
+  // email addresses to be invited
+  const [invitees, setInvitees] = useState<string[]>([]);
+
+  // new participant is just an email: could be a user's contact or external,
+  // i.e. just an email
   const [newParticipant, setNewParticipant] = useState<string | null>(null);
 
   // get from URL path params
   const { eventId } = useParams<{ eventId: string }>();
 
   const dispatch = useAppDispatch();
+  const isLoading = useAppSelector((state) => state.event.isLoading);
   const event = useAppSelector((state) => {
     return state.event.events?.find((e) => e.eventId === eventId);
   });
@@ -227,46 +243,25 @@ const EventDetail = () => {
   }, []);
 
   const toggleEditMode = () => {
+    setEditModeOn(true);
     if (!event || !contacts) return;
+    setInvitees([]);
     setTitle(event.title);
     setStartDateTime(event.start);
     setEndDateTime(event.end);
     setDescription(event.note);
-    setParticipants(getParticipants(event, contacts));
-
-    // setDescription(document.getElementById('description').value);
-    // if (document.getElementById('eventStartDateTime')) {
-    //   setStartDateTime(document.getElementById('eventStartDateTime').value);
-    //   setNewStartDateTime(document.getElementById('eventStartDateTime').value);
-    // }
-    // if (document.getElementById('eventEndDateTime')) {
-    //   setEndDateTime(document.getElementById('eventEndDateTime').value);
-    //   setNewEndDateTime(document.getElementById('eventEndDateTime').value);
-    // }
-    setEditModeOn(true);
+    setParticipants(event.contacts);
   };
-  const editModeCancel = () => {
-    // document.getElementById('description').value = description;
-    // if (document.getElementById('eventStartDateTime')) {
-    //   document.getElementById('eventStartDateTime').value = startDateTime;
-    // }
-    // if (document.getElementById('eventEndDateTime')) {
-    //   document.getElementById('eventEndDateTime').value = endDateTime;
-    // }
-    // setNewStartDateTime(startDateTime);
-    // setNewEndDateTime(endDateTime);
-    // setNewParticipants(participants);
 
+  const editModeCancel = () => {
     setEditModeOn(false);
+    setInvitees([]);
     setNewParticipant(null);
   };
-  const editModeConfirm = () => {
-    // setDescription(document.getElementById('description').value);
-    // setStartDateTime(newStartDateTime);
-    // setEndDateTime(newEndDateTime);
-    // setParticipants(newParticipants);
 
+  const editModeConfirm = () => {
     setEditModeOn(false);
+    setInvitees([]);
 
     dispatch(updateEvent({
       eventId,
@@ -274,48 +269,24 @@ const EventDetail = () => {
       start: startDateTime,
       end: endDateTime,
       note: description,
-      contacts: participants.map((p) => p.contactId),
+      contacts: participants,
     }));
   };
   const removeEvent = () => {
-    /* FIXME: functionality of cancel event button and redirect. */
     dispatch(deleteEvent(eventId));
     history.push('/events');
   };
 
-  // const fetchParticipants = (async () => {
-  //   /* FIXME: setParticipants(await (await fetch('')).json()); */
-  //   const list = await ContactService.getContacts();
-  //   setParticipants(list);
-  //   setNewParticipants(list);
-  // });
-  // useEffect(() => {
-  //   fetchParticipants();
-  // }, []);
-
-  const deleteParticipant = (email: string) => {
-    if (participants === null) return;
-    // setNewParticipants(participants.filter((c) => c.email !== email));
-    setParticipants(participants.filter((c) => c.email !== email));
-  };
-
-  // const addParticipant = (id: string) => {
-  //   setParticipants([...participants, id]);
-  // };
-
   const addEmptyParticipant = () => {
-    // setParticipants([...participants, '3']);
-    // console.log(participants);
     setNewParticipant('');
   };
 
-  // FIXME:
   const saveNewParticipant = () => {
     if (!contacts || !newParticipant) return;
-    const contact = contacts.find((c) => c.email === newParticipant);
-    if (contact !== undefined) {
-      setParticipants([...participants, contact]);
-    }
+    setInvitees([...invitees, newParticipant]);
+    setParticipants(
+      [...participants, { id: newParticipant, status: 'pending' }],
+    );
     setNewParticipant(null);
   };
 
@@ -330,6 +301,25 @@ const EventDetail = () => {
           userSelect: 'none',
         }}
       >
+        <ConfirmEditEventModal
+          isModalOpen={isModalOpen}
+          setIsModalOpen={setIsModalOpen}
+          title="Confirm Edit Event"
+          message={
+            invitees.length === 0
+              ? 'Are you sure you want to update the event\'s details?'
+              : `Are you sure you want to update the event's details, and send ${invitees.join(', ')} a confirmation email to this event?`
+          }
+          buttonText="Yes"
+          buttonOnClick={() => {
+            editModeConfirm();
+            setIsModalOpen(false);
+          }}
+          secondButtonText="No"
+          secondButtonOnClick={() => {
+            setIsModalOpen(false);
+          }}
+        />
         <Link to="/events">
           <Button className={classes.eventsButton}>
             <ArrowLeftIcon className={classes.arrowLeftIcon} />
@@ -341,9 +331,9 @@ const EventDetail = () => {
           <Button
             variant="contained"
             color="primary"
-            /* FIXME: add components */
             onClick={removeEvent}
             style={{ marginRight: theme.spacing(1), backgroundColor: theme.palette.warning.dark }}
+            disabled={isLoading}
           >
             <DeleteIcon />
             CANCEL EVENT
@@ -353,8 +343,8 @@ const EventDetail = () => {
           <Button
             variant="contained"
             color="primary"
-            /* FIXME: add components */
             onClick={toggleEditMode}
+            disabled={isLoading}
           >
             <EditIcon />
             EDIT EVENT
@@ -364,7 +354,6 @@ const EventDetail = () => {
           <Button
             variant="contained"
             color="primary"
-            /* FIXME: add components */
             onClick={editModeCancel}
             style={{ marginRight: theme.spacing(1), backgroundColor: theme.palette.error.dark }}
           >
@@ -376,8 +365,7 @@ const EventDetail = () => {
           <Button
             variant="contained"
             color="primary"
-            /* FIXME: add components */
-            onClick={editModeConfirm}
+            onClick={() => setIsModalOpen(true)}
             style={{ backgroundColor: theme.palette.success.dark }}
           >
             <DoneIcon />
@@ -407,13 +395,11 @@ const EventDetail = () => {
                     renderInput={(props) => <TextField {...props} />}
                     label="Start"
                     value={editModeOn ? startDateTime : event.start}
-                    disabled={!editModeOn}
+                    disabled
                     onChange={(newValue) => {
                       setStartDateTime(newValue as number);
                     }}
                     disablePast
-                    // id="eventStartDateTime"
-                    // inputProps={{ readOnly: true }}
                   />
                 </LocalizationProvider>
               </Box>
@@ -423,13 +409,11 @@ const EventDetail = () => {
                     renderInput={(props) => <TextField {...props} />}
                     label="End"
                     value={editModeOn ? endDateTime : event.end}
-                    disabled={!editModeOn}
+                    disabled
                     onChange={(newValue) => {
                       setEndDateTime(newValue as number);
                     }}
                     disablePast
-                    // id="eventEndDateTime"
-                    // inputProps={{ readOnly: true }}
                   />
                 </LocalizationProvider>
               </Box>
@@ -444,31 +428,60 @@ const EventDetail = () => {
                   Invite
                 </Button>
               </Box>
+              <Box className={classes.participantSubTitle}>
+                <Box display="flex" alignItems="center">
+                  <PendingIcon
+                    sx={{ width: 20, height: 20 }}
+                  />
+                  : Pending confirmation
+                </Box>
+                <Box display="flex" alignItems="center">
+                  <CheckCircleIcon
+                    sx={{ width: 20, height: 20 }}
+                  />
+                  : Confirmed
+                </Box>
+              </Box>
               <Box>
                 <Paper className={classes.participantScrollable}>
                   {(editModeOn
                     ? participants
-                    : getParticipants(event, contacts)).map((participant) => {
-                    const { email } = participant;
+                    : event.contacts).map((participant) => {
+                    const { id, status } = participant;
                     return (
                       <Box className={classes.participantContainer}>
                         <Box display="flex">
-                          <Avatar className={classes.participantAvatar} alt={participant.givenName} src="/#FIXME: avatarURL" />
+                          <Badge
+                            overlap="circular"
+                            anchorOrigin={{
+                              vertical: 'bottom',
+                              horizontal: 'right',
+                            }}
+                            badgeContent={
+                              status === 'confirmed'
+                                ? (
+                                  <CheckCircleIcon
+                                    sx={{ width: 20, height: 20 }}
+                                  />
+                                ) : (
+                                  <PendingIcon
+                                    sx={{ width: 20, height: 20 }}
+                                  />
+                                )
+                            }
+                          >
+                            <Avatar
+                              className={classes.participantAvatar}
+                              alt={id}
+                              src="dummy"
+                            />
+                          </Badge>
                           <Box
                             paddingLeft={2}
                           >
-                            {email}
+                            {id}
                           </Box>
                         </Box>
-                        {editModeOn && (
-                          <Button
-                            onClick={() => deleteParticipant(email)}
-                          >
-                            <CancelIcon
-                              className={classes.cancelIcon}
-                            />
-                          </Button>
-                        )}
                       </Box>
                     );
                   })}
@@ -510,7 +523,17 @@ const EventDetail = () => {
             />
           </Box>
         </>
-      ) : <Box>LOADING</Box>
+      ) : (
+        <Box sx={{
+          display: 'flex',
+          height: '100%',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+        >
+          <Spinner dark />
+        </Box>
+      )
       }
     </>
   );

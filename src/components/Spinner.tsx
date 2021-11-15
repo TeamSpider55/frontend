@@ -1,11 +1,19 @@
 import { CircularProgress } from '@mui/material';
 import React from 'react';
 
-const Spinner = () => (
+interface Props {
+  dark?: boolean;
+}
+
+const Spinner = ({ dark = false }: Props) => (
   <CircularProgress
     size="1.5rem"
-    sx={{ color: 'white' }}
+    sx={{ color: dark ? 'black' : 'white' }}
   />
 );
+
+Spinner.defaultProps = {
+  dark: false,
+};
 
 export default Spinner;

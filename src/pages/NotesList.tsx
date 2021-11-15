@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { styled, useTheme, Theme } from '@mui/material/styles';
-import { Link as RouterLink, useHistory, useLocation } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import {
   Card,
   Table,
   Avatar,
-  Button,
   Checkbox,
   TableRow,
   TableBody,
@@ -16,24 +15,18 @@ import {
   TablePagination,
   Box,
 } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import formatISO from 'date-fns/formatISO';
+import { formatISO9075, differenceInSeconds } from 'date-fns';
 import Page from '../components/Page';
-import MoreMenu from '../components/MoreMenu';
-import ContactListToolbar from '../components/contacts/ContactListToolbar';
-import TableHeader from '../components/TableHeader';
-import SearchNotFound from '../components/contacts/SearchNotFound';
+import NotesListToolbar from '../components/notes/NotesListToolbar';
 import getComparator from '../util/comparator';
-import { Contact } from '../dto/Contact';
+import { Contact, Note } from '../dto/Contact';
 import { useAppDispatch, useAppSelector } from '../redux/store';
 import {
   getContacts,
   getDummyContacts,
-  deleteContact,
-  deleteContacts,
-  addContact,
 } from '../redux/action/contactAction';
 import Spinner from '../components/Spinner';
+import PlainTableHeader from '../components/PlainTableHeader';
 
 const StyledContainer = styled(Container)((
   {
@@ -46,10 +39,9 @@ const StyledContainer = styled(Container)((
 }));
 
 const TABLE_HEAD = [
-  { id: 'givenName', label: 'Name', alignRight: false },
-  { id: 'organisation', label: 'Organisation', alignRight: false },
-  { id: 'role', label: 'Role', alignRight: false },
-  { id: 'dateAdded', label: 'Date Added', alignRight: false },
+  { id: '', label: 'Time', alignRight: false },
+  { id: '', label: 'Content', alignRight: false },
+  { id: '', label: 'Related to', alignRight: false },
 ];
 
 const applySortFilter = (array: any, comparator: any, query: string) => {
@@ -70,7 +62,7 @@ const applySortFilter = (array: any, comparator: any, query: string) => {
   return stabilizedArray.map((el: [any, number]) => el[0]);
 };
 
-const ContactList = () => {
+const NotesList = () => {
   // check url for a query param indicating whether list is to be populated
   // with dummy data or not, this is used for automated testing: no flakiness!
   const { search } = useLocation();
@@ -79,10 +71,10 @@ const ContactList = () => {
   // pagination, filtering, batch select and ordering config as local state
   const [page, setPage] = useState(0);
   const [selected, setSelected] = useState<string[]>([]);
-  const [order, setOrder] = useState<'asc'|'desc'>('asc');
-  const [orderBy, setOrderBy] = useState('givenName');
+  const [order] = useState<'asc'|'desc'>('asc');
+  const [orderBy] = useState('givenName');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [filterName, setFilterName] = useState('');
+  const [filterName] = useState('');
 
   const dispatch = useAppDispatch();
   const contacts = useAppSelector((state) => state.contact.contacts);
@@ -102,41 +94,6 @@ const ContactList = () => {
 
   const goToContact = (id: string) => {
     history.push(`/contacts/${id}`);
-  };
-
-  const onDeleteContact = (id: string) => {
-    if (contacts === null) return;
-    dispatch(deleteContact(id));
-  };
-
-  const onDeleteContacts = (ids: string[]) => {
-    if (contacts === null) return;
-    dispatch(deleteContacts(ids));
-    setSelected([]);
-  };
-
-  const onEditContact = (id: string) => {
-    if (contacts === null) return;
-    goToContact(id);
-  };
-
-  const onAddContact = () => {
-    if (contacts === null) return;
-    dispatch(addContact({
-      email: 'email@email.com',
-      givenName: 'John',
-      familyName: 'Doe',
-    })).then((newContactId) => {
-      if (newContactId !== null) {
-        goToContact(newContactId);
-      }
-    });
-  };
-
-  const handleRequestSort = (event: any, property: string) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(property);
   };
 
   const handleSelectAllClick = () => {
@@ -172,10 +129,6 @@ const ContactList = () => {
     setPage(newPage);
   };
 
-  const onFilterByName = (event: any) => {
-    setFilterName(event.target.value);
-  };
-
   const onChangeRowsPerPage = (event: any) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
@@ -188,13 +141,26 @@ const ContactList = () => {
       contacts,
       getComparator(order, orderBy),
       filterName,
-    );
+    ).flatMap((c: Contact) => {
+      if (c.note !== '') {
+        return JSON.parse(c.note).map((n: any) => {
+          return { ...n, relatedTo: `${c.givenName} ${c.familyName}` };
+        });
+      }
+      return [];
+    });
+    filteredContacts.sort((n1: any, n2:any) => {
+      return differenceInSeconds(
+        new Date(n2.time),
+        new Date(n1.time),
+      );
+    });
     emptyRows = page > 0
       ? Math.max(0, (1 + page) * rowsPerPage - contacts.length) : 0;
   }
 
   return (
-    <Page title="Contacts - OneThread">
+    <Page title="Notes - OneThread">
       <StyledContainer theme={theme}>
         <Box
           display="flex"
@@ -204,26 +170,12 @@ const ContactList = () => {
           paddingBottom={2}
         >
           <Typography variant="h2">
-            Contacts
+            Notes
           </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            component={RouterLink}
-            onClick={onAddContact}
-            to="#"
-            disabled={contacts === null}
-          >
-            <AddIcon />
-            ADD NEW CONTACT
-          </Button>
         </Box>
         <Card>
-          <ContactListToolbar
+          <NotesListToolbar
             selected={selected}
-            filter={filterName}
-            onFilter={onFilterByName}
-            deleteMany={onDeleteContacts}
           />
           {filteredContacts === null || isLoading ? (
             <Box sx={{
@@ -240,13 +192,12 @@ const ContactList = () => {
             <Box>
               <TableContainer>
                 <Table>
-                  <TableHeader
+                  <PlainTableHeader
                     order={order}
                     orderBy={orderBy}
                     headLabel={TABLE_HEAD}
                     rowCount={filteredContacts.length}
                     numSelected={selected.length}
-                    onRequestSort={handleRequestSort}
                     onSelectAllClick={handleSelectAllClick}
                   />
                   <TableBody>
@@ -255,24 +206,22 @@ const ContactList = () => {
                         page * rowsPerPage,
                         page * rowsPerPage + rowsPerPage,
                       )
-                      .map((row: Contact) => {
+                      .map((row: Note) => {
                         const
                           {
+                            time,
+                            content,
+                            relatedTo,
                             contactId,
-                            givenName,
-                            familyName,
-                            role,
-                            organisation,
-                            dateAdded,
                           } = row;
-                        const name = `${givenName} ${familyName}`;
+                        const noteId = `${time}${contactId}`;
                         const isItemSelected = selected
-                          .indexOf(contactId) !== -1;
+                          .indexOf(noteId) !== -1;
 
                         return (
                           <TableRow
                             hover
-                            key={contactId}
+                            key={noteId}
                             tabIndex={-1}
                             role="checkbox"
                             selected={isItemSelected}
@@ -281,7 +230,8 @@ const ContactList = () => {
                             <TableCell padding="checkbox">
                               <Checkbox
                                 checked={isItemSelected}
-                                onChange={(event) => handleClick(event, contactId)}
+                                onChange={(event) => handleClick(event, noteId)}
+                                disabled
                               />
                             </TableCell>
                             <TableCell
@@ -289,40 +239,29 @@ const ContactList = () => {
                               scope="row"
                               onClick={() => goToContact(contactId)}
                             >
+                              {
+                                time !== ''
+                                  ? formatISO9075(
+                                    new Date(time),
+                                  )
+                                  : '-'
+                              }
+                            </TableCell>
+                            <TableCell onClick={() => goToContact(contactId)}>
+                              { content }
+                            </TableCell>
+                            <TableCell onClick={() => goToContact(contactId)}>
                               <Box display="flex" alignItems="center">
-                                <Avatar alt={name} src="" />
+                                <Avatar alt={relatedTo} src="" />
                                 <Box
                                   component={Typography}
                                   paddingLeft={2}
                                   fontWeight="bold"
                                   noWrap
                                 >
-                                  {name}
+                                  {relatedTo}
                                 </Box>
                               </Box>
-                            </TableCell>
-                            <TableCell onClick={() => goToContact(contactId)}>
-                              { organisation }
-                            </TableCell>
-                            <TableCell onClick={() => goToContact(contactId)}>
-                              { role }
-                            </TableCell>
-                            <TableCell onClick={() => goToContact(contactId)}>
-                              {
-                                dateAdded !== ''
-                                  ? formatISO(
-                                    new Date(dateAdded),
-                                    { representation: 'date' },
-                                  )
-                                  : '-'
-                              }
-                            </TableCell>
-                            <TableCell align="right">
-                              <MoreMenu
-                                id={contactId}
-                                deleteOne={onDeleteContact}
-                                editOne={onEditContact}
-                              />
                             </TableCell>
                           </TableRow>
                         );
@@ -337,7 +276,7 @@ const ContactList = () => {
                     <TableBody>
                       <TableRow>
                         <TableCell align="center" colSpan={6}>
-                          <SearchNotFound searchQuery={filterName} />
+                          No notes found.
                         </TableCell>
                       </TableRow>
                     </TableBody>
@@ -361,4 +300,4 @@ const ContactList = () => {
   );
 };
 
-export default ContactList;
+export default NotesList;

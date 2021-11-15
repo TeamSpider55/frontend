@@ -33,14 +33,14 @@ export const getDummyEvents = getEventsSucceeded({
 });
 
 export const deleteEventsStarted = createAction(
-  'contact/deleteEventsStarted',
+  'event/deleteEventsStarted',
 );
 export const deleteEventsSucceeded = createAction<{
   events: Array<Event>
-}>('contact/deleteEventsSucceeded');
+}>('event/deleteEventsSucceeded');
 export const deleteEventsFailed = createAction<{
   err: string
-}>('contact/deleteEventsFailed');
+}>('event/deleteEventsFailed');
 
 export const deleteEvents = (
   ids: string[],
@@ -91,14 +91,14 @@ export const addEvent = (
 };
 
 export const updateEventStarted = createAction(
-  'contact/updateEventStarted',
+  'event/updateEventStarted',
 );
 export const updateEventSucceeded = createAction<{
   events: Array<Event>
-}>('contact/updateEventSucceeded');
+}>('event/updateEventSucceeded');
 export const updateEventFailed = createAction<{
   err: string
-}>('contact/updateEventFailed');
+}>('event/updateEventFailed');
 
 export const updateEvent = (
   updatedEvent: UpdateEventInput,

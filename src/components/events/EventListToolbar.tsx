@@ -77,7 +77,6 @@ const EventListToolbar = (
       )}
 
       {selected.length > 0 ? (
-        // FIXME: label this button Cancel event and change the icon
         <Box>
           <Tooltip title="Delete">
             <IconButton

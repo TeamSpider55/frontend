@@ -6,7 +6,6 @@ import makeStyles from '@mui/styles/makeStyles';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import LogoutIcon from '@mui/icons-material/Logout';
-import EditIcon from '@mui/icons-material/Edit';
 import Page from '../components/Page';
 import { useAppDispatch, useAppSelector } from '../redux/store';
 import { User } from '../dto/User';
@@ -96,12 +95,11 @@ const Account = () => {
         <Box className={classes.formContainer}>
           <Box className={classes.form}>
             <Box className={classes.splitRow}>
-              <Box className={classes.formLabel}>Email</Box>
+              <Box className={classes.formLabel}>ID</Box>
               <TextField
                 className={classes.textField}
-                variant="standard"
+                variant="outlined"
                 value={user.email}
-                sx={{ backgroundColor: theme.palette.grey[200] }}
                 inputProps={
                   {
                     readOnly: true,
@@ -110,32 +108,12 @@ const Account = () => {
               />
             </Box>
             <Box className={classes.splitRow}>
-              <Box className={classes.formLabel}>Phone</Box>
-              <TextField
-                className={classes.textField}
-                variant="outlined"
-                inputProps={{ maxLength: 12 }}
-              />
-            </Box>
-            <Box className={classes.splitRow}>
-              <Box className={classes.formLabel}>Location</Box>
-              <TextField
-                className={classes.textField}
-                variant="outlined"
-              />
-            </Box>
-            <Box className={classes.splitRow}>
               <Box className={classes.formLabel}>Given Name</Box>
               <TextField
                 className={classes.textField}
                 variant="outlined"
-              />
-            </Box>
-            <Box className={classes.splitRow}>
-              <Box className={classes.formLabel}>Middle Name</Box>
-              <TextField
-                className={classes.textField}
-                variant="outlined"
+                value={user.givenName}
+                inputProps={{ readOnly: true }}
               />
             </Box>
             <Box className={classes.splitRow}>
@@ -143,18 +121,13 @@ const Account = () => {
               <TextField
                 className={classes.textField}
                 variant="outlined"
-              />
-            </Box>
-            <Box className={classes.splitRow}>
-              <Box className={classes.formLabel}>Nickname</Box>
-              <TextField
-                className={classes.textField}
-                variant="outlined"
+                value={user.familyName}
+                inputProps={{ readOnly: true }}
               />
             </Box>
             <Box className={classes.changePasswordLink}>
               {' '}
-              <Link component={RouterLink} to="/forgot-password">
+              <Link component={RouterLink} to="/reset-password">
                 <Box
                   display="inline"
                   sx={{ textDecoration: 'underline' }}
@@ -166,15 +139,6 @@ const Account = () => {
                 </Box>
               </Link>
             </Box>
-            <Button
-              className={classes.formButton}
-              variant="contained"
-              color="primary"
-              disabled
-            >
-              <EditIcon />
-              Update
-            </Button>
             <Button
               className={classes.formButton}
               variant="contained"

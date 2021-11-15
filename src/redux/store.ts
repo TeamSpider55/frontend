@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
+import { differenceInHours } from 'date-fns';
 import LocalStorage from './LocalStorage';
 import authReducer from './reducer/authReducer';
 import contactReducer from './reducer/contactReducer';
@@ -13,6 +14,11 @@ const loadState = () => {
     if (state === null) {
       return undefined;
     }
+    if (differenceInHours(new Date(), new Date(state.date)) >= 8) {
+      LocalStorage.clear();
+      return undefined;
+    }
+
     return state;
   } catch (e) {
     return undefined;
@@ -26,6 +32,7 @@ const preloadedState = {
     isLoading: false,
     user: localState?.user,
     error: null,
+    date: localState?.date,
   },
 };
 
@@ -49,6 +56,7 @@ store.subscribe(() => {
     ONE_THREAD_LOCAL_STORAGE_NAME,
     {
       user: state.auth.user,
+      date: state.auth.date,
     },
   );
 });

@@ -8,10 +8,15 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
-import { Link, useParams } from 'react-router-dom';
-import { Avatar, Input } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import { Link, useParams, useHistory } from 'react-router-dom';
+import { Card, Avatar, Input } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import formatISO9075 from 'date-fns/formatISO9075';
 import { useAppDispatch, useAppSelector } from '../redux/store';
-import { getContacts, updateContact } from '../redux/action/contactAction';
+import { deleteContact, getContacts, updateContact } from '../redux/action/contactAction';
+import { Note } from '../dto/Contact';
+import Spinner from '../components/Spinner';
 
 const useStyles = makeStyles((theme: any) => ({
   contactsButtonWrapper: {
@@ -48,6 +53,7 @@ const useStyles = makeStyles((theme: any) => ({
   imgNameWrapper: {
     display: 'flex',
     flexDirection: 'row',
+    marginTop: theme.spacing(4),
   },
   contactImgWrapper: {
     display: 'block',
@@ -183,6 +189,16 @@ const useStyles = makeStyles((theme: any) => ({
   },
 }));
 
+const getContactNotes = (contact: any): Array<Note> => {
+  let result: Array<Note>;
+  try {
+    result = JSON.parse(contact.note) as Array<Note>;
+  } catch {
+    result = [];
+  }
+  return result;
+};
+
 const labelStyle = {
   display: 'flex',
   alignItems: 'center',
@@ -200,11 +216,10 @@ const editModeShadow = (editModeOn: boolean) => ({
 const ContactDetail = () => {
   const theme = useTheme();
   const classes = useStyles(theme);
+  const history = useHistory();
 
   const [editModeOn, setEditModeOn] = useState(false);
 
-  // FIXME: tags missing in FE, role/organisation missing in BE
-  // FIXME: what's the difference between note and description?
   const [email, setEmail] = useState('');
   const [givenName, setGivenName] = useState('');
   const [middleName, setMiddleName] = useState('');
@@ -215,11 +230,42 @@ const ContactDetail = () => {
   const [role, setRole] = useState('');
   const [organisation, setOrganisation] = useState('');
   const [description, setDescription] = useState('');
+  const [notes, setNotes] = useState<Array<Note>>([]);
 
   // check url for a path param indicating which contact is to be fetched
   const { contactId } = useParams<{ contactId: string }>();
 
+  const addNote = () => {
+    const time = formatISO9075(new Date());
+    const idx = notes.findIndex((n: Note) => n.time === time);
+    if (idx !== -1) return;
+    setNotes([...notes, {
+      time,
+      content: ' ',
+      contactId,
+    }]);
+  };
+
+  const editNote = (time: string, content: string) => {
+    const idx = notes.findIndex((n: Note) => n.time === time);
+    setNotes(notes.map((note: Note, i: number) => {
+      if (i === idx) {
+        return {
+          time,
+          content,
+          contactId,
+        };
+      }
+      return note;
+    }));
+  };
+
+  const deleteNote = (time: string) => {
+    setNotes([...notes.filter((note) => note.time !== time)]);
+  };
+
   const dispatch = useAppDispatch();
+  const isLoading = useAppSelector((state) => state.auth.isLoading);
   const contact = useAppSelector((state) => {
     return state.contact.contacts?.find((c) => c.contactId === contactId);
   });
@@ -243,6 +289,12 @@ const ContactDetail = () => {
     setRole(contact.role);
     setOrganisation(contact.organisation);
     setDescription(contact.description);
+    setNotes(getContactNotes(contact));
+  };
+
+  const onDeleteContact = () => {
+    dispatch(deleteContact(contactId));
+    history.push('/contacts');
   };
 
   const editModeCancel = () => {
@@ -264,6 +316,7 @@ const ContactDetail = () => {
       role,
       organisation,
       description,
+      note: JSON.stringify(notes),
     }));
   };
 
@@ -287,38 +340,61 @@ const ContactDetail = () => {
                   Contacts
                 </Button>
               </Link>
+              <Box>
+                {!editModeOn && (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={onDeleteContact}
+                    style={{
+                      marginRight: theme.spacing(1),
+                      backgroundColor: theme.palette.warning.dark,
+                    }}
+                  >
+                    <DeleteIcon />
+                    DELETE CONTACT
+                  </Button>
+                )}
+                {!editModeOn && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={toggleEditMode}
+                >
+                  <EditIcon />
+                  EDIT CONTACT
+                </Button>
+                )}
+                {editModeOn && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={editModeCancel}
+                  style={{
+                    marginRight: theme.spacing(1),
+                    backgroundColor: theme.palette.error.dark,
+                  }}
+                  disabled={isLoading}
+                >
+                  <ClearIcon />
+                  CANCEL
+                </Button>
+                )}
+                {editModeOn && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={editModeConfirm}
+                  style={{ backgroundColor: theme.palette.success.dark }}
+                  disabled={isLoading}
+                >
+                  <DoneIcon />
+                  CONFIRM
+                </Button>
+                )}
+              </Box>
             </div>
             <div className={classes.contactDetail}>
-              <div className={classes.editIconWrapper}>
-                {
-                  !editModeOn && (
-                    <Button
-                      className={classes.editIcon}
-                      onClick={toggleEditMode}
-                    >
-                      <EditIcon />
-                    </Button>
-                  )
-                }
-                {
-                  editModeOn && (
-                    <>
-                      <Button
-                        className={classes.clearIcon}
-                        onClick={editModeCancel}
-                      >
-                        <ClearIcon />
-                      </Button>
-                      <Button
-                        className={classes.doneIcon}
-                        onClick={editModeConfirm}
-                      >
-                        <DoneIcon />
-                      </Button>
-                    </>
-                  )
-                }
-              </div>
               <div className={classes.imgNameWrapper}>
                 <div className={classes.contactImgWrapper}>
                   <Avatar
@@ -348,7 +424,17 @@ const ContactDetail = () => {
                     />
                   </div>
                   <div className={classes.contactInfo}>
-                    {/* Available for hire */}
+                    Added on
+                    {' '}
+                    <strong>
+                      {
+                      contact.dateAdded !== ''
+                        ? formatISO9075(
+                          new Date(contact.dateAdded),
+                        )
+                        : 'unknown date'
+                      }
+                    </strong>
                   </div>
                 </div>
               </div>
@@ -472,18 +558,117 @@ const ContactDetail = () => {
                 </Grid>
               </div>
             </div>
-          </>
-        ) : <Box>LOADING</Box>
-        // FIXME: when contact not found?
-      }
 
-      <div className={classes.contactTimeline}>
-        <div>
-          <div className={classes.timelineTitle}>
-            Timeline
-          </div>
-        </div>
-      </div>
+            <div className={classes.contactTimeline}>
+              <div>
+                <div className={classes.timelineTitle}>
+                  Timeline
+                </div>
+              </div>
+              <div>
+                {
+                  (editModeOn
+                    ? notes
+                    : getContactNotes(contact)
+                  ).map((n: Note) => {
+                    return (
+                      <Card sx={{
+                        backgroundColor: theme.palette.grey[200],
+                        marginX: theme.spacing(4),
+                        padding: theme.spacing(2),
+                        marginY: theme.spacing(2),
+                        borderRadius: '5px',
+                        boxShadow: '0 2px 3px rgb(0 0 0 / 0.2)',
+                      }}
+                      >
+                        <Box sx={{ display: 'flex' }}>
+                          <Box display="inline" sx={{ fontWeight: 'bold' }}>
+                            {n.time}
+                          </Box>
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              flexGrow: 1,
+                              justifyContent: 'right',
+                            }}
+                          >
+                            {
+                              editModeOn && (
+                                <Button
+                                  color="error"
+                                  onClick={() => deleteNote(n.time)}
+                                >
+                                  <ClearIcon />
+                                </Button>
+                              )
+                            }
+                          </Box>
+                        </Box>
+                        <Box marginTop={theme.spacing(1)}>
+                          <textarea
+                            readOnly={!editModeOn}
+                            value={editModeOn
+                              ? n.content
+                              : getContactNotes(contact).find(
+                                (note: Note) => note.time === n.time,
+                              )?.content}
+                            onChange={(e) => editNote(
+                              n.time, e.target.value,
+                            )}
+                            spellCheck="false"
+                            style={{
+                              ...editModeShadow(editModeOn),
+                              fontFamily: 'Cairo',
+                              fontSize: '1em',
+                              fontWeight: 'lighter',
+                              backgroundColor: (
+                                editModeOn
+                                  ? 'white'
+                                  : theme.palette.grey[200]
+                              ),
+                              border: 'none',
+                              width: '100%',
+                              padding: theme.spacing(0),
+                              paddingLeft: theme.spacing(1),
+                              paddingRight: theme.spacing(1),
+                              lineHeight: 'unset',
+                              resize: 'none',
+                              outline: 'none',
+                            }}
+                          />
+                        </Box>
+                      </Card>
+                    );
+                  })
+                }
+                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                  <Button
+                    sx={{ marginY: theme.spacing(2) }}
+                    variant="contained"
+                    color="primary"
+                    disabled={!editModeOn}
+                    onClick={addNote}
+                  >
+                    <AddIcon />
+                    &nbsp;
+                    ADD NOTE
+                  </Button>
+                </Box>
+              </div>
+            </div>
+          </>
+        ) : (
+          <Box sx={{
+            display: 'flex',
+            height: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+          >
+            <Spinner dark />
+          </Box>
+        )
+      }
     </>
   );
 };

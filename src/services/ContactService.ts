@@ -2,6 +2,8 @@ import axios from 'axios';
 import {
   AddContactInput, Contact, ContactApiResult, UpdateContactInput,
 } from '../dto/Contact';
+import API_URL from '../util/constants';
+import { DATETIME_FORMAT } from '../util/datetime';
 
 // dummy data
 let CONTACTS: Array<Contact> = [
@@ -19,6 +21,7 @@ let CONTACTS: Array<Contact> = [
     note: 'note',
     role: 'Student',
     organisation: 'University of Adelaide',
+    dateAdded: new Date().toISOString(),
   },
   {
     contactId: '2',
@@ -34,6 +37,7 @@ let CONTACTS: Array<Contact> = [
     note: 'note',
     role: 'Developer',
     organisation: 'Jaybird',
+    dateAdded: new Date().toISOString(),
   },
   {
     contactId: '3',
@@ -49,6 +53,7 @@ let CONTACTS: Array<Contact> = [
     note: 'note',
     role: 'Ex-CEO',
     organisation: 'Button Pushers Inc.',
+    dateAdded: new Date().toISOString(),
   },
   ...[...Array(10)].map((_, index) => {
     const i = index + 3;
@@ -67,6 +72,7 @@ let CONTACTS: Array<Contact> = [
       note: 'note',
       role: 'Product Manager',
       organisation: 'Microsoft',
+      dateAdded: new Date().toISOString(),
     };
   }),
   ...[...Array(10)].map((_, index) => {
@@ -86,19 +92,35 @@ let CONTACTS: Array<Contact> = [
       note: 'note',
       role: 'Software Engineer',
       organisation: 'Apple',
+      dateAdded: new Date().toISOString(),
     };
   }),
 ];
 
+export interface contactUpdate {
+  contactId: string,
+  email: string,
+  name: string,
+  phone: string,
+  location: string,
+  role: string,
+  organisation: string,
+  description: string,
+  nickName: string,
+  tags: string[],
+  note: string[],
+}
+
 class ContactService {
   static async getContacts(): Promise<Array<Contact>> {
     const result = await axios.get(
-      '/contact/getAllContacts/',
+      // '/contact/getAllContacts/',
+      `${API_URL}/contact/getAllContacts/`,
       { withCredentials: true },
     );
 
     // map default values as backend does not provide them
-    const contacts = result.data.data.map(
+    const contacts = (result.data as any).data.map(
       (contact: ContactApiResult & {_id: string}) => {
         return {
           // eslint-disable-next-line no-underscore-dangle
@@ -115,6 +137,7 @@ class ContactService {
           note: contact.note || '',
           role: contact.jobTitle || '',
           organisation: contact.organization || '',
+          dateAdded: contact.dateAdded || '',
         };
       },
     );
@@ -122,7 +145,8 @@ class ContactService {
   }
 
   static async deleteContact(id: string): Promise<Array<Contact>> {
-    await axios.post('/contact/deleteContact', {
+    // await axios.post('/contact/deleteContact', {
+    await axios.post(`${API_URL}/contact/deleteContact`, {
       contactId: id,
     }, { withCredentials: true });
     const contacts = await this.getContacts();
@@ -145,7 +169,8 @@ class ContactService {
     givenName,
     familyName,
   }: AddContactInput): Promise<{ id: string, contacts: Array<Contact>}> {
-    const result = await axios.post('/contact/addContact', {
+    // const result = await axios.post('/contact/addContact', {
+    const result = await axios.post(`${API_URL}/contact/addContact`, {
       email,
       familyName,
       givenName,
@@ -154,7 +179,7 @@ class ContactService {
     const contacts = await this.getContacts();
 
     return {
-      id: result.data.data._id,
+      id: (result.data as any).data._id,
       contacts,
     };
   }
@@ -175,7 +200,8 @@ class ContactService {
     organisation,
   }: UpdateContactInput): Promise<Array<Contact>> {
     const oldContactResult = await axios.get(
-      `/contact/getContact/${contactId}`,
+      // `/contact/getContact/${contactId}`,
+      `${API_URL}/contact/getContact/${contactId}`,
       { withCredentials: true },
     );
 
@@ -183,8 +209,10 @@ class ContactService {
       return this.getContacts();
     }
 
-    const c = oldContactResult.data.data as ContactApiResult & { _id: string };
-    await axios.post('/contact/updateContact', {
+    // const c = (oldContactResult.data as any).data as ContactApiResult & { _id: string };
+    // await axios.post('/contact/updateContact', {
+    const c = (oldContactResult.data as any).data as ContactApiResult & { _id: string };
+    await axios.post(`${API_URL}/contact/updateContact`, {
       ...c,
       contactId: c._id,
       nickName: nickName !== undefined ? nickName : c.nickName,
@@ -243,6 +271,7 @@ class ContactService {
         note: '',
         role: '',
         organisation: '',
+        dateAdded: DATETIME_FORMAT.format(Date.now()),
       },
     ];
 
@@ -318,6 +347,7 @@ class ContactService {
         note: 'note',
         role: 'Software Engineer',
         organisation: 'Apple',
+        dateAdded: new Date().toISOString(),
       };
     });
   }

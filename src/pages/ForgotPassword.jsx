@@ -62,17 +62,17 @@ const ForgotPassword = () => {
           <Box className={classes.form}>
             <Box textAlign="center" paddingBottom={theme.spacing(1)}>
               <img src={SpiderIcon} alt="spider" width="100" height="100" />
-              <Logo dark />
+              <Logo darktext />
             </Box>
             <FormTextField
               label="Email Address"
               variant="outlined"
               type="email"
-              // FIXME: required field
             />
             <FormButton
               variant="contained"
               color="primary"
+              disabled
             >
               <EmailIcon />
               Reset Password
